@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "game.h"
+
 typedef struct {
     int n_lines, n_columns;
     int *n_el_line, *n_el_column;
@@ -12,7 +14,7 @@ typedef struct {
 board jogo;
 
 
-void init() {
+void initBoard() {
     jogo.n_lines = 0;
     jogo.n_columns = 0;
     jogo.n_el_line = NULL;

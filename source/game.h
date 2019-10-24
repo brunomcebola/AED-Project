@@ -1,7 +1,7 @@
-#ifndef game
-#define game
+#ifndef game_included
+#define game_included
 
-void init();
+void initBoard();
 void setRows(int);
 void setColumns(int);
 void setLayout(char **);

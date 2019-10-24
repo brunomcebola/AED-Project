@@ -2,11 +2,28 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "files.h"
 #include "game.h"
 #include "bundle.h"
 
+FILE *fp = NULL;
+char *file_name = NULL;
 
-void readFile(FILE *fp) {
+void initFile(const char *file) {
+    int size = strlen(file);
+
+    if(strcmp(".camp0", file+size-6) != 0) {
+        exit(0);
+    }
+    fp = fopen(file, "r");
+    file_name = (char *) malloc((size-5) * sizeof(char)) ;
+    checkNull(file_name);
+    strncpy(file_name, file, size-6);
+}
+
+
+
+void readFile() {
     int line = 0, column = 0;
     int linhas = 0, colunas = 0;
     char c = '\0';
@@ -38,35 +55,4 @@ void readFile(FILE *fp) {
     setColumns(colunas);
     setLayout(tabuleiro);
 
-}
-
-
-
-
-
-int main(int argc, char const *argv[]) {
-    FILE *fp = NULL;
-
-    init();
-
-    //check if two arguments are passed
-    if (argc != 2) {
-        exit(0);
-    }
-
-    if(strcmp(".camp0", argv[1]+strlen(argv[1])-6) != 0) {
-        exit(0);
-    }
-
-    fp = fopen(argv[1], "r");
-
-    checkNull(fp);
-
-    readFile(fp);
-
-    fclose(fp);
-
-    printLayout();
-
-    return 0;
 }

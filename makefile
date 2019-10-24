@@ -4,9 +4,9 @@ CC=gcc
 FLAGS=-c -W -Wall -ansi -pedantic -Wextra -std=c99 -O3
 
 # .c files
-C_SOURCE=$(wildcard ./*.c)
+C_SOURCE=$(wildcard ./source/*.c)
 # .h files
-H_SOURCE=$(wildcard ./*.h)
+H_SOURCE=$(wildcard ./source/*.h)
 # .o files
 OBJ=$(subst .c,.o,$(subst source,objects,$(C_SOURCE)))
 
@@ -20,7 +20,7 @@ all: objFolder $(PROJECT_NAME)
 
 $(PROJECT_NAME): $(OBJ)
 	@ echo 'Building binary using GCC linker: $@'
-	$(CC) $(FLAGS) $^ -o $@
+	$(CC) $^ -o $@
 	@ echo 'Finished building binary: $@'
 	@ echo ' '
 
@@ -29,7 +29,7 @@ $(PROJECT_NAME): $(OBJ)
 	$(CC) $< $(FLAGS) -o $@
 	@ echo ' '
 
-./objects/main.o: ./source/main.c $(H_SOURCE)
+./objects/projeto_aed_intermedio.o: ./source/projeto_aed_intermedio.c $(H_SOURCE)
 	@ echo 'Building target using GCC compiler: $<'
 	$(CC) $< $(FLAGS) -o $@
 	@ echo ' '
