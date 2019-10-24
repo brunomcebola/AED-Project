@@ -9,11 +9,14 @@ typedef struct {
     int *n_el_row, *n_el_column;
     char mode;
     char **layout;
+    int answer;
 } board;
 
 board jogo;
 
+//implementation of functions to manage 'jogo'
 
+//INITITIALIZATIONS
 void initBoard() {
     jogo.n_rows = 0;
     jogo.n_columns = 0;
@@ -23,9 +26,11 @@ void initBoard() {
     jogo.x = 0;
     jogo.y = 0;
     jogo.layout = NULL;
-
+    jogo.answer = -1;
 }
 
+
+//SET FUNCTIONS
 void setBoardRows(int lines) {
     jogo.n_rows = lines;
 }
@@ -55,8 +60,24 @@ void setBoardLayout(char **layout) {
     jogo.layout = layout;
 }
 
+
+//GET FUNCTIONS
+int getBoardRows() {
+    return jogo.n_rows;
+}
+
+int getBoardColumns() {
+    return jogo.n_columns;
+}
+
+
+//ETC...
 void printLayout() {
-    printf("%d %d %c\n", jogo.n_rows, jogo.n_columns, jogo.mode);
+    printf("%d %d %c ", jogo.n_rows, jogo.n_columns, jogo.mode);
+    if(jogo.mode == 'B') {
+        printf("%d %d", jogo.x, jogo.y);
+    }
+    printf("\n");
     for(int i=0;i<jogo.n_rows;i++) {
         printf("%d ", jogo.n_el_row[i]);
     }
@@ -73,11 +94,21 @@ void printLayout() {
     }
     printf("\n");
 }
+
 void freeBoard() {
-    free(jogo.n_el_row);
-    free(jogo.n_el_column);
-    for(int i=0;i<jogo.n_rows;i++) {
-        free(jogo.layout[i]);
+    if(jogo.n_el_row != NULL) {
+        free(jogo.n_el_row);
     }
-    free(jogo.layout);
+    if(jogo.n_el_column != NULL ) {
+        free(jogo.n_el_column);
+    }
+
+    for(int i=0;i<jogo.n_rows;i++) {
+        if(jogo.layout[i] != NULL) {
+            free(jogo.layout[i]);
+        }
+    }
+    if(jogo.layout != NULL) {
+        free(jogo.layout);
+    }
 }
