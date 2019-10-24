@@ -2,7 +2,8 @@
 #define files_included
 
 void initFile(const char *);
-void readFile();
-
+int readFile();
+int checkEOF();
+void terminateFile();
 
 #endif

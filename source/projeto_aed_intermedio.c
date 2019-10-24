@@ -1,6 +1,4 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "files.h"
 #include "game.h"
@@ -15,9 +13,15 @@ int main(int argc, char const *argv[]) {
     initFile(argv[1]);
     initBoard();
 
-    readFile();
+    while(checkEOF()) {
+        if(readFile() == 0) {
+            break;
+        };
+        printLayout();
+        freeBoard();
+    }
 
-    printLayout();
+    terminateFile();
 
     return 0;
 }

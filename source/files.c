@@ -16,20 +16,41 @@ void initFile(const char *file) {
         exit(0);
     }
     fp = fopen(file, "r");
+    checkNull(fp);
     file_name = (char *) malloc((size-5) * sizeof(char)) ;
     checkNull(file_name);
     strncpy(file_name, file, size-6);
 }
 
+int readFile() {
+    int linhas = 0, colunas = 0, linha_atual = 0, coluna_atual = 0;
+    int *el_linha = NULL, *el_coluna = NULL;
+    char c = '\0', mode = '\0';
+    char **tabuleiro = NULL;
 
+    if(fscanf(fp, "%d %d", &linhas , &colunas) != 2) {
+        return 0;
+    }
 
-void readFile() {
-    int line = 0, column = 0;
-    int linhas = 0, colunas = 0;
-    char c = '\0';
-    char **tabuleiro;
+    if(fscanf(fp, "%c", &mode) != 1 ) {
+        return 0;
+    }
 
-    fscanf(fp, "%d %d", &linhas , &colunas);
+    el_linha = (int *) malloc(linhas * sizeof(int));
+    checkNull(el_linha);
+    for(int i=0; i<linhas; i++) {
+        if(fscanf(fp, "%d", &el_linha[i]) != 1 ) {
+            return 0;
+        }
+    }
+
+    el_coluna = (int *) malloc(colunas * sizeof(int));
+    checkNull(el_coluna);
+    for(int i=0; i<colunas; i++) {
+        if(fscanf(fp, "%d", &el_coluna[i]) != 1 ) {
+            return 0;
+        }
+    }
 
     tabuleiro = (char **) malloc(linhas * sizeof(char *));
     checkNull(tabuleiro);
@@ -38,21 +59,33 @@ void readFile() {
         checkNull(tabuleiro[i]);
     }
 
-    while(line!=linhas) {
-        fscanf(fp, "%c", &c);
+    while(linha_atual!=linhas) {
+        if(fscanf(fp, "%c", &c) != 1) {
+            return 0;
+        }
         if(c == 'T' || c == 'A' || c == '.'){
-            tabuleiro[line][column] = c;
-            column++;
-            if(column == colunas) {
-                line++;
-                column = 0;
+            tabuleiro[linha_atual][coluna_atual] = c;
+            coluna_atual++;
+            if(coluna_atual == colunas) {
+                linha_atual++;
+                coluna_atual = 0;
             }
         }
     }
 
+    setBoardRows(linhas);
+    setBoardColumns(colunas);
+    setBoardMode(mode);
+    setBoardLayout(tabuleiro);
 
-    setRows(linhas);
-    setColumns(colunas);
-    setLayout(tabuleiro);
+    return 1;
+}
 
+int checkEOF(){
+    return !feof(fp);
+}
+
+void terminateFile() {
+    fclose(fp);
+    free(file_name);
 }

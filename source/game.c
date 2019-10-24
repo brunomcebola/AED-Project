@@ -20,25 +20,37 @@ void initBoard() {
     jogo.n_el_line = NULL;
     jogo.n_el_column = NULL;
     jogo.layout = NULL;
+    jogo.mode = '\0';
 }
 
-void setRows(int lines) {
+void setBoardRows(int lines) {
     jogo.n_lines = lines;
 }
 
-void setColumns(int columns) {
-    jogo.n_lines = columns;
+void setBoardColumns(int columns) {
+    jogo.n_columns = columns;
 }
 
-void setLayout(char **layout) {
+void setBoardMode(char mode) {
+    jogo.mode = mode;
+}
+
+void setBoardLayout(char **layout) {
     jogo.layout = layout;
 }
 
 void printLayout() {
+    printf("%d %d %c\n", jogo.n_lines, jogo.n_columns, jogo.mode);
     for(int i=0;i<jogo.n_lines;i++) {
-        for(int j=0;j<jogo.n_lines;j++) {
+        for(int j=0;j<jogo.n_columns;j++) {
             printf("%c", jogo.layout[i][j]);
         }
         printf("\n");
     }
+}
+void freeBoard() {
+    for(int i=0;i<jogo.n_lines;i++) {
+        free(jogo.layout[i]);
+    }
+    free(jogo.layout);
 }
