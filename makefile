@@ -4,11 +4,11 @@ CC=gcc
 FLAGS=-c -W -Wall -ansi -pedantic -Wextra -std=c99 -O3
 
 # .c files
-C_SOURCE=$(wildcard ./source/*.c)
+C_SOURCE=$(wildcard ./sources/*.c)
 # .h files
-H_SOURCE=$(wildcard ./source/*.h)
+H_SOURCE=$(wildcard ./headers/*.h)
 # .o files
-OBJ=$(subst .c,.o,$(subst source,objects,$(C_SOURCE)))
+OBJ=$(subst .c,.o,$(subst sources,objects,$(C_SOURCE)))
 
 RM = rm -rf
 
@@ -24,12 +24,12 @@ $(PROJECT_NAME): $(OBJ)
 	@ echo 'Finished building binary: $@'
 	@ echo ' '
 
-./objects/%.o: ./source/%.c ./source/%.h
+./objects/%.o: ./sources/%.c ./headers/%.h
 	@ echo 'Building target using GCC compiler: $<'
 	$(CC) $< $(FLAGS) -o $@
 	@ echo ' '
 
-./objects/projeto_aed_intermedio.o: ./source/projeto_aed_intermedio.c $(H_SOURCE)
+./objects/projeto_aed_intermedio.o: ./sources/projeto_aed_intermedio.c $(H_SOURCE)
 	@ echo 'Building target using GCC compiler: $<'
 	$(CC) $< $(FLAGS) -o $@
 	@ echo ' '
