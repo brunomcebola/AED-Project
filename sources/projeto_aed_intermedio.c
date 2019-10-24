@@ -1,7 +1,8 @@
 #include <stdlib.h>
+#include <stdio.h>
 
-#include "files.h"
-#include "game.h"
+#include "../headers/files.h"
+#include "../headers/game.h"
 
 
 int main(int argc, char const *argv[]) {
@@ -22,6 +23,8 @@ int main(int argc, char const *argv[]) {
     }
 
     terminateFile();
+
+    printf("aaa\n");
 
     return 0;
 }

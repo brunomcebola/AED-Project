@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "files.h"
-#include "game.h"
-#include "bundle.h"
+#include "../headers/files.h"
+#include "../headers/game.h"
+#include "../headers/bundle.h"
 
 FILE *fp = NULL;
 char *file_name = NULL;

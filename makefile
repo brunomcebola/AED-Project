@@ -29,10 +29,12 @@ $(PROJECT_NAME): $(OBJ)
 	$(CC) $< $(FLAGS) -o $@
 	@ echo ' '
 
+
 ./objects/projeto_aed_intermedio.o: ./sources/projeto_aed_intermedio.c $(H_SOURCE)
 	@ echo 'Building target using GCC compiler: $<'
 	$(CC) $< $(FLAGS) -o $@
 	@ echo ' '
+
 
 objFolder:
 	@ mkdir -p objects
