@@ -23,19 +23,31 @@ void initFile(const char *file) {
 }
 
 int readFile() {
-    int linhas = 0, colunas = 0, linha_atual = 0, coluna_atual = 0;
+    int linhas = 0, colunas = 0, linha_atual = 0, coluna_atual = 0, x = 0, y = 0;
     int *el_linha = NULL, *el_coluna = NULL;
     char c = '\0', mode = '\0';
     char **tabuleiro = NULL;
 
+    //get number of rows and columns
     if(fscanf(fp, "%d %d", &linhas , &colunas) != 2) {
         return 0;
     }
 
-    if(fscanf(fp, "%c", &mode) != 1 ) {
-        return 0;
+    //get test mode
+    while(mode != 'A' && mode != 'B' && mode != 'C'){
+        if(fscanf(fp, "%c", &mode) != 1 ) {
+            return 0;
+        }
     }
 
+    //get coordinates for test mode 'B'
+    if(mode == 'B') {
+        if(fscanf(fp, "%d %d", &x , &y) != 2) {
+            return 0;
+        }
+    }
+
+    //get number of elements in each row
     el_linha = (int *) malloc(linhas * sizeof(int));
     checkNull(el_linha);
     for(int i=0; i<linhas; i++) {
@@ -44,6 +56,7 @@ int readFile() {
         }
     }
 
+    //get number of elemets in each column
     el_coluna = (int *) malloc(colunas * sizeof(int));
     checkNull(el_coluna);
     for(int i=0; i<colunas; i++) {
@@ -52,13 +65,13 @@ int readFile() {
         }
     }
 
+    //get game layout
     tabuleiro = (char **) malloc(linhas * sizeof(char *));
     checkNull(tabuleiro);
     for(int i = 0; i < linhas; i++) {
         tabuleiro[i] = (char *) malloc(colunas * sizeof(char));
         checkNull(tabuleiro[i]);
     }
-
     while(linha_atual!=linhas) {
         if(fscanf(fp, "%c", &c) != 1) {
             return 0;
@@ -73,9 +86,11 @@ int readFile() {
         }
     }
 
+    //save data to board struct
     setBoardRows(linhas);
     setBoardColumns(colunas);
     setBoardMode(mode);
+    setBoardCoordinates(x, y);
     setBoardElRows(el_linha);
     setBoardElColumns(el_coluna);
     setBoardLayout(tabuleiro);

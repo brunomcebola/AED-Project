@@ -5,7 +5,7 @@
 #include "../headers/game.h"
 
 typedef struct {
-    int n_rows, n_columns;
+    int n_rows, n_columns, x, y;
     int *n_el_row, *n_el_column;
     char mode;
     char **layout;
@@ -19,8 +19,11 @@ void initBoard() {
     jogo.n_columns = 0;
     jogo.n_el_row = NULL;
     jogo.n_el_column = NULL;
-    jogo.layout = NULL;
     jogo.mode = '\0';
+    jogo.x = 0;
+    jogo.y = 0;
+    jogo.layout = NULL;
+
 }
 
 void setBoardRows(int lines) {
@@ -33,6 +36,11 @@ void setBoardColumns(int columns) {
 
 void setBoardMode(char mode) {
     jogo.mode = mode;
+}
+
+void setBoardCoordinates(int x, int y) {
+    jogo.x = x;
+    jogo.y = y;
 }
 
 void setBoardElRows(int *n_el_row) {
@@ -48,7 +56,15 @@ void setBoardLayout(char **layout) {
 }
 
 void printLayout() {
-    printf("%d %d %c", jogo.n_rows, jogo.n_columns, jogo.mode);
+    printf("%d %d %c\n", jogo.n_rows, jogo.n_columns, jogo.mode);
+    for(int i=0;i<jogo.n_rows;i++) {
+        printf("%d ", jogo.n_el_row[i]);
+    }
+    printf("\n");
+    for(int i=0;i<jogo.n_columns;i++) {
+        printf("%d ", jogo.n_el_column[i]);
+    }
+    printf("\n");
     for(int i=0;i<jogo.n_rows;i++) {
         for(int j=0;j<jogo.n_columns;j++) {
             printf("%c", jogo.layout[i][j]);
