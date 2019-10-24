@@ -76,6 +76,8 @@ int readFile() {
     setBoardRows(linhas);
     setBoardColumns(colunas);
     setBoardMode(mode);
+    setBoardElRows(el_linha);
+    setBoardElColumns(el_coluna);
     setBoardLayout(tabuleiro);
 
     return 1;

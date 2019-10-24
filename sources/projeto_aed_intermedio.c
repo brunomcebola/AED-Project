@@ -24,7 +24,5 @@ int main(int argc, char const *argv[]) {
 
     terminateFile();
 
-    printf("aaa\n");
-
     return 0;
 }

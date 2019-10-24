@@ -5,6 +5,8 @@ void initBoard();
 void setBoardRows(int);
 void setBoardColumns(int);
 void setBoardMode(char);
+void setBoardElRows(int *);
+void setBoardElColumns(int *);
 void setBoardLayout(char **);
 void printLayout();
 void freeBoard();
