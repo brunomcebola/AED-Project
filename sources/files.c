@@ -6,7 +6,7 @@
 #include "../headers/game.h"
 #include "../headers/bundle.h"
 
-FILE *fp = NULL;
+FILE *in_file = NULL;
 char *file_name = NULL;
 
 
@@ -17,8 +17,8 @@ void initFile(const char *file) {
     if(strcmp(".camp0", file+size-6) != 0) {
         exit(0);
     }
-    fp = fopen(file, "r");
-    checkNull(fp);
+    in_file = fopen(file, "r");
+    checkNull(in_file);
     file_name = (char *) malloc((size-5) * sizeof(char)) ;
     checkNull(file_name);
     strncpy(file_name, file, size-6);
@@ -28,7 +28,7 @@ int readRowsAndColumns() {
     int linhas = 0, colunas = 0;
 
     //get number of rows and columns
-    if(fscanf(fp, "%d %d", &linhas , &colunas) != 2) {
+    if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2) {
         return 0;
     }
     setBoardRows(linhas);
@@ -42,7 +42,7 @@ int readMode() {
 
     //get test mode
     while(mode < 'A' || mode > 'Z'){
-        if(fscanf(fp, "%c", &mode) != 1 ) {
+        if(fscanf(in_file, "%c", &mode) != 1 ) {
             return 0;
         }
     }
@@ -55,12 +55,16 @@ int readMode() {
 
     //get coordinates for test mode 'B'
     else if(mode == 'B') {
-        if(fscanf(fp, "%d %d", &x , &y) != 2) {
+        if(fscanf(in_file, "%d %d", &x , &y) != 2) {
             return 0;
         }
     }
 
     setBoardCoordinates(x, y);
+
+    if(x >= getBoardRows() || y >= getBoardColumns() || x < 0 || y < 0) {
+        setBoardAnswer(-1);
+    }
 
     return 1;
 }
@@ -74,7 +78,7 @@ int readElRowsAndColumns() {
     el_linha = (int *) malloc(getBoardRows() * sizeof(int));
     checkNull(el_linha);
     for(int i=0; i<getBoardRows(); i++) {
-        if(fscanf(fp, "%d", &el_linha[i]) != 1 ) {
+        if(fscanf(in_file, "%d", &el_linha[i]) != 1 ) {
             free(el_linha);
             return 0;
         }
@@ -86,7 +90,7 @@ int readElRowsAndColumns() {
     el_coluna = (int *) malloc(getBoardColumns() * sizeof(int));
     checkNull(el_coluna);
     for(int i=0; i<getBoardColumns(); i++) {
-        if(fscanf(fp, "%d", &el_coluna[i]) != 1 ) {
+        if(fscanf(in_file, "%d", &el_coluna[i]) != 1 ) {
             free(el_linha);
             free(el_coluna);
             return 0;
@@ -111,7 +115,7 @@ int readLayout() {
         checkNull(tabuleiro[i]);
     }
     while(linha_atual!=getBoardRows()) {
-        if(fscanf(fp, "%c", &c) != 1) {
+        if(fscanf(in_file, "%c", &c) != 1) {
             return 0;
         }
         if(c == 'T' || c == 'A' || c == '.'){
@@ -136,11 +140,9 @@ int readFile() {
     if(!readRowsAndColumns()) {
         return 0;
     }
-
     if(!readMode()) {
         return 0;
     }
-
     if(!readElRowsAndColumns()) {
         return 0;
     }
@@ -151,11 +153,15 @@ int readFile() {
     return 1;
 }
 
+void writeFile () {
+
+}
+
 int checkEOF(){
-    return !feof(fp);
+    return !feof(in_file);
 }
 
 void terminateFile() {
-    fclose(fp);
+    fclose(in_file);
     free(file_name);
 }
