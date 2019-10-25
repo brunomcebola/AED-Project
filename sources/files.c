@@ -41,20 +41,25 @@ int readMode() {
     int x = 0, y = 0;
 
     //get test mode
-    while(mode != 'A' && mode != 'B' && mode != 'C'){
+    while(mode < 'A' || mode > 'Z'){
         if(fscanf(fp, "%c", &mode) != 1 ) {
             return 0;
         }
     }
 
+    setBoardMode(mode);
+
+    if(mode != 'A' && mode != 'B' && mode != 'C') {
+        setBoardAnswer(-1);
+    }
+
     //get coordinates for test mode 'B'
-    if(mode == 'B') {
+    else if(mode == 'B') {
         if(fscanf(fp, "%d %d", &x , &y) != 2) {
             return 0;
         }
     }
 
-    setBoardMode(mode);
     setBoardCoordinates(x, y);
 
     return 1;
@@ -62,6 +67,8 @@ int readMode() {
 
 int readElRowsAndColumns() {
     int *el_linha = NULL, *el_coluna = NULL;
+
+
 
     //get number of elements in each row
     el_linha = (int *) malloc(getBoardRows() * sizeof(int));
@@ -72,6 +79,8 @@ int readElRowsAndColumns() {
             return 0;
         }
     }
+
+
 
     //get number of elemets in each column
     el_coluna = (int *) malloc(getBoardColumns() * sizeof(int));
@@ -123,15 +132,17 @@ int readLayout() {
 
 //OUTER FUNCTIONS
 int readFile() {
+
     if(!readRowsAndColumns()) {
         return 0;
     }
+
     if(!readMode()) {
         return 0;
     }
+
     if(!readElRowsAndColumns()) {
         return 0;
-
     }
     if(!readLayout()){
         return 0;

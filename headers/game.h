@@ -10,6 +10,7 @@ void setBoardCoordinates(int, int);
 void setBoardElRows(int *);
 void setBoardElColumns(int *);
 void setBoardLayout(char **);
+void setBoardAnswer(int);
 
 int getBoardRows();
 int getBoardColumns();

@@ -6,6 +6,8 @@
 
 
 int main(int argc, char const *argv[]) {
+    int valid = 0;
+
     //check if two arguments are passed
     if (argc != 2) {
         exit(0);
@@ -15,10 +17,10 @@ int main(int argc, char const *argv[]) {
     initBoard();
 
     while(checkEOF()) {
-        if(readFile() == 0) {
-            break;
-        };
-        printLayout();
+        valid = readFile();
+        if(valid) {
+            printLayout();
+        }
         freeBoard();
     }
 
