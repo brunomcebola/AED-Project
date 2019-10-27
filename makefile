@@ -1,7 +1,7 @@
 PROJECT_NAME=projeto-aed
 
 CC=gcc
-FLAGS=-c -W -Wall -ansi -pedantic -Wextra -std=c99 -O3
+FLAGS=-c -Wall -Wextra -ansi -pedantic -std=c99 -g -Og #-O3
 
 # .c files
 C_SOURCE=$(wildcard ./sources/*.c)
