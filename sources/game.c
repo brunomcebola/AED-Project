@@ -74,6 +74,11 @@ int getBoardColumns() {
     return jogo.n_columns;
 }
 
+//MODE IMPLEMENTATION FUNCTIONS
+int modeA() {
+    return 1;
+}
+
 
 //ETC...
 void printLayout() {

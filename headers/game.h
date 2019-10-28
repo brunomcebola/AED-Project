@@ -15,6 +15,8 @@ void setBoardAnswer(int);
 int getBoardRows();
 int getBoardColumns();
 
+int modeA();
+
 void printLayout();
 void freeBoard();
 
