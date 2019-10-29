@@ -12,7 +12,16 @@ int initSearch(char ***board, int lineEdge, int columnEdge);
 
 
 int analyzeBoard() {
-  
+  /*
+  *
+  *
+  *
+  *
+  *
+  */
+
+
+
 }
 
 
@@ -21,8 +30,10 @@ int analyzeBoard() {
 /*  initializes searh parameters
 *   decides to save board on external file or not
 *
-*   -1 for error, 0 for good
-*
+*   0 for good & no extra file
+*   1 for good & file
+*   -1 for not good & file
+*   -2 for not good & no extra file
 *
 */
 int initSearch(char ***board, int lineEdge, int columnEdge) {
