@@ -9,19 +9,34 @@ int initSearch(char ***board, int lineEdge, int columnEdge);
 
 
 
+void analyzeBoard(int lineEdge, int columnEdge, char ***board) {
+  int retVal = 0;
 
-
-int analyzeBoard() {
-  /*
-  *
-  *
-  *
-  *
-  *
-  */
-
-
-
+  retVal = initSearch(board, lineEdge, columnEdge);
+  switch (retVal) {
+    case 0:
+      /*              TODO: insert copy from file function
+      *
+      *
+      */
+      break;
+    case 1:
+      /*
+      *               TODO: insert file filling function
+      *
+      */
+      copyFromBackupFile(); //    TODO: make this function
+      remove("tempfile.txt");
+      break;
+    case -1:
+      remove("tempfile.txt");
+      break;
+    case -2:
+      break;
+    default:
+      exit(0); //if it enters here there's a problem
+      break;
+  }
 }
 
 
@@ -40,7 +55,7 @@ int initSearch(char ***board, int lineEdge, int columnEdge) {
   int retVal = 0;
   FILE *fptr = NULL;
 
-  if ((long long int)(lineEdge*columnEdge) > 43000000) {
+  if ((long long int)(lineEdge*columnEdge) > 43000000) { //if the problem is too biga, backs a copy on a file
     fptr = fopen("tempfile.txt", "w");
     for (int i = 0; i < columnEdge; i++) {
       for (int j = 0; j < lineEdge; j++) {
@@ -49,7 +64,7 @@ int initSearch(char ***board, int lineEdge, int columnEdge) {
     }
     fclose(fptr);
     retVal = validateBoard(lineEdge, columnEdge, board);
-  } else {
+  } else { //else it creates a copy of the board it can modify
     char **boardcopy = (char **) malloc(lineEdge*sizeof(char *));
     for (int i = 0; i < lineEdge; i++) {
       boardcopy[i] = (char *) malloc(lineEdge*sizeof(char));
@@ -73,18 +88,18 @@ int initSearch(char ***board, int lineEdge, int columnEdge) {
 *
 */
 int validateBoard(int lineEdge, int columnEdge, char ***board) {
-  int numOfTents = 0, numOfTrees = 0;
+  int numOfTents = 0, numOfTrees = 0, retVal = 0;
 
   for (int i = 0; i < columnEdge; i++) {
     for (int j = 0; j < lineEdge; j++) {
       if (*(board[i][j]) == 'T') {
-        tentLooksForTree(i, j, lineEdge, columnEdge, board, &numOfTents, &numOfTrees);
-        if (numOfTrees != numOfTents) {
+        retVal = tentLooksForTree(i, j, lineEdge, columnEdge, board, &numOfTents, &numOfTrees);
+        if ((numOfTrees != numOfTents) || (retVal == -1)) {
           return -1;
         }
       } else if (*(board[i][j]) == 'A') {
-        treeLooksForTent(i, j, lineEdge, columnEdge, board, &numOfTents, &numOfTrees);
-        if (numOfTrees != numOfTents) {
+        retVal = treeLooksForTent(i, j, lineEdge, columnEdge, board, &numOfTents, &numOfTrees);
+        if ((numOfTrees != numOfTents) || (retVal == -1)) {
           return -1;
         }
       }
