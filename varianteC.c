@@ -2,6 +2,9 @@
 #include "stdlib.h"
 
 
+#define TEMPFILE "tempfile.txt"
+
+
 int tentLooksForTree(int coordX, int coordY, int lineEdge, int columnEdge, char ***board, int *numOfTents, int *numOfTrees);
 int treeLooksForTent(int coordX, int coordY, int lineEdge, int columnEdge, char ***board, int *numOfTents, int *numOfTrees);
 int validateBoard(int lineEdge, int columnEdge, char ***board);
@@ -9,7 +12,16 @@ int initSearch(char ***board, int lineEdge, int columnEdge);
 
 
 
-void analyzeBoard(int lineEdge, int columnEdge, char ***board) {
+void copyFromBackupFile(FILE **fptr) {
+  char c;
+  FILE *temp_file = fopen(TEMPFILE, "w");
+  while ((c = fgetc(temp_file)) != EOF) {
+    fputc(c, *fptr);
+  }
+}
+
+
+void analyzeBoard(int lineEdge, int columnEdge, char ***board, FILE **fptr) {
   int retVal = 0;
 
   retVal = initSearch(board, lineEdge, columnEdge);
@@ -25,11 +37,11 @@ void analyzeBoard(int lineEdge, int columnEdge, char ***board) {
       *               TODO: insert file filling function
       *
       */
-      copyFromBackupFile(); //    TODO: make this function
-      remove("tempfile.txt");
+      copyFromBackupFile(fptr);
+      remove(TEMPFILE);
       break;
     case -1:
-      remove("tempfile.txt");
+      remove(TEMPFILE);
       break;
     case -2:
       break;
@@ -56,7 +68,7 @@ int initSearch(char ***board, int lineEdge, int columnEdge) {
   FILE *fptr = NULL;
 
   if ((long long int)(lineEdge*columnEdge) > 43000000) { //if the problem is too biga, backs a copy on a file
-    fptr = fopen("tempfile.txt", "w");
+    fptr = fopen(TEMPFILE, "w");
     for (int i = 0; i < columnEdge; i++) {
       for (int j = 0; j < lineEdge; j++) {
         fputc(*(board[i][j]), fptr);
