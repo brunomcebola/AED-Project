@@ -3,6 +3,7 @@
 
 #include "../headers/files.h"
 #include "../headers/game.h"
+#include "../headers/modeA.h"
 
 
 int main(int argc, char const *argv[]) {
@@ -19,7 +20,7 @@ int main(int argc, char const *argv[]) {
     while(checkEOF()) {
         valid = readFile();
         if(valid) {
-            printLayout();
+            modeA();
         }
         freeBoard();
     }

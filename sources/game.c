@@ -74,36 +74,36 @@ int getBoardColumns() {
     return jogo.n_columns;
 }
 
-//MODE IMPLEMENTATION FUNCTIONS
-int modeA() {
-    return 1;
+char getBoardMode() {
+    return jogo.mode;
+}
+
+int getBoardElRow(int i) {
+    return jogo.n_el_row[i];
+}
+
+int getBoardElColumn(int j) {
+    return jogo.n_el_column[j];
+}
+
+char getBardLayoutElement(int i, int j) {
+    return jogo.layout[i][j];
+}
+
+int getBoardAnswer() {
+    return jogo.answer;
+}
+
+int getBoardCoordinateX() {
+    return jogo.x;
+}
+
+int getBoardCoordinateY() {
+    return jogo.y;
 }
 
 
-//ETC...
-void printLayout() {
-    printf("%d %d %c ", jogo.n_rows, jogo.n_columns, jogo.mode);
-    if(jogo.mode == 'B') {
-        printf("%d %d ", jogo.x, jogo.y);
-    }
-    printf("%d\n", jogo.answer);
-    /*for(int i=0;i<jogo.n_rows;i++) {
-        printf("%d ", jogo.n_el_row[i]);
-    }
-    printf("\n");
-    for(int i=0;i<jogo.n_columns;i++) {
-        printf("%d ", jogo.n_el_column[i]);
-    }
-    printf("\n");
-    for(int i=0;i<jogo.n_rows;i++) {
-        for(int j=0;j<jogo.n_columns;j++) {
-            printf("%c", jogo.layout[i][j]);
-        }
-        printf("\n");
-    }*/
-    printf("\n");
-}
-
+//FREE
 void freeBoard() {
     if(jogo.n_el_row != NULL) {
         free(jogo.n_el_row);

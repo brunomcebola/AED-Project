@@ -14,10 +14,14 @@ void setBoardAnswer(int);
 
 int getBoardRows();
 int getBoardColumns();
+char getBoardMode();
+int getBoardElRow(int);
+int getBoardElColumn(int);
+char getBardLayoutElement(int, int);
+int getBoardAnswer();
+int getBoardCoordinateX();
+int getBoardCoordinateY();
 
-int modeA();
-
-void printLayout();
 void freeBoard();
 
 #endif

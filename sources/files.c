@@ -28,7 +28,7 @@ void initFile(const char *file) {
 
     out_file = fopen(strcat(file_name,".tents0"), "w");
     checkNull(out_file);
-    
+
     free(file_name);
 }
 
@@ -162,6 +162,13 @@ int readFile() {
 }
 
 void writeFile () {
+    char mode = getBoardMode();
+    fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode);
+    if(mode == 'B') {
+        fprintf(out_file, "%d %d ", getBoardCoordinateX(), getBoardCoordinateX());
+    }
+    fprintf(out_file, "%d\n", getBoardAnswer());
+    fprintf(out_file, "\n");
 
 }
 
