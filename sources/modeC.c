@@ -110,7 +110,7 @@ int validateBoard(int lineEdge, int columnEdge, char ***board) {
         }
       } else if (*(board[i][j]) == 'A') {
         retVal = treeLooksForTent(i, j, lineEdge, columnEdge, board, &numOfTents, &numOfTrees);
-        if ((numOfTrees != numOfTents) || (retVal == -1)) {
+        if ((numOfTrees >= numOfTents) || (retVal == -1)) {
           return -1;
         }
       }
