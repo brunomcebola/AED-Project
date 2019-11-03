@@ -8,7 +8,7 @@
 int tentLooksForTree(int coordX, int coordY, int lineEdge, int columnEdge, char ***board, int *numOfTents, int *numOfTrees);
 int treeLooksForTent(int coordX, int coordY, int lineEdge, int columnEdge, char ***board, int *numOfTents, int *numOfTrees);
 int validateBoard(int lineEdge, int columnEdge, char ***board);
-int initSearch(char ***board, int lineEdge, int columnEdge);
+int search(char ***board, int lineEdge, int columnEdge);
 
 
 
@@ -21,10 +21,38 @@ void copyFromBackupFile(FILE **fptr) {
 }
 
 
-void analyzeBoard(int lineEdge, int columnEdge, char ***board, FILE **fptr) {
-  int retVal = 0;
+//                TODO : how do we implement this??
 
-  retVal = initSearch(board, lineEdge, columnEdge);
+int initialChecksCAndL(int lineEdge, int columnEdge, char **board) {
+  int *totalOfTentsLines = (int *) malloc(lineEdge*sizeof(int));
+  int *totalOfTentsColumns = (int *) malloc(columnEdge*sizeof(int));
+  for (int i = 0; i < lineEdge; i++) {
+    for (int j = 0; j < columnEdge; j++) {
+      if (board[i][j] == 'T') {
+        totalOfTentsLines[i]++;
+        totalOfTentsColumns[j]++;
+      }
+    }
+  }
+
+  /*      TODO : compare with given values
+  *
+  *
+  */
+
+  return 0;
+}
+
+
+//                TODO : change the way this function is inserted inside the rest of the code
+
+void analyzeBoard(int lineEdge, int columnEdge, char ***board, FILE **fptr) {
+  int retVal = 8; //arbitrary number to check if retVal is assigned a value
+  retVal = initialChecksCAndL(lineEdge, columnEdge, *board);
+  if (retVal == -1) {
+    return;
+  }
+  retVal = search(board, lineEdge, columnEdge);
   switch (retVal) {
     case 0:
       /*              TODO: insert copy from file function
@@ -63,11 +91,11 @@ void analyzeBoard(int lineEdge, int columnEdge, char ***board, FILE **fptr) {
 *   -2 for not good & no extra file
 *
 */
-int initSearch(char ***board, int lineEdge, int columnEdge) {
-  int retVal = 0;
+int search(char ***board, int lineEdge, int columnEdge) {
+  int retVal = 8; //arbitrary number to check if retVal is assigned a value
   FILE *fptr = NULL;
 
-  if ((long long int)(lineEdge*columnEdge) > 43000000) { //if the problem is too biga, backs a copy on a file
+  if ((unsigned long long int)(lineEdge*columnEdge) > 43000000) { //if the problem is too big, backs a copy on a file
     fptr = fopen(TEMPFILE, "w");
     for (int i = 0; i < columnEdge; i++) {
       for (int j = 0; j < lineEdge; j++) {
@@ -100,7 +128,7 @@ int initSearch(char ***board, int lineEdge, int columnEdge) {
 *
 */
 int validateBoard(int lineEdge, int columnEdge, char ***board) {
-  int numOfTents = 0, numOfTrees = 0, retVal = 0;
+  int numOfTents = 0, numOfTrees = 0, retVal = 8; //arbitrary number to check if retVal is assigned a value
 
   for (int i = 0; i < columnEdge; i++) {
     for (int j = 0; j < lineEdge; j++) {
@@ -130,7 +158,7 @@ int validateBoard(int lineEdge, int columnEdge, char ***board) {
 */
 int tentLooksForTree(int coordX, int coordY, int lineEdge, int columnEdge, char ***board, int *numOfTents, int *numOfTrees) {
   const int auxJumps[8][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}, {-1, 1}, {1, 1}, {-1, -1}, {1, -1}}; //used to check only 4 valid positions
-  int auxX = 0, auxY = 0, retVal = 0;
+  int auxX = 0, auxY = 0, retVal = 8; //arbitrary number to check if retVal is assigned a value
 
   *(board[coordX][coordY]) = 'K'; //prevents reading same position multiple times
   (*numOfTents) += 1; //increases number of found tents
@@ -174,7 +202,7 @@ int tentLooksForTree(int coordX, int coordY, int lineEdge, int columnEdge, char 
 */
 int treeLooksForTent(int coordX, int coordY, int lineEdge, int columnEdge, char ***board, int *numOfTents, int *numOfTrees) {
   const int auxJumps[4][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}}; //used to check only 4 valid positions
-  int auxX = 0, auxY = 0, retVal = 0;
+  int auxX = 0, auxY = 0, retVal = 8; //arbitrary number to check if retVal is assigned a value
 
   *(board[coordX][coordY]) = 'K'; //prevents reading same position multiple times
   (*numOfTrees) += 1; //increases number of found trees
