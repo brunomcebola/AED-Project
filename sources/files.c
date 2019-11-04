@@ -66,12 +66,10 @@ int readMode() {
         if(fscanf(in_file, "%d %d", &x , &y) != 2) {
             return 0;
         }
-    }
-
-    setBoardCoordinates(x, y);
-
-    if(x >= getBoardRows() || y >= getBoardColumns() || x < 0 || y < 0) {
-        setBoardAnswer(-1);
+        setBoardCoordinates(x, y);
+        if(x >= getBoardRows() || y >= getBoardColumns() || x < 0 || y < 0) {
+            setBoardAnswer(-1);
+        }
     }
 
     return 1;
@@ -79,8 +77,6 @@ int readMode() {
 
 int readElRowsAndColumns() {
     int *el_linha = NULL, *el_coluna = NULL;
-
-
 
     //get number of elements in each row
     el_linha = (int *) malloc(getBoardRows() * sizeof(int));
@@ -91,8 +87,6 @@ int readElRowsAndColumns() {
             return 0;
         }
     }
-
-
 
     //get number of elemets in each column
     el_coluna = (int *) malloc(getBoardColumns() * sizeof(int));
