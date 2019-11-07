@@ -105,6 +105,7 @@ m:
 	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) move
 	@ diff -r ans/A tents/A
+	
 t:
 	$(MAKE) a
 	$(MAKE) b
