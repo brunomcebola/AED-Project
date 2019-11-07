@@ -75,7 +75,31 @@ clean:
 
 .PHONY: all clean
 
+# test different modes
+
+move:
+	for F in $(shell ls ./*.tents0); do mv $${F} ans/A ; done
+
 a:
 	@ rm -r -f ./ans/A
 	@ mkdir -p ./ans/A
 	for F in ${FILES_A_IN}; do ./$(PROJECT_NAME) $${F} ; done
+	$(MAKE) move
+
+b:
+	@ rm -r -f ./ans/B
+	@ mkdir -p ./ans/B
+	for F in ${FILES_B_IN}; do ./$(PROJECT_NAME) $${F} ; done
+	$(MAKE) move
+
+c:
+	@ rm -r -f ./ans/C
+	@ mkdir -p ./ans/C
+	for F in ${FILES_C_IN}; do ./$(PROJECT_NAME) $${F} ; done
+	$(MAKE) move
+
+m:
+	@ rm -r -f ./ans/MIX
+	@ mkdir -p ./ans/MIX
+	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
+	$(MAKE) move
