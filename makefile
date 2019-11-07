@@ -85,6 +85,7 @@ a:
 	@ mkdir -p ./ans/A
 	for F in ${FILES_A_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) move
+	@ diff -r ans/A tents/A
 
 b:
 	@ rm -r -f ./ans/B
@@ -103,6 +104,7 @@ m:
 	@ mkdir -p ./ans/MIX
 	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) move
+	@ diff -r ans/A tents/A
 t:
 	$(MAKE) a
 	$(MAKE) b
