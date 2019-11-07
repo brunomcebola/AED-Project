@@ -36,6 +36,13 @@ OBJ=$(subst .c,.o,$(subst sources,objects,$(C_SOURCE)))
 RM = rm -rf
 
 
+FILES_A_IN = $(shell ls ./camps/A/*.camp0)
+FILES_B_IN = $(shell ls ./camps/B/*.camp0)
+FILES_C_IN = $(shell ls ./camps/C/*.camp0)
+FILES_MIX_IN = $(shell ls ./camps/MIX/*.camp0)
+
+
+
 #
 # Compilation and linking
 #
@@ -67,3 +74,8 @@ clean:
 	@ rmdir objects
 
 .PHONY: all clean
+
+a:
+	@ rm -r -f ./ans/A
+	@ mkdir -p ./ans/A
+	for F in ${FILES_A_IN}; do ./$(PROJECT_NAME) $${F} ; done

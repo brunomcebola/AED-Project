@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "../headers/game.h"
+#include "../headers/modeA.h"
 
 typedef struct {
     int n_rows, n_columns, x, y;
@@ -102,6 +103,14 @@ int getBoardCoordinateY() {
     return jogo.y;
 }
 
+
+void selMode() {
+    switch (jogo.mode) {
+        case 'A':
+            modeA();
+            break;
+    }
+}
 
 //FREE
 void freeBoard() {

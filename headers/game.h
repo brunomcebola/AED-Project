@@ -22,6 +22,8 @@ int getBoardAnswer();
 int getBoardCoordinateX();
 int getBoardCoordinateY();
 
+void selMode();
+
 void freeBoard();
 
 #endif

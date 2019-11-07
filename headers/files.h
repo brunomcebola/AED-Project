@@ -3,6 +3,7 @@
 
 void initFile(const char *);
 int readFile();
+void writeFile();
 int checkEOF();
 void terminateFile();
 

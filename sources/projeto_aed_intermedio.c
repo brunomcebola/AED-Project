@@ -20,7 +20,8 @@ int main(int argc, char const *argv[]) {
     while(checkEOF()) {
         valid = readFile();
         if(valid) {
-            modeA();
+            selMode();
+            writeFile();
         }
         freeBoard();
     }
