@@ -16,6 +16,7 @@ void modeA() {
         return;
     }
 
+
     for(int i=0; i<getBoardRows(); i++) {
         for(int j=0; j<getBoardColumns(); j++) {
             if(getBardLayoutElement(i,j) == 'A') {
@@ -24,7 +25,7 @@ void modeA() {
         }
     }
 
-    if(tents_row != trees) {
+    if(tents_row > trees) {
         setBoardAnswer(0);
         return;
     }

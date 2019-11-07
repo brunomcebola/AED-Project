@@ -103,3 +103,8 @@ m:
 	@ mkdir -p ./ans/MIX
 	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) move
+t:
+	$(MAKE) a
+	$(MAKE) b
+	$(MAKE) c
+	$(MAKE) m
