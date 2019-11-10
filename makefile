@@ -22,6 +22,8 @@ FLAGS=-c -Wall -Wextra -ansi -pedantic -std=c99 -g -Og #-O3 --> optimizes execut
 
 
 #extra otimization flags:
+#-finline-functions
+#-funroll-loops
 #-flto
 #-march=native --> produces optimized code for the chip it's running on, might be dangerous
 
@@ -105,7 +107,7 @@ m:
 	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) move
 	@ diff -r ans/A tents/A
-	
+
 t:
 	$(MAKE) a
 	$(MAKE) b
