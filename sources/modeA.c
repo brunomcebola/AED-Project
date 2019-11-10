@@ -1,7 +1,7 @@
 #include "../headers/modeA.h"
 #include "../headers/game.h"
 
-void modeA() {
+void modeA(void) {
     int tents_row = 0, tents_column = 0, trees = 0;
 
     for(int i=0; i<getBoardRows(); i++) {
@@ -19,7 +19,7 @@ void modeA() {
 
     for(int i=0; i<getBoardRows(); i++) {
         for(int j=0; j<getBoardColumns(); j++) {
-            if(getBardLayoutElement(i,j) == 'A') {
+            if(getBoardLayoutElement(i,j) == 'A') {
                 trees++;
             }
         }

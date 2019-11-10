@@ -32,7 +32,7 @@ void initFile(const char *file) {
     free(file_name);
 }
 
-int readRowsAndColumns() {
+int readRowsAndColumns(void) {
     int linhas = 0, colunas = 0;
 
     //get number of rows and columns
@@ -44,7 +44,7 @@ int readRowsAndColumns() {
     return 1;
 }
 
-int readMode() {
+int readMode(void) {
     char mode = '\0';
     int x = 0, y = 0;
 
@@ -75,7 +75,7 @@ int readMode() {
     return 1;
 }
 
-int readElRowsAndColumns() {
+int readElRowsAndColumns(void) {
     int *el_linha = NULL, *el_coluna = NULL;
 
     //get number of elements in each row
@@ -105,7 +105,7 @@ int readElRowsAndColumns() {
     return 1;
 }
 
-int readLayout() {
+int readLayout(void) {
     char **tabuleiro = NULL;
     char c = '\0';
     int linha_atual = 0, coluna_atual = 0;
@@ -137,7 +137,7 @@ int readLayout() {
 
 
 //OUTER FUNCTIONS
-int readFile() {
+int readFile(void) {
 
     if(!readRowsAndColumns()) {
         return 0;
@@ -155,7 +155,7 @@ int readFile() {
     return 1;
 }
 
-void writeFile () {
+void writeFile (void) {
     char mode = getBoardMode();
     fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode);
     if(mode == 'B') {
@@ -166,11 +166,11 @@ void writeFile () {
 
 }
 
-int checkEOF(){
+int checkEOF(void){
     return !feof(in_file);
 }
 
-void terminateFile() {
+void terminateFile(void) {
     fclose(in_file);
     fclose(out_file);
 }

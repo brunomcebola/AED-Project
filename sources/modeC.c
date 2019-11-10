@@ -2,19 +2,19 @@
 #include "stdlib.h"
 #include "../headers/modeC.h"
 #include "../headers/game.h"
-
+#include "../headers/bundle.h"
 
 
 int tentLooksForTree(int coordX, int coordY);
 int treeLooksForTent(int coordX, int coordY);
-int validateBoard();
-int initialChecks();
+int validateBoard(void);
+int initialChecks(void);
 
 
 typedef struct {
     int lineEdge, columnEdge;
     int numOfTents, numOfTrees;
-    char ***board;
+    char **board;
 } mode_c_board;
 
 mode_c_board puzzle = {0, 0, 0, 0, NULL};
@@ -27,18 +27,22 @@ mode_c_board puzzle = {0, 0, 0, 0, NULL};
 *    no return value
 *
 */
-void modeC() {
-  int retVal = 0;
+void modeC(void) {
+  int retVal = 8;
   puzzle.lineEdge = getBoardRows();
   puzzle.columnEdge = getBoardColumns();
   puzzle.board = getBoardAllLayout();
+
+
   retVal = initialChecks();
+
   if (retVal == -1) {
     setBoardAnswer(0);
     return;
+  } else {
+    retVal = validateBoard();
+    setBoardAnswer(retVal);
   }
-  retVal = validateBoard();
-  setBoardAnswer(retVal);
 }
 
 
@@ -50,20 +54,22 @@ void modeC() {
 *
 */
 
-int initialChecks() {
-  int *totalOfTentsLines = (int *) malloc(puzzle.lineEdge*sizeof(int));
-  int *totalOfTentsColumns = (int *) malloc(puzzle.columnEdge*sizeof(int));
+int initialChecks(void) {
+  int *totalOfTentsLines = (int *) calloc(puzzle.lineEdge, sizeof(int));
+  int *totalOfTentsColumns = (int *) calloc(puzzle.columnEdge, sizeof(int));
+  checkNull(totalOfTentsLines);
+  checkNull(totalOfTentsColumns);
   register int i = 0;
   register int j = 0;
 
   for (i = 0; i < puzzle.lineEdge; i++) {
     for (j = 0; j < puzzle.columnEdge; j++) {
-      if (*puzzle.board[i][j] == 'T') {
+      if ((puzzle.board[i][j]) == 'T') {
         totalOfTentsLines[i]++;
         totalOfTentsColumns[j]++;
       }
     }
-    if (getBoardElRow(i) != totalOfTentsLines[i]) {
+    if (getBoardElRow(i) < totalOfTentsLines[i]) {
       free(totalOfTentsColumns);
       free(totalOfTentsLines);
       return -1;
@@ -71,7 +77,7 @@ int initialChecks() {
   }
 
   for (i = 0; i < puzzle.columnEdge; i++) {
-    if (getBoardElColumn(i) != totalOfTentsColumns[i]) {
+    if (getBoardElColumn(i) < totalOfTentsColumns[i]) {
       free(totalOfTentsColumns);
       free(totalOfTentsLines);
       return -1;
@@ -90,34 +96,34 @@ int initialChecks() {
 /*  cycles through all positions of the board
 *   starts path finding operations
 *
-*   0 for error, 1 for good -- it is different from others
+*   1 for error, 0 for good -- it is different from others
 *
 *
 */
-int validateBoard() {
+int validateBoard(void) {
   int retVal = 0;
   register int i = 0;
   register int j = 0;
+  puzzle.numOfTents = 0, puzzle.numOfTrees = 0;
 
-  for (i = 0; i < puzzle.columnEdge; i++) {
-    for (j = 0; j < puzzle.lineEdge; j++) {
-
-      if (*(puzzle.board[i][j]) == 'T') {
-        retVal = tentLooksForTree(i, j);
+  for (i = 0; i < puzzle.lineEdge; i++) {
+    for (j = 0; j < puzzle.columnEdge; j++) {
+      if ((puzzle.board[i][j]) == 'T') {
+        retVal = tentLooksForTree(j, i);
         if ((puzzle.numOfTrees < puzzle.numOfTents) || (retVal == -1)) {
-          return 0;
+          return 1;
         }
         puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
-      } else if (*(puzzle.board[i][j]) == 'A') {
-        retVal = treeLooksForTent(i, j);
+      } else if ((puzzle.board[i][j]) == 'A') {
+        retVal = treeLooksForTent(j, i);
         if ((puzzle.numOfTrees < puzzle.numOfTents) || (retVal == -1)) {
-          return 0;
+          return 1;
         }
         puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
       }
     }
   }
-  return 1;
+  return 0;
 }
 
 
@@ -132,8 +138,8 @@ int tentLooksForTree(int coordX, int coordY) {
   const int auxJumps[8][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}, {-1, 1}, {1, 1}, {-1, -1}, {1, -1}}; //used to check positions
   int auxX = 0, auxY = 0, retVal = 0;
 
-  *(puzzle.board[coordX][coordY]) = 'K'; //prevents reading same position multiple times
-  puzzle.numOfTents += 1; //increases number of found tents
+  (puzzle.board[coordY][coordX]) = 'K'; //prevents reading same position multiple times
+  puzzle.numOfTents++; //increases number of found tents
 
   for (register int i = 4; i < 8; i++) { //checks if tents are on NW, SW, NE or SE positions
     auxX = coordX + auxJumps[i][0];
@@ -141,7 +147,7 @@ int tentLooksForTree(int coordX, int coordY) {
     if (auxX < 0 || auxX >= puzzle.columnEdge || auxY < 0 || auxY >= puzzle.lineEdge) {//if out of board jump over this cycle
       continue;
     }
-    if (*(puzzle.board[auxX][auxY]) == 'T') { //if tent is found, it is in invalid place
+    if ((puzzle.board[auxY][auxX]) == 'T') { //if tent is found, it is in invalid place
       return -1;
     }
   }
@@ -152,9 +158,9 @@ int tentLooksForTree(int coordX, int coordY) {
     if (auxX < 0 || auxX >= puzzle.columnEdge || auxY < 0 || auxY >= puzzle.lineEdge) { //if out of board jump over this cycle
       continue;
     }
-    if (*(puzzle.board[auxX][auxY]) == 'T') { //if tent is found, it is in invalid place
+    if ((puzzle.board[auxY][auxX]) == 'T') { //if tent is found, it is in invalid place
       return -1;
-    } else if (*(puzzle.board[auxX][auxY]) == 'A') { //else looks for tree
+    } else if ((puzzle.board[auxY][auxX]) == 'A') { //else looks for tree
       retVal = treeLooksForTent(auxX, auxY);
       if (retVal == -1) {
         return -1;
@@ -176,8 +182,8 @@ int treeLooksForTent(int coordX, int coordY) {
   const int auxJumps[4][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}}; //used to check only 4 valid positions for a tent
   int auxX = 0, auxY = 0, retVal = 0;
 
-  *(puzzle.board[coordX][coordY]) = 'K'; //prevents reading same position multiple times
-  puzzle.numOfTrees += 1; //increases number of found trees
+  (puzzle.board[coordY][coordX]) = 'K'; //prevents reading same position multiple times
+  puzzle.numOfTrees++; //increases number of found trees
 
   for (register int i = 0; i < 4; i++) { //cycles through N, E, S and W positions for tree
     auxX = coordX + auxJumps[i][0];
@@ -185,7 +191,7 @@ int treeLooksForTent(int coordX, int coordY) {
     if (auxX < 0 || auxX >= puzzle.columnEdge || auxY < 0 || auxY >= puzzle.lineEdge) { //if out of board jump over this cycle
       continue;
     }
-    if (*(puzzle.board[auxX][auxY]) == 'T') { //looks for tent
+    if ((puzzle.board[auxY][auxX]) == 'T') { //looks for tent
       retVal = tentLooksForTree(auxX, auxY);
       if (retVal == -1) {
         return -1;

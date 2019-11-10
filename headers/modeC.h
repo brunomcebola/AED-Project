@@ -1,6 +1,6 @@
 #ifndef modeC_included
 #define modeC_included
 
-void modeC();
+void modeC(void);
 
 #endif

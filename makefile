@@ -1,7 +1,7 @@
 PROJECT_NAME=projeto-aed
 
 CC=gcc
-FLAGS=-c -Wall -Wextra -ansi -pedantic -std=c99 -g -Og #-O3 --> optimizes execution but might interfere with debug information
+FLAGS=-c -Wall -Wextra -ansi -pedantic -std=c99 -g -Og -fasynchronous-unwind-tables -Werror=format-security -Wformat-security -Werror=implicit-function-declaration -Wl,-z,defs -Wundef -Wshadow -Wcast-align -Wstrict-prototypes -Wswitch-default -Wunreachable-code -Wformat=2 -Winit-self -Wuninitialized
 
 #extra debug flags:
 #-fasynchronous-unwind-tables
@@ -22,6 +22,7 @@ FLAGS=-c -Wall -Wextra -ansi -pedantic -std=c99 -g -Og #-O3 --> optimizes execut
 
 
 #extra otimization flags:
+#-O3
 #-finline-functions
 #-funroll-loops
 #-flto
@@ -74,38 +75,51 @@ objFolder:
 clean:
 	@ $(RM) ./objects/*.o $(PROJECT_NAME) *~
 	@ rmdir objects
+	@ $(RM) ./ans/* $(PROJECT_NAME) *~
+	@ rmdir ans
 
 .PHONY: all clean
 
 # test different modes
 
-move:
+moveA:
 	for F in $(shell ls ./*.tents0); do mv $${F} ans/A ; done
+
+moveB:
+	for F in $(shell ls ./*.tents0); do mv $${F} ans/B ; done
+
+moveC:
+	for F in $(shell ls ./*.tents0); do mv $${F} ans/C ; done
+
+moveM:
+	for F in $(shell ls ./*.tents0); do mv $${F} ans/MIX ; done
 
 a:
 	@ rm -r -f ./ans/A
 	@ mkdir -p ./ans/A
 	for F in ${FILES_A_IN}; do ./$(PROJECT_NAME) $${F} ; done
-	$(MAKE) move
+	$(MAKE) moveA
 	@ diff -r ans/A tents/A
 
 b:
 	@ rm -r -f ./ans/B
 	@ mkdir -p ./ans/B
 	for F in ${FILES_B_IN}; do ./$(PROJECT_NAME) $${F} ; done
-	$(MAKE) move
+	$(MAKE) moveB
+	@ diff -r ans/B tents/B
 
 c:
 	@ rm -r -f ./ans/C
 	@ mkdir -p ./ans/C
 	for F in ${FILES_C_IN}; do ./$(PROJECT_NAME) $${F} ; done
-	$(MAKE) move
+	$(MAKE) moveC
+	@ diff -r ans/C tents/C
 
 m:
 	@ rm -r -f ./ans/MIX
 	@ mkdir -p ./ans/MIX
 	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
-	$(MAKE) move
+	$(MAKE) moveM
 	@ diff -r ans/A tents/A
 
 t:

@@ -2,9 +2,9 @@
 #define files_included
 
 void initFile(const char *);
-int readFile();
-void writeFile();
-int checkEOF();
-void terminateFile();
+int readFile(void);
+void writeFile(void);
+int checkEOF(void);
+void terminateFile(void);
 
 #endif
