@@ -4,6 +4,7 @@
 
 #include "../headers/game.h"
 #include "../headers/modeA.h"
+#include "../headers/modeC.h"
 
 typedef struct {
     int n_rows, n_columns, x, y;
@@ -108,6 +109,9 @@ void selMode() {
     switch (jogo.mode) {
         case 'A':
             modeA();
+            break;
+        case 'C':
+            modeC();
             break;
     }
 }
