@@ -4,7 +4,7 @@
 
 void modeB() {
     int row = getBoardCoordinateX(), column = getBoardCoordinateY(),
-        tents_row = 0, tents_column=0, exists = 0, tree=0, tent=0;
+        tents_row = 0, tents_column = 0, exists = 0, tree = 0, tent = 0;
 
     char c = '\0';
 
@@ -64,15 +64,16 @@ void modeB() {
                     tent++;
                 }
             }
+
         }
     }
 
-    if(!exists || tree == 1) {
+    if(!exists || tree >= 1 || tent >= 1) {
         setBoardAnswer(1);
         return;
     }
 
-    if(tents_column == getBoardElColumn(column) || tents_row == getBoardElRow(row)){
+    if(tents_column >= getBoardElColumn(column) || tents_row >= getBoardElRow(row)){
         setBoardAnswer(1);
         return;
     }
