@@ -157,12 +157,20 @@ int readFile() {
 
 void writeFile () {
     char mode = getBoardMode();
-    fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode);
-    if(mode == 'B') {
-        fprintf(out_file, "%d %d ", getBoardCoordinateX(), getBoardCoordinateY());
+    if(fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode) != 3) {
+        exit(0);
     }
-    fprintf(out_file, "%d\n", getBoardAnswer());
-    fprintf(out_file, "\n");
+    if(mode == 'B') {
+        if(fprintf(out_file, "%d %d ", getBoardCoordinateX(), getBoardCoordinateY()) != 2) {
+            exit(0);
+        }
+    }
+    if(fprintf(out_file, "%d\n", getBoardAnswer()) != 1) {
+        exit(0);
+    }
+    if(fprintf(out_file, "\n") != 1) {
+        exit(0);
+    }
 
 }
 
