@@ -1,6 +1,6 @@
-#include "../headers/modeA.h"
-#include "../headers/game.h"
-#include "../headers/files.h"
+#include "modeA.h"
+#include "game.h"
+#include "files.h"
 
 void modeA() {
     int tents_row = 0, tents_column = 0, trees = 0;

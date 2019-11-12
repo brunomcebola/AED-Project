@@ -3,9 +3,9 @@
 #include <string.h>
 #include <libgen.h>
 
-#include "../headers/files.h"
-#include "../headers/game.h"
-#include "../headers/bundle.h"
+#include "files.h"
+#include "game.h"
+#include "bundle.h"
 
 FILE *in_file = NULL;
 FILE *out_file = NULL;
