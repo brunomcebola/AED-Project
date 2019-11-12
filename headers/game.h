@@ -28,8 +28,4 @@ void selMode(void);
 void freeBoard(void);
 void freeC(void);
 
-
-int aa(void);
-
-
 #endif
