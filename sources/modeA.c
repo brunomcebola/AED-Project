@@ -12,7 +12,6 @@ void modeA() {
     }
 
     if(tents_row != tents_column) {
-        setBoardAnswer(0);
         return;
     }
 
@@ -26,7 +25,6 @@ void modeA() {
     }
 
     if(tents_row > trees) {
-        setBoardAnswer(0);
         return;
     }
 
