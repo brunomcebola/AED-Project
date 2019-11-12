@@ -4,10 +4,14 @@
 void modeB() {
     int row = getBoardCoordinateX(), column = getBoardCoordinateY(),
         rows = getBoardRows(), columns = getBoardColumns(), tents = 0, exists = 0;
+    //contiguos positions to check for trees
     const int auxTrees[4][2] = {{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
+    //contiguos ppositions to check for tents
     const int auxTents[8][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+    //get all layout instead of element by element
     char **layout = getBoardAllLayout();
 
+    //checks for trees
     for(int i = 0; i < 4; i++) {
         int aux1 = row + auxTrees[i][0];
         int aux2 = column + auxTrees[i][1];
@@ -19,6 +23,8 @@ void modeB() {
         }
     }
 
+    //if there is no contiguos tree or the position is a tree itself
+    //then the answer is 1 (invalid position to place a tent)
     if(!exists || layout[row][column] == 'A') {
         setBoardAnswer(1);
         return;
