@@ -18,6 +18,7 @@ char getBoardMode();
 int getBoardElRow(int);
 int getBoardElColumn(int);
 char getBardLayoutElement(int, int);
+char **getBoardAllLayout(void);
 int getBoardAnswer();
 int getBoardCoordinateX();
 int getBoardCoordinateY();

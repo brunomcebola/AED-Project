@@ -91,6 +91,10 @@ char getBardLayoutElement(int i, int j) {
     return jogo.layout[i][j];
 }
 
+char **getBoardAllLayout(void) {
+    return jogo.layout;
+}
+
 int getBoardAnswer() {
     return jogo.answer;
 }
