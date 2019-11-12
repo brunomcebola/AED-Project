@@ -19,6 +19,8 @@ int main(int argc, char const *argv[]) {
     maxSize();
     begining();
 
+    exit(0);
+
     while(checkEOF()) {
         valid = readFile();
         if(valid) {

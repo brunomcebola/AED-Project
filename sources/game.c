@@ -93,9 +93,17 @@ char getBoardLayoutElement(int i, int j) {
     return jogo.layout[i*jogo.n_columns + j];
 }
 
-char *getBoardAllLayout(void) {
+char *getBoardLayout(void) {
     return jogo.layout;
 }
+
+
+
+int aa(void){
+    return (jogo.layout == NULL);
+}
+
+
 
 int getBoardAnswer(void) {
     return jogo.answer;

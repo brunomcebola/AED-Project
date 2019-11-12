@@ -18,7 +18,7 @@ char getBoardMode(void);
 int getBoardElRow(int);
 int getBoardElColumn(int);
 char getBoardLayoutElement(int, int);
-char *getBoardAllLayout(void);
+char *getBoardLayout(void);
 int getBoardAnswer(void);
 int getBoardCoordinateX(void);
 int getBoardCoordinateY(void);
@@ -27,5 +27,9 @@ void selMode(void);
 
 void freeBoard(void);
 void freeC(void);
+
+
+int aa(void);
+
 
 #endif
