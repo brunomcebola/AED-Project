@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../headers/bundle.h"
+#include "bundle.h"
 
 void checkNull(void *pointer) {
     if(pointer == NULL) {

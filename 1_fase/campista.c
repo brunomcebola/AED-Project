@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "../headers/files.h"
-#include "../headers/game.h"
+#include "files.h"
+#include "game.h"
 
 
 int main(int argc, char const *argv[]) {
