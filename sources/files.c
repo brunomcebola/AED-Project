@@ -128,10 +128,11 @@ void maxSize() {
     int max = 0, linhas = 0, colunas = 0, mux = 0, x = 0, aux = 0;
     char mode = '\0', *tabuleiro = NULL;
 
-
-
     while(checkEOF()) {
-        aux = fscanf(in_file, "%d %d", &linhas , &colunas);
+        if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2){
+            break;
+        }
+
 
         while(mode < 'A' || mode > 'Z'){
             aux = fscanf(in_file, "%c", &mode);
