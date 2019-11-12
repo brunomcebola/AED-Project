@@ -126,19 +126,16 @@ void finishLayout() {
 
 void maxSize() {
     int max = 0, linhas = 0, colunas = 0, mux = 0, x = 0, aux = 0;
-    char mode = '\0', *tabuleiro = NULL, aux_c = '\0';
+    char mode = '\0', *tabuleiro = NULL;
 
-    while(!feof(in_file)) {
 
+
+    while(checkEOF()) {
         aux = fscanf(in_file, "%d %d", &linhas , &colunas);
-
-        printf("%d %d", linhas, colunas);
 
         while(mode < 'A' || mode > 'Z'){
             aux = fscanf(in_file, "%c", &mode);
         }
-
-        printf(" %c\n", mode);
 
         if(mode == 'B') {
             aux = fscanf(in_file, "%d %d", &x, &x);
@@ -151,15 +148,11 @@ void maxSize() {
             aux = fscanf(in_file, "%d", &x);
         }
 
-        for(int i=0;i < linhas;i++){
-            for(int j=0;j< colunas;j++){
-                printf("%c",readChar());
+        for(int i = 0; i < linhas; i++){
+            for(int j = 0; j < colunas; j++){
+                readChar();
             }
-            printf("\n");
         }
-        printf("\n");
-
-        printf("%d\n", linhas * colunas);
 
         if(mode == 'C') {
             mux = linhas * colunas;
@@ -167,6 +160,7 @@ void maxSize() {
                 max = mux;
             }
         }
+        mode = '\0';
     }
 
     tabuleiro = (char *) malloc( max * sizeof(char));

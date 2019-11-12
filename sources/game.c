@@ -97,14 +97,6 @@ char *getBoardLayout(void) {
     return jogo.layout;
 }
 
-
-
-int aa(void){
-    return (jogo.layout == NULL);
-}
-
-
-
 int getBoardAnswer(void) {
     return jogo.answer;
 }
