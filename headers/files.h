@@ -4,9 +4,10 @@
 void initFile(const char *);
 char readChar(void);
 void finishLayout(void);
-void getMaxSize(void);
+void maxSize(void);
 int readFile(void);
 void writeFile(void);
+void begining(void);
 int checkEOF(void);
 void terminateFile(void);
 

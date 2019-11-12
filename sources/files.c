@@ -124,9 +124,9 @@ void finishLayout() {
     }
 }
 
-void getMaxSize() {
+void maxSize() {
     int max = 0, linhas = 0, colunas = 0, mux = 0, x = 0;
-    char mode = '\0';
+    char mode = '\0', *tabuleiro = NULL;
 
     while(checkEOF()) {
         if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2) {
@@ -167,26 +167,20 @@ void getMaxSize() {
             }
         }
     }
-    setMax(max);
-    rewind(in_file);
+
+    tabuleiro = (char *) malloc( max * sizeof(char *));
+    checkNull(tabuleiro);
+    setBoardLayout(tabuleiro);
 }
 
 int readLayout() {
-    char *tabuleiro = NULL;
+    char *tabuleiro = getBoardAllLayout();
     char c = '\0';
     int linha_atual = 0, coluna_atual = 0,
         rows = getBoardRows(), columns = getBoardColumns(),
         tents_row = 0, *tents_column = NULL;
 
     if(getBoardMode() == 'C') {
-
-        //creates layout matrix
-        tabuleiro = (char *) malloc( rows * sizeof(char *));
-        checkNull(tabuleiro);
-        for(int i = 0; i < rows; i++) {
-            tabuleiro[i] = (char *) malloc(columns * sizeof(char));
-            checkNull(tabuleiro[i]);
-        }
 
         //save the actual number of tents in each column
         tents_column = (int *) calloc(columns , sizeof(int));
@@ -201,7 +195,7 @@ int readLayout() {
                     tents_column[coluna_atual]++;
                     tents_row++;
                 }
-                tabuleiro[linha_atual][coluna_atual] = c;
+                tabuleiro[linha_atual*columns+coluna_atual] = c;
                 coluna_atual++;
                 if(coluna_atual == columns) {
                     if(tents_row > getBoardElRow(linha_atual)) {
@@ -221,7 +215,7 @@ int readLayout() {
                 break;
             }
         }
-
+        free(tents_column);
         setBoardLayout(tabuleiro);
     }
 
@@ -232,10 +226,10 @@ int readLayout() {
 
 //OUTER FUNCTIONS
 int readFile() {
-
     if(!readRowsAndColumns()) {
         return 0;
     }
+
     if(!readMode()) {
         return 0;
     }
@@ -269,17 +263,22 @@ void writeFile () {
 
 }
 
+void begining(){
+    fseek(in_file, 0L, SEEK_SET) ;
+}
+
 int checkEOF(){
     char aux = '\0';
     while(fscanf(in_file,"%c",&aux) == 1){
+
         if(feof(in_file)){
             return !feof(in_file);
         }
+
         if(aux != '\n') {
             fseek(in_file, -1, SEEK_CUR);
             return 1;
         }
-
     }
     return 0;
 }
@@ -291,4 +290,6 @@ void terminateFile() {
     if(fclose(out_file) != 0) {
         exit(0);
     }
+
+    freeC();
 }

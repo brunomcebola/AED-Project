@@ -16,8 +16,6 @@ typedef struct {
     int answer;
 } board;
 
-int max = 0;
-
 board jogo;
 
 //implementation of functions to manage 'jogo'
@@ -31,16 +29,11 @@ void initBoard(void) {
     jogo.mode = '\0';
     jogo.x = 0;
     jogo.y = 0;
-    jogo.layout = NULL;
     jogo.answer = 0;
 }
 
 
 //SET FUNCTIONS
-void setMax(int m){
-    max = m;
-}
-
 void setBoardRows(int lines) {
     jogo.n_rows = lines;
 }
@@ -150,8 +143,11 @@ void freeBoard(void) {
     if(jogo.n_el_column != NULL ) {
         free(jogo.n_el_column);
     }
-    if(jogo.layout != NULL) {
+    initBoard();
+}
+
+void freeC(void) {
+    if(jogo.layout!=NULL){
         free(jogo.layout);
     }
-    initBoard();
 }

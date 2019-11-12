@@ -27,7 +27,7 @@ mode_c_board puzzle = {0, 0, 0, 0, NULL};
 *
 */
 void modeC(void) {
-  int static retVal = 8;
+  static int retVal = 8;
   puzzle.lineEdge = getBoardRows();
   puzzle.columnEdge = getBoardColumns();
   puzzle.board = getBoardAllLayout();
@@ -46,8 +46,8 @@ void modeC(void) {
 *
 */
 int validateBoard(void) {
-  int static retVal = 0, i = 0;
-  int static j = 0;
+  static int retVal = 0, i = 0;
+  static int j = 0;
   puzzle.numOfTents = 0, puzzle.numOfTrees = 0;
 
   for (i = 0; i < puzzle.lineEdge; i++) {
@@ -79,8 +79,8 @@ int validateBoard(void) {
 *
 */
 int tentLooksForTree(int coordX, int coordY) {
-  int static const auxJumps[8][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}, {-1, 1}, {1, 1}, {-1, -1}, {1, -1}}; //used to check positions
-  int static auxX = 0, auxY = 0, i = 0, retVal = 0;
+  static int const auxJumps[8][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}, {-1, 1}, {1, 1}, {-1, -1}, {1, -1}}; //used to check positions
+  static int auxX = 0, auxY = 0, i = 0, retVal = 0;
 
   (puzzle.board[coordY*puzzle.columnEdge+coordX]) = 'K'; //prevents reading same position multiple times
   puzzle.numOfTents++; //increases number of found tents
@@ -123,8 +123,8 @@ int tentLooksForTree(int coordX, int coordY) {
 *
 */
 int treeLooksForTent(int coordX, int coordY) {
-  int static const auxJumps[4][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}}; //used to check only 4 valid positions for a tent
-  int static auxX = 0, auxY = 0, i = 0, retVal = 0;
+  static int const auxJumps[4][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}}; //used to check only 4 valid positions for a tent
+  static int auxX = 0, auxY = 0, i = 0, retVal = 0;
 
   (puzzle.board[coordY*puzzle.columnEdge+coordX]) = 'K'; //prevents reading same position multiple times
   puzzle.numOfTrees++; //increases number of found trees
