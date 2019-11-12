@@ -1,22 +1,41 @@
 #include "../headers/modeA.h"
 #include "../headers/game.h"
 
+#include <stdio.h>
+
 void modeB() {
-    //1 -> n há tenda de certeza
     int row = getBoardCoordinateX(), column = getBoardCoordinateY(),
-        rows = getBoardRows(), columns = getBoardColumns(), tents = 0;
+        rows = getBoardRows(), columns = getBoardColumns(), tents = 0, exists = 0;
+    const int auxTrees[4][2] = {{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
+    const int auxTents[8][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
     char **layout = getBoardAllLayout();
 
-    if(layout[row-1 < 0 ? row+1 : row-1][column] != 'T' && layout[row+1 == rows ? row-1 : row+1][column] != 'T' &&
-        layout[row][column-1 < 0 ? column+1 : column-1] != 'T' && layout[row][column+1 == columns ? columns-1 : columns+1] != 'T') {
-            setBoardAnswer(1);
-            return;
+    for(int i = 0; i < 4; i++) {
+        int aux1 = row + auxTrees[i][0];
+        int aux2 = column + auxTrees[i][1];
+        if(aux1 < 0 || aux1 == rows || aux2 < 0 || aux2 == columns) {
+            continue;
+        }
+        if(layout[aux1][aux2] == 'A') {
+            exists++;
+        }
     }
 
-    if(layout[row-1 < 0 ? row+1 : row-1][column] != 'T' && layout[row+1 == rows ? row-1 : row+1][column] != 'T' &&
-        layout[row][column-1 < 0 ? column+1 : column-1] != 'T' && layout[row][column+1 == columns ? columns-1 : columns+1] != 'T') {
+    if(!exists || layout[row][column] == 'A') {
+        setBoardAnswer(1);
+        return;
+    }
+
+    for(int i = 0; i < 8; i++) {
+        int aux1 = row + auxTents[i][0];
+        int aux2 = column + auxTents[i][1];
+        if(aux1 < 0 || aux1 == rows || aux2 < 0 || aux2 == columns) {
+            continue;
+        }
+        if(layout[aux1][aux2] == 'T') {
             setBoardAnswer(1);
             return;
+        }
     }
 
     for(int i = 0; i < rows; i++) {

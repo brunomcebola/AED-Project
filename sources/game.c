@@ -4,6 +4,7 @@
 
 #include "../headers/game.h"
 #include "../headers/modeA.h"
+#include "../headers/modeB.h"
 
 typedef struct {
     int n_rows, n_columns, x, y;
@@ -109,9 +110,15 @@ int getBoardCoordinateY() {
 
 
 void selMode() {
+    if(jogo.answer == -1) {
+        return;
+    }
     switch (jogo.mode) {
         case 'A':
             modeA();
+            break;
+        case 'B':
+            modeB();
             break;
     }
 }
