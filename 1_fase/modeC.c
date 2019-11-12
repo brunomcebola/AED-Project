@@ -59,11 +59,9 @@ int initialChecks(void) {
   int *totalOfTentsColumns = (int *) calloc(puzzle.columnEdge, sizeof(int));
   checkNull(totalOfTentsLines);
   checkNull(totalOfTentsColumns);
-  register int i = 0;
-  register int j = 0;
 
-  for (i = 0; i < puzzle.lineEdge; i++) {
-    for (j = 0; j < puzzle.columnEdge; j++) {
+  for (int i = 0; i < puzzle.lineEdge; i++) {
+    for (int j = 0; j < puzzle.columnEdge; j++) {
       if ((puzzle.board[i][j]) == 'T') {
         totalOfTentsLines[i]++;
         totalOfTentsColumns[j]++;
@@ -76,7 +74,7 @@ int initialChecks(void) {
     }
   }
 
-  for (i = 0; i < puzzle.columnEdge; i++) {
+  for (int i = 0; i < puzzle.columnEdge; i++) {
     if (getBoardElColumn(i) < totalOfTentsColumns[i]) {
       free(totalOfTentsColumns);
       free(totalOfTentsLines);
@@ -102,12 +100,10 @@ int initialChecks(void) {
 */
 int validateBoard(void) {
   int retVal = 0;
-  register int i = 0;
-  register int j = 0;
   puzzle.numOfTents = 0, puzzle.numOfTrees = 0;
 
-  for (i = 0; i < puzzle.lineEdge; i++) {
-    for (j = 0; j < puzzle.columnEdge; j++) {
+  for (int i = 0; i < puzzle.lineEdge; i++) {
+    for (int j = 0; j < puzzle.columnEdge; j++) {
       if ((puzzle.board[i][j]) == 'T') {
         retVal = tentLooksForTree(j, i);
         if ((puzzle.numOfTrees < puzzle.numOfTents) || (retVal == -1)) {
@@ -141,7 +137,7 @@ int tentLooksForTree(int coordX, int coordY) {
   (puzzle.board[coordY][coordX]) = 'K'; //prevents reading same position multiple times
   puzzle.numOfTents++; //increases number of found tents
 
-  for (register int i = 4; i < 8; i++) { //checks if tents are on NW, SW, NE or SE positions
+  for (int i = 4; i < 8; i++) { //checks if tents are on NW, SW, NE or SE positions
     auxX = coordX + auxJumps[i][0];
     auxY = coordY + auxJumps[i][1];
     if (auxX < 0 || auxX >= puzzle.columnEdge || auxY < 0 || auxY >= puzzle.lineEdge) {//if out of board jump over this cycle
@@ -152,7 +148,7 @@ int tentLooksForTree(int coordX, int coordY) {
     }
   }
 
-  for (register int i = 0; i < 4; i++) { //cycles through N, E, S and W positions for tree
+  for (int i = 0; i < 4; i++) { //cycles through N, E, S and W positions for tree
     auxX = coordX + auxJumps[i][0];
     auxY = coordY + auxJumps[i][1];
     if (auxX < 0 || auxX >= puzzle.columnEdge || auxY < 0 || auxY >= puzzle.lineEdge) { //if out of board jump over this cycle
@@ -185,7 +181,7 @@ int treeLooksForTent(int coordX, int coordY) {
   (puzzle.board[coordY][coordX]) = 'K'; //prevents reading same position multiple times
   puzzle.numOfTrees++; //increases number of found trees
 
-  for (register int i = 0; i < 4; i++) { //cycles through N, E, S and W positions for tree
+  for (int i = 0; i < 4; i++) { //cycles through N, E, S and W positions for tree
     auxX = coordX + auxJumps[i][0];
     auxY = coordY + auxJumps[i][1];
     if (auxX < 0 || auxX >= puzzle.columnEdge || auxY < 0 || auxY >= puzzle.lineEdge) { //if out of board jump over this cycle
