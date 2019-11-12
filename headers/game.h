@@ -1,7 +1,7 @@
 #ifndef game_included
 #define game_included
 
-void initBoard();
+void initBoard(void);
 
 void setBoardRows(int);
 void setBoardColumns(int);
@@ -12,19 +12,19 @@ void setBoardElColumns(int *);
 void setBoardLayout(char **);
 void setBoardAnswer(int);
 
-int getBoardRows();
-int getBoardColumns();
-char getBoardMode();
+int getBoardRows(void);
+int getBoardColumns(void);
+char getBoardMode(void);
 int getBoardElRow(int);
 int getBoardElColumn(int);
-char getBardLayoutElement(int, int);
+char getBoardLayoutElement(int, int);
 char **getBoardAllLayout(void);
-int getBoardAnswer();
-int getBoardCoordinateX();
-int getBoardCoordinateY();
+int getBoardAnswer(void);
+int getBoardCoordinateX(void);
+int getBoardCoordinateY(void);
 
-void selMode();
+void selMode(void);
 
-void freeBoard();
+void freeBoard(void);
 
 #endif
