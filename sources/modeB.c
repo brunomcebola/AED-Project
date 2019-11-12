@@ -1,8 +1,6 @@
 #include "../headers/modeA.h"
 #include "../headers/game.h"
 
-#include <stdio.h>
-
 void modeB() {
     int row = getBoardCoordinateX(), column = getBoardCoordinateY(),
         rows = getBoardRows(), columns = getBoardColumns(), tents = 0, exists = 0;
