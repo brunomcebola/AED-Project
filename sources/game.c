@@ -12,9 +12,11 @@ typedef struct {
     int n_rows, n_columns, x, y;
     int *n_el_row, *n_el_column;
     char mode;
-    char **layout;
+    char *layout;
     int answer;
 } board;
+
+int max = 0;
 
 board jogo;
 
@@ -35,6 +37,10 @@ void initBoard(void) {
 
 
 //SET FUNCTIONS
+void setMax(int m){
+    max = m;
+}
+
 void setBoardRows(int lines) {
     jogo.n_rows = lines;
 }
@@ -60,7 +66,7 @@ void setBoardElColumns(int *n_el_column) {
     jogo.n_el_column = n_el_column;
 }
 
-void setBoardLayout(char **layout) {
+void setBoardLayout(char *layout) {
     jogo.layout = layout;
 }
 
@@ -91,10 +97,10 @@ int getBoardElColumn(int j) {
 }
 
 char getBoardLayoutElement(int i, int j) {
-    return jogo.layout[i][j];
+    return jogo.layout[i*jogo.n_columns + j];
 }
 
-char **getBoardAllLayout(void) {
+char *getBoardAllLayout(void) {
     return jogo.layout;
 }
 
@@ -143,14 +149,6 @@ void freeBoard(void) {
     }
     if(jogo.n_el_column != NULL ) {
         free(jogo.n_el_column);
-    }
-
-    if(jogo.layout != NULL) {
-        for(int i=0;i<jogo.n_rows;i++) {
-            if(jogo.layout[i] != NULL) {
-                free(jogo.layout[i]);
-            }
-        }
     }
     if(jogo.layout != NULL) {
         free(jogo.layout);

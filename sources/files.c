@@ -105,8 +105,74 @@ int readElRowsAndColumns() {
     return 1;
 }
 
+char readChar() {
+    char c = '\0';
+    while(c != 'A' && c != 'T' && c != '.'){
+        if(fscanf(in_file, "%c", &c) != 1) {
+            return '\0';
+        }
+    }
+
+    return c;
+}
+
+void finishLayout() {
+    for(int i=0;i<getBoardRows();i++){
+        for(int j=0;j<getBoardColumns();j++){
+            readChar();
+        }
+    }
+}
+
+void getMaxSize() {
+    int max = 0, linhas = 0, colunas = 0, mux = 0, x = 0;
+    char mode = '\0';
+
+    while(checkEOF()) {
+        if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2) {
+            return;
+        }
+        while(mode < 'A' || mode > 'Z'){
+            if(fscanf(in_file, "%c", &mode) != 1 ) {
+                return;
+            }
+        }
+
+        if(mode == 'B') {
+            if(fscanf(in_file, "%d %d", &x, &x) != 2) {
+                return;
+            }
+        }
+
+        for(int i = 0; i < linhas; i++){
+            if(fscanf(in_file, "%d", &x) != 1) {
+                return;
+            }
+        }
+        for(int i = 0; i < colunas; i++){
+            if(fscanf(in_file, "%d", &x) != 1) {
+                return;
+            }
+        }
+        for(int i = 0; i < linhas; i++){
+            for(int j = 0; j < colunas; j++){
+                readChar();
+            }
+        }
+
+        if(mode == 'C') {
+            mux = linhas * colunas;
+            if(mux > max) {
+                max = mux;
+            }
+        }
+    }
+    setMax(max);
+    rewind(in_file);
+}
+
 int readLayout() {
-    char **tabuleiro = NULL;
+    char *tabuleiro = NULL;
     char c = '\0';
     int linha_atual = 0, coluna_atual = 0,
         rows = getBoardRows(), columns = getBoardColumns(),
@@ -115,7 +181,7 @@ int readLayout() {
     if(getBoardMode() == 'C') {
 
         //creates layout matrix
-        tabuleiro = (char **) malloc( rows * sizeof(char *));
+        tabuleiro = (char *) malloc( rows * sizeof(char *));
         checkNull(tabuleiro);
         for(int i = 0; i < rows; i++) {
             tabuleiro[i] = (char *) malloc(columns * sizeof(char));
@@ -162,24 +228,7 @@ int readLayout() {
     return 1;
 }
 
-char readChar() {
-    char c = '\0';
-    while(c != 'A' && c != 'T' && c != '.'){
-        if(fscanf(in_file, "%c", &c) != 1) {
-            return '\0';
-        }
-    }
 
-    return c;
-}
-
-void finishLayout() {
-    for(int i=0;i<getBoardRows();i++){
-        for(int j=0;j<getBoardColumns();j++){
-            readChar();
-        }
-    }
-}
 
 //OUTER FUNCTIONS
 int readFile() {

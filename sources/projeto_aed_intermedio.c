@@ -16,6 +16,8 @@ int main(int argc, char const *argv[]) {
     initFile(argv[1]);
     initBoard();
 
+    getMaxSize();
+
     while(checkEOF()) {
         valid = readFile();
         if(valid) {
