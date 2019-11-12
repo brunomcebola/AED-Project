@@ -111,6 +111,9 @@ int getBoardCoordinateY(void) {
 
 
 void selMode(void) {
+    if(jogo.answer == -1) {
+        return;
+    }
     switch (jogo.mode) {
         case 'A':
             modeA();
