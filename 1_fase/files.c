@@ -108,26 +108,51 @@ int readElRowsAndColumns() {
 int readLayout() {
     char **tabuleiro = NULL;
     char c = '\0';
-    int linha_atual = 0, coluna_atual = 0;
+    int linha_atual = 0, coluna_atual = 0,
+        rows = getBoardRows(), columns = getBoardColumns(),
+        tents_row = 0, *tents_column = NULL;
 
     if(getBoardMode() == 'C') {
-        tabuleiro = (char **) malloc(getBoardRows() * sizeof(char *));
+
+        //creates layout matrix
+        tabuleiro = (char **) malloc( rows * sizeof(char *));
         checkNull(tabuleiro);
-        for(int i = 0; i < getBoardRows(); i++) {
-            tabuleiro[i] = (char *) malloc(getBoardColumns() * sizeof(char));
+        for(int i = 0; i < rows; i++) {
+            tabuleiro[i] = (char *) malloc(columns * sizeof(char));
             checkNull(tabuleiro[i]);
         }
-        while(linha_atual!=getBoardRows()) {
+
+        //save the actual number of tents in each column
+        tents_column = (int *) calloc(columns , sizeof(int));
+        checkNull(tents_column);
+
+        while(linha_atual != rows) {
             if(fscanf(in_file, "%c", &c) != 1) {
                 return 0;
             }
             if(c == 'T' || c == 'A' || c == '.'){
+                if(c == 'T'){
+                    tents_column[coluna_atual]++;
+                    tents_row++;
+                }
                 tabuleiro[linha_atual][coluna_atual] = c;
                 coluna_atual++;
-                if(coluna_atual == getBoardColumns()) {
+                if(coluna_atual == columns) {
+                    if(tents_row > getBoardElRow(linha_atual)) {
+                        setBoardAnswer(2);
+                    }
+                    tents_row = 0;
+
                     linha_atual++;
                     coluna_atual = 0;
                 }
+            }
+        }
+
+        for(int j=0; j<columns; j++) {
+            if(tents_column[j] != getBoardElColumn(j)) {
+                setBoardAnswer(2);
+                break;
             }
         }
 

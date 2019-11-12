@@ -124,7 +124,12 @@ void selMode(void) {
             modeB();
             break;
         case 'C':
-            modeC();
+            if(jogo.answer == 2){
+                jogo.answer = 0;
+            }
+            else {
+                modeC();
+            }
             break;
         default:
             setBoardAnswer(-1);

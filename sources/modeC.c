@@ -8,7 +8,6 @@
 int tentLooksForTree(int coordX, int coordY);
 int treeLooksForTent(int coordX, int coordY);
 int validateBoard(void);
-int initialChecks(void);
 
 
 typedef struct {
@@ -33,63 +32,9 @@ void modeC(void) {
   puzzle.columnEdge = getBoardColumns();
   puzzle.board = getBoardAllLayout();
 
-
-  retVal = initialChecks();
-
-  if (retVal == -1) {
-    setBoardAnswer(0);
-    return;
-  } else {
-    retVal = validateBoard();
-    setBoardAnswer(retVal);
-  }
+  retVal = validateBoard();
+  setBoardAnswer(retVal);
 }
-
-
-
-/*
-*   checks if more tents are in a given row or column than allowed
-*
-*    -1 for error, 0 for good
-*
-*/
-
-int initialChecks(void) {
-  int *totalOfTentsLines = (int *) calloc(puzzle.lineEdge, sizeof(int));
-  int *totalOfTentsColumns = (int *) calloc(puzzle.columnEdge, sizeof(int));
-  checkNull(totalOfTentsLines);
-  checkNull(totalOfTentsColumns);
-  register int i = 0;
-  register int j = 0;
-
-  for (i = 0; i < puzzle.lineEdge; i++) {
-    for (j = 0; j < puzzle.columnEdge; j++) {
-      if ((puzzle.board[i][j]) == 'T') {
-        totalOfTentsLines[i]++;
-        totalOfTentsColumns[j]++;
-      }
-    }
-    if (getBoardElRow(i) < totalOfTentsLines[i]) {
-      free(totalOfTentsColumns);
-      free(totalOfTentsLines);
-      return -1;
-    }
-  }
-
-  for (i = 0; i < puzzle.columnEdge; i++) {
-    if (getBoardElColumn(i) < totalOfTentsColumns[i]) {
-      free(totalOfTentsColumns);
-      free(totalOfTentsLines);
-      return -1;
-    }
-  }
-
-
-  free(totalOfTentsColumns);
-  free(totalOfTentsLines);
-  return 0;
-}
-
 
 
 
