@@ -1,6 +1,6 @@
-#include "../headers/modeA.h"
-#include "../headers/game.h"
-#include "../headers/files.h"
+#include "modeA.h"
+#include "game.h"
+#include "files.h"
 
 void modeB() {
     int row = getBoardCoordinateX(), column = getBoardCoordinateY(),
