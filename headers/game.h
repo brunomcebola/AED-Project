@@ -3,7 +3,6 @@
 
 void initBoard(void);
 
-void setMax(int)
 void setBoardRows(int);
 void setBoardColumns(int);
 void setBoardMode(char);
@@ -27,5 +26,6 @@ int getBoardCoordinateY(void);
 void selMode(void);
 
 void freeBoard(void);
+void freeC(void);
 
 #endif
