@@ -124,6 +124,8 @@ void selMode(void) {
         case 'C':
             modeC();
             break;
+        default:
+            setBoardAnswer(-1);
     }
 }
 

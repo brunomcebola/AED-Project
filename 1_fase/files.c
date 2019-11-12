@@ -157,18 +157,19 @@ int readFile() {
 
 void writeFile () {
     char mode = getBoardMode();
-    if(fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode) != 3) {
+
+    if(fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode) < 0) {
         exit(0);
     }
     if(mode == 'B') {
-        if(fprintf(out_file, "%d %d ", getBoardCoordinateX(), getBoardCoordinateY()) != 2) {
+        if(fprintf(out_file, "%d %d ", getBoardCoordinateX(), getBoardCoordinateY()) < 0) {
             exit(0);
         }
     }
-    if(fprintf(out_file, "%d\n", getBoardAnswer()) != 1) {
+    if(fprintf(out_file, "%d\n", getBoardAnswer()) < 0) {
         exit(0);
     }
-    if(fprintf(out_file, "\n") != 1) {
+    if(fprintf(out_file, "\n") < 0) {
         exit(0);
     }
 
@@ -179,6 +180,10 @@ int checkEOF(){
 }
 
 void terminateFile() {
-    fclose(in_file);
-    fclose(out_file);
+    if(fclose(in_file) != 0) {
+        exit(0);
+    }
+    if(fclose(out_file) != 0) {
+        exit(0);
+    }
 }
