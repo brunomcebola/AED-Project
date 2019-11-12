@@ -1,5 +1,5 @@
-#include "../headers/modeA.h"
-#include "../headers/game.h"
+#include "modeA.h"
+#include "game.h"
 
 void modeB() {
     int row = getBoardCoordinateX(), column = getBoardCoordinateY(),

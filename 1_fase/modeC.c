@@ -1,8 +1,8 @@
 #include "stdio.h"
 #include "stdlib.h"
-#include "../headers/modeC.h"
-#include "../headers/game.h"
-#include "../headers/bundle.h"
+#include "modeC.h"
+#include "game.h"
+#include "bundle.h"
 
 
 int tentLooksForTree(int coordX, int coordY);

@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../headers/game.h"
-#include "../headers/modeA.h"
-#include "../headers/modeB.h"
-#include "../headers/modeC.h"
+#include "game.h"
+#include "modeA.h"
+#include "modeB.h"
+#include "modeC.h"
 
 typedef struct {
     int n_rows, n_columns, x, y;
