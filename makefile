@@ -41,7 +41,7 @@ FILES_B_IN = $(shell ls ./camps/B/*.camp0)
 FILES_C_IN = $(shell ls ./camps/C/*.camp0)
 FILES_MIX_IN = $(shell ls ./camps/MIX/*.camp0)
 
-
+VALG = valgrind --leak-check=full
 
 #
 # Compilation and linking
@@ -99,7 +99,7 @@ a:
 b:
 	@ rm -r -f ./ans/B
 	@ mkdir -p ./ans/B
-	for F in ${FILES_B_IN}; do ./$(PROJECT_NAME) $${F} ; done
+	for F in ${FILES_B_IN}; do ${VALG} ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) moveb
 	@ diff -r ans/B tents/B
 
@@ -113,7 +113,7 @@ c:
 m:
 	@ rm -r -f ./ans/MIX
 	@ mkdir -p ./ans/MIX
-	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
+	for F in ${FILES_MIX_IN}; do valgrind --leak-check=full ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) movemix
 	@ diff -r ans/MIX tents/MIX
 
