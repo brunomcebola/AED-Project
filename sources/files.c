@@ -125,40 +125,41 @@ void finishLayout() {
 }
 
 void maxSize() {
-    int max = 0, linhas = 0, colunas = 0, mux = 0, x = 0;
-    char mode = '\0', *tabuleiro = NULL;
+    int max = 0, linhas = 0, colunas = 0, mux = 0, x = 0, aux = 0;
+    char mode = '\0', *tabuleiro = NULL, aux_c = '\0';
 
-    while(checkEOF()) {
-        if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2) {
-            return;
-        }
+    while(!feof(in_file)) {
+
+        aux = fscanf(in_file, "%d %d", &linhas , &colunas);
+
+        printf("%d %d", linhas, colunas);
+
         while(mode < 'A' || mode > 'Z'){
-            if(fscanf(in_file, "%c", &mode) != 1 ) {
-                return;
-            }
+            aux = fscanf(in_file, "%c", &mode);
         }
+
+        printf(" %c\n", mode);
 
         if(mode == 'B') {
-            if(fscanf(in_file, "%d %d", &x, &x) != 2) {
-                return;
-            }
+            aux = fscanf(in_file, "%d %d", &x, &x);
         }
 
         for(int i = 0; i < linhas; i++){
-            if(fscanf(in_file, "%d", &x) != 1) {
-                return;
-            }
+            aux = fscanf(in_file, "%d", &x);
         }
         for(int i = 0; i < colunas; i++){
-            if(fscanf(in_file, "%d", &x) != 1) {
-                return;
-            }
+            aux = fscanf(in_file, "%d", &x);
         }
-        for(int i = 0; i < linhas; i++){
-            for(int j = 0; j < colunas; j++){
-                readChar();
+
+        for(int i=0;i < linhas;i++){
+            for(int j=0;j< colunas;j++){
+                printf("%c",readChar());
             }
+            printf("\n");
         }
+        printf("\n");
+
+        printf("%d\n", linhas * colunas);
 
         if(mode == 'C') {
             mux = linhas * colunas;
@@ -168,20 +169,19 @@ void maxSize() {
         }
     }
 
-    tabuleiro = (char *) malloc( max * sizeof(char *));
+    tabuleiro = (char *) malloc( max * sizeof(char));
     checkNull(tabuleiro);
     setBoardLayout(tabuleiro);
 }
 
 int readLayout() {
-    char *tabuleiro = getBoardAllLayout();
+    char *tabuleiro = getBoardLayout();
     char c = '\0';
     int linha_atual = 0, coluna_atual = 0,
         rows = getBoardRows(), columns = getBoardColumns(),
         tents_row = 0, *tents_column = NULL;
 
     if(getBoardMode() == 'C') {
-
         //save the actual number of tents in each column
         tents_column = (int *) calloc(columns , sizeof(int));
         checkNull(tents_column);
@@ -190,12 +190,17 @@ int readLayout() {
             if(fscanf(in_file, "%c", &c) != 1) {
                 return 0;
             }
+
             if(c == 'T' || c == 'A' || c == '.'){
                 if(c == 'T'){
                     tents_column[coluna_atual]++;
                     tents_row++;
                 }
+
+
+
                 tabuleiro[linha_atual*columns+coluna_atual] = c;
+
                 coluna_atual++;
                 if(coluna_atual == columns) {
                     if(tents_row > getBoardElRow(linha_atual)) {
@@ -217,6 +222,7 @@ int readLayout() {
         }
         free(tents_column);
         setBoardLayout(tabuleiro);
+
     }
 
     return 1;

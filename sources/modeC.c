@@ -30,7 +30,7 @@ void modeC(void) {
   static int retVal = 8;
   puzzle.lineEdge = getBoardRows();
   puzzle.columnEdge = getBoardColumns();
-  puzzle.board = getBoardAllLayout();
+  puzzle.board = getBoardLayout();
 
   retVal = validateBoard();
   setBoardAnswer(retVal);
