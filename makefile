@@ -92,28 +92,28 @@ movemix:
 a:
 	@ rm -r -f ./ans/A
 	@ mkdir -p ./ans/A
-	for F in ${FILES_A_IN}; do ${VALG} ./$(PROJECT_NAME) $${F} ; done
+	for F in ${FILES_A_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) movea
 	@ diff -r ans/A tents/A
 
 b:
 	@ rm -r -f ./ans/B
 	@ mkdir -p ./ans/B
-	for F in ${FILES_B_IN}; do ${VALG} ./$(PROJECT_NAME) $${F} ; done
+	for F in ${FILES_B_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) moveb
 	@ diff -r ans/B tents/B
 
 c:
 	@ rm -r -f ./ans/C
 	@ mkdir -p ./ans/C
-	for F in ${FILES_C_IN}; do ${VALG} ./$(PROJECT_NAME) $${F} ; done
+	for F in ${FILES_C_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) movec
 	@ diff -r ans/C tents/C
 
 m:
 	@ rm -r -f ./ans/MIX
 	@ mkdir -p ./ans/MIX
-	for F in ${FILES_MIX_IN}; do ${VALG} ./$(PROJECT_NAME) $${F} ; done
+	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) movemix
 	@ diff -r ans/MIX tents/MIX
 
