@@ -5,6 +5,7 @@
 #include "../headers/game.h"
 #include "../headers/modeA.h"
 #include "../headers/modeB.h"
+#include "../headers/modeC.h"
 
 typedef struct {
     int n_rows, n_columns, x, y;
@@ -19,7 +20,7 @@ board jogo;
 //implementation of functions to manage 'jogo'
 
 //INITITIALIZATIONS
-void initBoard() {
+void initBoard(void) {
     jogo.n_rows = 0;
     jogo.n_columns = 0;
     jogo.n_el_row = NULL;
@@ -68,15 +69,15 @@ void setBoardAnswer(int answer) {
 
 
 //GET FUNCTIONS
-int getBoardRows() {
+int getBoardRows(void) {
     return jogo.n_rows;
 }
 
-int getBoardColumns() {
+int getBoardColumns(void) {
     return jogo.n_columns;
 }
 
-char getBoardMode() {
+char getBoardMode(void) {
     return jogo.mode;
 }
 
@@ -88,7 +89,7 @@ int getBoardElColumn(int j) {
     return jogo.n_el_column[j];
 }
 
-char getBardLayoutElement(int i, int j) {
+char getBoardLayoutElement(int i, int j) {
     return jogo.layout[i][j];
 }
 
@@ -96,23 +97,20 @@ char **getBoardAllLayout(void) {
     return jogo.layout;
 }
 
-int getBoardAnswer() {
+int getBoardAnswer(void) {
     return jogo.answer;
 }
 
-int getBoardCoordinateX() {
+int getBoardCoordinateX(void) {
     return jogo.x;
 }
 
-int getBoardCoordinateY() {
+int getBoardCoordinateY(void) {
     return jogo.y;
 }
 
 
-void selMode() {
-    if(jogo.answer == -1) {
-        return;
-    }
+void selMode(void) {
     switch (jogo.mode) {
         case 'A':
             modeA();
@@ -120,11 +118,17 @@ void selMode() {
         case 'B':
             modeB();
             break;
+        case 'C':
+            modeC();
+            break;
+        default:
+            setBoardAnswer(-1);
+            break;
     }
 }
 
 //FREE
-void freeBoard() {
+void freeBoard(void) {
     if(jogo.n_el_row != NULL) {
         free(jogo.n_el_row);
     }
