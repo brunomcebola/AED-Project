@@ -18,7 +18,7 @@ void modeA() {
 
     for(int i=0; i<getBoardRows(); i++) {
         for(int j=0; j<getBoardColumns(); j++) {
-            if(getBardLayoutElement(i,j) == 'A') {
+            if(getBoardLayoutElement(i,j) == 'A') {
                 trees++;
             }
         }
