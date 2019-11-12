@@ -110,29 +110,42 @@ int readLayout() {
     char c = '\0';
     int linha_atual = 0, coluna_atual = 0;
 
-    tabuleiro = (char **) malloc(getBoardRows() * sizeof(char *));
-    checkNull(tabuleiro);
-    for(int i = 0; i < getBoardRows(); i++) {
-        tabuleiro[i] = (char *) malloc(getBoardColumns() * sizeof(char));
-        checkNull(tabuleiro[i]);
-    }
-    while(linha_atual!=getBoardRows()) {
-        if(fscanf(in_file, "%c", &c) != 1) {
-            return 0;
+    if(getBoardMode() == 'C') {
+        tabuleiro = (char **) malloc(getBoardRows() * sizeof(char *));
+        checkNull(tabuleiro);
+        for(int i = 0; i < getBoardRows(); i++) {
+            tabuleiro[i] = (char *) malloc(getBoardColumns() * sizeof(char));
+            checkNull(tabuleiro[i]);
         }
-        if(c == 'T' || c == 'A' || c == '.'){
-            tabuleiro[linha_atual][coluna_atual] = c;
-            coluna_atual++;
-            if(coluna_atual == getBoardColumns()) {
-                linha_atual++;
-                coluna_atual = 0;
+        while(linha_atual!=getBoardRows()) {
+            if(fscanf(in_file, "%c", &c) != 1) {
+                return 0;
+            }
+            if(c == 'T' || c == 'A' || c == '.'){
+                tabuleiro[linha_atual][coluna_atual] = c;
+                coluna_atual++;
+                if(coluna_atual == getBoardColumns()) {
+                    linha_atual++;
+                    coluna_atual = 0;
+                }
             }
         }
+
+        setBoardLayout(tabuleiro);
     }
 
-    setBoardLayout(tabuleiro);
-
     return 1;
+}
+
+char readChar() {
+    char c = '\0';
+    while(c != 'A' && c != 'T' && c != '.'){
+        if(fscanf(in_file, "%c", &c) != 1) {
+            return '\0';
+        }
+    }
+
+    return c;
 }
 
 
@@ -176,7 +189,18 @@ void writeFile () {
 }
 
 int checkEOF(){
-    return !feof(in_file);
+    char aux = '\0';
+    while(fscanf(in_file,"%c",&aux) == 1){
+        if(feof(in_file)){
+            return !feof(in_file);
+        }
+        if(aux != '\n') {
+            fseek(in_file, -1, SEEK_CUR);
+            return 1;
+        }
+
+    }
+    return 0;
 }
 
 void terminateFile() {

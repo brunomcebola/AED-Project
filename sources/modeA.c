@@ -1,5 +1,6 @@
 #include "../headers/modeA.h"
 #include "../headers/game.h"
+#include "../headers/files.h"
 
 void modeA() {
     int tents_row = 0, tents_column = 0, trees = 0;
@@ -15,13 +16,17 @@ void modeA() {
     //summation of tents in rows must be
     //equal to summation of tents in columns
     if(tents_row != tents_column) {
+        for(int i=0;i<getBoardRows();i++){
+            for(int j=0;j<getBoardColumns();j++){
+                readChar();
+            }
+        }
         return;
     }
 
-    //get number of trees placed in the layout
-    for(int i=0; i<getBoardRows(); i++) {
-        for(int j=0; j<getBoardColumns(); j++) {
-            if(getBoardLayoutElement(i,j) == 'A') {
+    for(int i=0;i<getBoardRows();i++){
+        for(int j=0;j<getBoardColumns();j++){
+            if(readChar() == 'A') {
                 trees++;
             }
         }
