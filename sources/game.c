@@ -88,7 +88,7 @@ int getBoardElColumn(int j) {
     return jogo.n_el_column[j];
 }
 
-char getBardLayoutElement(int i, int j) {
+char getBoardLayoutElement(int i, int j) {
     return jogo.layout[i][j];
 }
 
