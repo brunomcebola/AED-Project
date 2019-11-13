@@ -3,25 +3,11 @@
 #include "files.h"
 
 void modeA() {
-    int tents_row = 0, tents_column = 0, trees = 0;
+    int rows = getBoardRows(), columns = getBoardColumns(),
+        tents = getBoardSum(), trees = 0;
 
-    //get summation of tents in rows
-    for(int i=0; i<getBoardRows(); i++) {
-        tents_row += getBoardElRow(i);
-    }
-    //get summation of tents in columns
-    for(int j=0; j<getBoardColumns(); j++) {
-        tents_column += getBoardElColumn(j);
-    }
-    //summation of tents in rows must be
-    //equal to summation of tents in columns
-    if(tents_row != tents_column) {
-        finishLayout();
-        return;
-    }
-
-    for(int i=0;i<getBoardRows();i++){
-        for(int j=0;j<getBoardColumns();j++){
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < columns; j++){
             if(readChar() == 'A') {
                 trees++;
             }
@@ -29,7 +15,7 @@ void modeA() {
     }
     //number of trees must be greater or equal
     //to summation of tents in rows/columns
-    if(tents_row > trees) {
+    if(tents > trees) {
         return;
     }
 
