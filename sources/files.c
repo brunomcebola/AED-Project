@@ -205,10 +205,12 @@ int readLayout() {
             }
 
             if(c == 'T' || c == 'A' || c == '.'){
-                if(c == 'T'){
+                if (c == 'A') {
+                    trees++;
+                }
+                else if(c == 'T') {
                     tents_column[coluna_atual]++;
                     tents_row++;
-                    trees++;
                 }
 
                 tabuleiro[linha_atual*columns+coluna_atual] = c;
