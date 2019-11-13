@@ -6,7 +6,8 @@ void modeB() {
     int row = getBoardCoordinateX(), column = getBoardCoordinateY(),
         rows = getBoardRows(), columns = getBoardColumns(),
         el_row = getBoardElRow(row), el_column = getBoardElColumn(column),
-        tents_column = 0, exists = 0, tree = 0, tent = 0, tents_row = 0;
+        tents_column = 0, exists = 0, tree = 0, tent = 0, tents_row = 0,
+        total_trees = 0, total_tents = 0;
 
     char c = '\0';
 
@@ -20,6 +21,13 @@ void modeB() {
                     tree = 1;
                 }
                 continue;
+            }
+
+            if(c == 'T') {
+                total_tents++;
+            }
+            else if(c == 'A') {
+                total_trees ++;
             }
 
             //get number of tents in column
@@ -70,7 +78,7 @@ void modeB() {
         }
     }
 
-    if(!exists || tree >= 1 || tent >= 1) {
+    if(exists == 0 || tree >= 1 || tent >= 1 || total_tents >= total_trees) {
         setBoardAnswer(1);
         return;
     }

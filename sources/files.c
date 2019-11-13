@@ -78,6 +78,7 @@ int readMode() {
 int readElRowsAndColumns() {
     int *el_linha = NULL, *el_coluna = NULL, rows = getBoardRows(),
         columns = getBoardColumns(), sum_tents_row = 0, sum_tents_column = 0;
+    char mode = getBoardMode();
 
     //get number of elements in each row
     el_linha = (int *) malloc(rows * sizeof(int));
@@ -102,7 +103,7 @@ int readElRowsAndColumns() {
         sum_tents_column += el_coluna[i];
     }
 
-    if(sum_tents_row != sum_tents_column && (getBoardMode() == 'A' || getBoardMode() == 'C')) {
+    if(sum_tents_row != sum_tents_column && (mode == 'A' || mode == 'C')) {
         setBoardAnswer(2);
         return 1;
     }

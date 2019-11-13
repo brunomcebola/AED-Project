@@ -14,6 +14,7 @@ typedef struct {
     char mode;
     char *layout;
     int answer;
+    int sum;
 } board;
 
 board jogo;
@@ -30,10 +31,15 @@ void initBoard(void) {
     jogo.x = 0;
     jogo.y = 0;
     jogo.answer = 0;
+    jogo.sum = 0;
 }
 
 
 //SET FUNCTIONS
+void setBoardSum(int sum) {
+    jogo.sum = sum;
+}
+
 void setBoardRows(int lines) {
     jogo.n_rows = lines;
 }
@@ -69,6 +75,10 @@ void setBoardAnswer(int answer) {
 
 
 //GET FUNCTIONS
+int getBoardSum(void) {
+    return jogo.sum;
+}
+
 int getBoardRows(void) {
     return jogo.n_rows;
 }
@@ -117,14 +127,20 @@ void selMode(void) {
     }
     switch (jogo.mode) {
         case 'A':
-            modeA();
+            if(jogo.answer == 2){
+                jogo.answer = 0;
+                finishLayout();
+            }
+            else {
+                modeA();
+            }
             break;
         case 'B':
             modeB();
             break;
         case 'C':
             if(jogo.answer == 2){
-                jogo.answer = 0;
+                jogo.answer = 1;
             }
             else {
                 modeC();
