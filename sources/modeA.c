@@ -3,11 +3,11 @@
 #include "../headers/files.h"
 
 void modeA() {
-    int rows = getBoardRows(), columns = getBoardColumns(),
-        tents = getBoardSum(), trees = 0;
+    static int rows, columns, tents, trees, i, j;
+    rows = getBoardRows(), columns = getBoardColumns(), tents = getBoardSum(), trees = 0;
 
-    for(int i = 0; i < rows; i++){
-        for(int j = 0; j < columns; j++){
+    for(i = 0; i < rows; i++){
+        for(j = 0; j < columns; j++){
             if(readChar() == 'A') {
                 trees++;
             }
