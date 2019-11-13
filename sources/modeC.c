@@ -53,23 +53,21 @@ int validateBoard(void) {
     j = puzzle.columnEdge - 1;
 
     do {
-      if ((puzzle.board[position]) == '.') {
-        --position;
-        continue;
-      } else if ((puzzle.board[position]) == 'T') {
-        if (((tentLooksForTree(j, i)) || puzzle.numOfTrees < puzzle.numOfTents)) {
-          return 1;
+      if ((puzzle.board[position]) != '.') {
+        if ((puzzle.board[position]) == 'T') {
+          if (((tentLooksForTree(j, i)) || puzzle.numOfTrees < puzzle.numOfTents)) {
+            return 1;
+          }
+          puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
+        } else {
+          if ((treeLooksForTent(j, i) || (puzzle.numOfTrees < puzzle.numOfTents) )) {
+            return 1;
+          }
+          puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
         }
-        puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
-      } else if ((puzzle.board[position]) == 'A') {
-        if ((treeLooksForTent(j, i) || (puzzle.numOfTrees < puzzle.numOfTents) )) {
-          return 1;
-        }
-        puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
       }
       --position;
     } while(j--);
-    --position;
   } while(i--);
 
   return 0;
