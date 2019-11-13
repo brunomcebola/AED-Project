@@ -7,9 +7,10 @@
 #include "game.h"
 #include "bundle.h"
 
+#define MAX(a,b) (a > b ? a : b)
+
 FILE *in_file = NULL;
 FILE *out_file = NULL;
-
 
 //INNER FUNCTIONS
 void initFile(const char *file) {
@@ -39,8 +40,7 @@ int readRowsAndColumns() {
     if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2) {
         return 0;
     }
-    setBoardRows(linhas);
-    setBoardColumns(colunas);
+    setBoardRowsNColumns(linhas, colunas);
     return 1;
 }
 
@@ -76,31 +76,27 @@ int readMode() {
 }
 
 int readElRowsAndColumns() {
-    int *el_linha = NULL, *el_coluna = NULL, rows = getBoardRows(),
-        columns = getBoardColumns(), sum_tents_row = 0, sum_tents_column = 0;
+    int rows = getBoardRows(), columns = getBoardColumns(), sum_tents_row = 0,
+        sum_tents_column = 0, el = 0, *el_linha = getBoardAllElRow(),
+        *el_coluna = getBoardAllElColumn();
     char mode = getBoardMode();
 
     //get number of elements in each row
-    el_linha = (int *) malloc(rows * sizeof(int));
-    checkNull(el_linha);
     for(int i = 0; i < rows; i++) {
-        if(fscanf(in_file, "%d", &el_linha[i]) != 1 ) {
-            free(el_linha);
+        if(fscanf(in_file, "%d", &el) != 1 ) {
             return 0;
         }
-        sum_tents_row += el_linha[i];
+        el_linha[i] = el;
+        sum_tents_row += el;
     }
 
     //get number of elemets in each column
-    el_coluna = (int *) malloc(columns * sizeof(int));
-    checkNull(el_coluna);
     for(int i = 0; i < columns; i++) {
-        if(fscanf(in_file, "%d", &el_coluna[i]) != 1 ) {
-            free(el_linha);
-            free(el_coluna);
+        if(fscanf(in_file, "%d", &el) != 1 ) {
             return 0;
         }
-        sum_tents_column += el_coluna[i];
+        el_coluna[i] = el;
+        sum_tents_column += el;
     }
 
     if(sum_tents_row != sum_tents_column && (mode == 'A' || mode == 'C')) {
@@ -109,8 +105,6 @@ int readElRowsAndColumns() {
     }
 
     setBoardSum(sum_tents_row);
-    setBoardElRows(el_linha);
-    setBoardElColumns(el_coluna);
 
     return 1;
 }
@@ -127,15 +121,19 @@ char readChar() {
 }
 
 void finishLayout() {
-    for(int i=0;i<getBoardRows();i++){
-        for(int j=0;j<getBoardColumns();j++){
+    int rows = getBoardRows(), columns = getBoardColumns();
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < columns; j++){
             readChar();
         }
     }
 }
 
 void maxSize() {
-    int max = 0, linhas = 0, colunas = 0, mux = 0, x = 0, aux = 0;
+    int max = 0, linhas = 0, colunas = 0, mux = 0, c = 0,
+        x = 0, aux = 0, max_row = 0, max_column = 0,
+        *el_linha = NULL, *el_coluna = NULL;
+
     char mode = '\0', *tabuleiro = NULL;
 
     while(checkEOF()) {
@@ -143,7 +141,6 @@ void maxSize() {
         if(aux != 2){
             break;
         }
-
 
         while(mode < 'A' || mode > 'Z'){
             aux = fscanf(in_file, "%c", &mode);
@@ -167,17 +164,25 @@ void maxSize() {
         }
 
         if(mode == 'C') {
+            c = 1;
             mux = linhas * colunas;
-            if(mux > max) {
-                max = mux;
-            }
+            max = MAX(max,mux);
         }
+        max_row = MAX(max_row, linhas);
+        max_column = MAX(max_column, colunas);
         mode = '\0';
     }
 
-    tabuleiro = (char *) malloc( max * sizeof(char));
-    checkNull(tabuleiro);
-    setBoardLayout(tabuleiro);
+    if(c == 1){
+        tabuleiro = (char *) malloc(max * sizeof(char));
+        checkNull(tabuleiro);
+    }
+
+    el_linha = (int *) malloc(max_row * sizeof(int));
+    checkNull(el_linha);
+    el_coluna = (int *) malloc(max_column * sizeof(int));
+    checkNull(el_coluna);
+    setBoardArrays(tabuleiro, el_linha, el_coluna);
 
 }
 
@@ -240,7 +245,6 @@ int readLayout() {
             return 1;
         }
         free(tents_column);
-        setBoardLayout(tabuleiro);
 
     }
 
@@ -258,9 +262,11 @@ int readFile() {
     if(!readMode()) {
         return 0;
     }
+
     if(!readElRowsAndColumns()) {
         return 0;
     }
+
     if(!readLayout()){
         return 0;
     }
@@ -279,25 +285,23 @@ void writeFile () {
             exit(0);
         }
     }
-    if(fprintf(out_file, "%d\n", getBoardAnswer()) < 0) {
-        exit(0);
-    }
-    if(fprintf(out_file, "\n") < 0) {
+    if(fprintf(out_file, "%d\n\n", getBoardAnswer()) < 0) {
         exit(0);
     }
 
 }
 
 void begining(){
-    fseek(in_file, 0L, SEEK_SET) ;
+    fseek(in_file, 0, SEEK_SET) ;
 }
 
 int checkEOF(){
     char aux = '\0';
+    int end = 0;
     while(fscanf(in_file,"%c",&aux) == 1){
-
-        if(feof(in_file)){
-            return !feof(in_file);
+        end = feof(in_file);
+        if(end){
+            return !end;
         }
 
         if(aux != '\n') {
@@ -312,9 +316,10 @@ void terminateFile() {
     if(fclose(in_file) != 0) {
         exit(0);
     }
+
     if(fclose(out_file) != 0) {
         exit(0);
     }
 
-    freeC();
+    freeBoard();
 }

@@ -6,8 +6,6 @@
 
 
 int main(int argc, char const *argv[]) {
-    int valid = 0;
-
     //check if two arguments are passed
     if (argc != 2) {
         exit(0);
@@ -20,14 +18,12 @@ int main(int argc, char const *argv[]) {
     begining();
 
     while(checkEOF()) {
-        valid = readFile();
-        if(valid) {
+        if(readFile()) {
             selMode();
             writeFile();
         }
-        freeBoard();
+        initBoard();
     }
-
     terminateFile();
 
     return 0;
