@@ -80,8 +80,8 @@ int readMode() {
 
 int readElRowsAndColumns() {
     static int rows, columns, sum_tents_row, sum_tents_column,
-               *el_linha, *el_coluna, i, aux;
-    static char mode, el[2];
+               *el_linha, *el_coluna, i, aux, j;
+    static char mode, el[20];
     rows = getBoardRows();
     columns = getBoardColumns();
     sum_tents_row = 0;
@@ -93,9 +93,18 @@ int readElRowsAndColumns() {
 
     //get number of elements in each row
     for(i = 0; i < rows; i++) {
-        if((el[0] = fgetc(in_file)) == EOF) {
+        el[0] = '\0';
+        j = 0;
+        if((el[j] = fgetc(in_file)) == EOF) {
             return 0;
         }
+        while (el[j] != ' ' && el[j] != '\n') {
+            j++;
+            if((el[j] = fgetc(in_file)) == EOF) {
+                return 0;
+            }
+        }
+
         if (el[0] == ' ' || el[0] == '\n') {
             --i;
             continue;
@@ -125,7 +134,7 @@ int readElRowsAndColumns() {
         setBoardAnswer(2);
         return 1;
     }
-    
+
 
     setBoardSum(sum_tents_row);
 
