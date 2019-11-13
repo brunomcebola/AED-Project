@@ -178,7 +178,7 @@ void maxSize() {
                max_column, *el_linha, *el_coluna, i, j;
     static char mode, *tabuleiro;
 
-    static char buffer[2048], *aux2;
+    static char buffer[10000], *aux2;
 
     max = 0, linhas = 0, colunas = 0, mux = 0, c = 0,
     x = 0, aux = 0, max_row = 0, max_column = 0,
