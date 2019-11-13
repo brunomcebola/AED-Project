@@ -34,7 +34,8 @@ void initFile(const char *file) {
 }
 
 int readRowsAndColumns() {
-    int linhas = 0, colunas = 0;
+    static int linhas, colunas;
+    linhas = 0, colunas = 0;
 
     //get number of rows and columns
     if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2) {
@@ -45,8 +46,9 @@ int readRowsAndColumns() {
 }
 
 int readMode() {
-    char mode = '\0';
-    int x = 0, y = 0;
+    static char mode;
+    static int x, y;
+    x = 0, y = 0, mode = '\0';
 
     //get test mode
     while(mode < 'A' || mode > 'Z'){
@@ -76,13 +78,20 @@ int readMode() {
 }
 
 int readElRowsAndColumns() {
-    int rows = getBoardRows(), columns = getBoardColumns(), sum_tents_row = 0,
-        sum_tents_column = 0, el = 0, *el_linha = getBoardAllElRow(),
-        *el_coluna = getBoardAllElColumn();
-    char mode = getBoardMode();
+    static int rows, columns, sum_tents_row, sum_tents_column,
+               el, *el_linha, *el_coluna, i;
+    static char mode;
+    rows = getBoardRows();
+    columns = getBoardColumns();
+    sum_tents_row = 0;
+    sum_tents_column = 0;
+    el = 0;
+    el_linha = getBoardAllElRow();
+    el_coluna = getBoardAllElColumn();
+    mode = getBoardMode();
 
     //get number of elements in each row
-    for(int i = 0; i < rows; i++) {
+    for(i = 0; i < rows; i++) {
         if(fscanf(in_file, "%d", &el) != 1 ) {
             return 0;
         }
@@ -91,7 +100,7 @@ int readElRowsAndColumns() {
     }
 
     //get number of elemets in each column
-    for(int i = 0; i < columns; i++) {
+    for(i = 0; i < columns; i++) {
         if(fscanf(in_file, "%d", &el) != 1 ) {
             return 0;
         }
@@ -110,9 +119,11 @@ int readElRowsAndColumns() {
 }
 
 char readChar() {
-    char c = '\0';
+    static char c;
+    c = '\0';
+
     while(c != 'A' && c != 'T' && c != '.'){
-        if(fscanf(in_file, "%c", &c) != 1) {
+        if((c = fgetc(in_file)) == EOF) {
             return '\0';
         }
     }
@@ -121,20 +132,27 @@ char readChar() {
 }
 
 void finishLayout() {
-    int rows = getBoardRows(), columns = getBoardColumns();
-    for(int i = 0; i < rows; i++){
-        for(int j = 0; j < columns; j++){
+    static int rows, columns, i, j;
+    rows = getBoardRows(), columns = getBoardColumns();
+
+    for(i = 0; i < rows; i++){
+        for(j = 0; j < columns; j++){
             readChar();
         }
     }
 }
 
 void maxSize() {
-    int max = 0, linhas = 0, colunas = 0, mux = 0, c = 0,
-        x = 0, aux = 0, max_row = 0, max_column = 0,
-        *el_linha = NULL, *el_coluna = NULL;
+    static int max, linhas, colunas, mux, c, x, aux, max_row,
+               max_column, *el_linha, *el_coluna, i, j;
+    static char mode, *tabuleiro;
 
-    char mode = '\0', *tabuleiro = NULL;
+    static char buffer[2048], *aux2;
+
+    max = 0, linhas = 0, colunas = 0, mux = 0, c = 0,
+    x = 0, aux = 0, max_row = 0, max_column = 0,
+    el_linha = NULL, el_coluna = NULL;
+    mode = '\0', tabuleiro = NULL;
 
     while(checkEOF()) {
         aux = fscanf(in_file, "%d %d", &linhas , &colunas);
@@ -149,25 +167,23 @@ void maxSize() {
         if(mode == 'B') {
             aux = fscanf(in_file, "%d %d", &x, &x);
         }
-
-        for(int i = 0; i < linhas; i++){
-            aux = fscanf(in_file, "%d", &x);
-        }
-        for(int i = 0; i < colunas; i++){
-            aux = fscanf(in_file, "%d", &x);
-        }
-
-        for(int i = 0; i < linhas; i++){
-            for(int j = 0; j < colunas; j++){
-                readChar();
-            }
-        }
-
-        if(mode == 'C') {
+        else if(mode == 'C') {
             c = 1;
             mux = linhas * colunas;
             max = MAX(max,mux);
         }
+
+        aux2 = fgets(buffer, 2047, in_file);
+
+        aux2 = fgets(buffer, 2047, in_file);
+        checkNull(aux2);
+
+        for(i = 0; i < linhas; i++){
+            for(j = 0; j < colunas; j++){
+                readChar();
+            }
+        }
+
         max_row = MAX(max_row, linhas);
         max_column = MAX(max_column, colunas);
         mode = '\0';
@@ -187,12 +203,13 @@ void maxSize() {
 }
 
 int readLayout() {
-    int sum_tents = 0, trees = 0;
-    char *tabuleiro = getBoardLayout();
-    char c = '\0';
-    int linha_atual = 0, coluna_atual = 0,
-        rows = getBoardRows(), columns = getBoardColumns(),
-        tents_row = 0, *tents_column = NULL;
+    static char *tabuleiro, c;
+    static int sum_tents, trees, linha_atual, coluna_atual,
+               rows, columns, tents_row, *tents_column, j;
+
+    sum_tents = 0, trees = 0, linha_atual = 0, coluna_atual = 0,
+    rows = getBoardRows(), columns = getBoardColumns(), tents_row = 0,
+    tents_column = NULL, tabuleiro = getBoardLayout(), c = '\0';
 
     if(getBoardMode() == 'C') {
         //get summation of tents in rows
@@ -207,7 +224,7 @@ int readLayout() {
         checkNull(tents_column);
 
         while(linha_atual != rows) {
-            if(fscanf(in_file, "%c", &c) != 1) {
+            if((c = fgetc(in_file)) == EOF) {
                 return 0;
             }
 
@@ -234,18 +251,20 @@ int readLayout() {
             }
         }
 
-        for(int j = 0; j < columns; j++) {
+        j = columns;
+        while(j--) {
             if(tents_column[j] > getBoardElColumn(j)) {
                 setBoardAnswer(2);
                 break;
             }
         }
+
         if(sum_tents > trees) {
             setBoardAnswer(2);
+            free(tents_column);
             return 1;
         }
         free(tents_column);
-
     }
 
     return 1;
@@ -275,7 +294,8 @@ int readFile() {
 }
 
 void writeFile () {
-    char mode = getBoardMode();
+    static char mode;
+    mode = getBoardMode();
 
     if(fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode) < 0) {
         exit(0);
@@ -296,9 +316,11 @@ void begining(){
 }
 
 int checkEOF(){
-    char aux = '\0';
-    int end = 0;
-    while(fscanf(in_file,"%c",&aux) == 1){
+    static char aux;
+    static int end;
+    end = 0, aux = '\0';
+
+    while((aux = fgetc(in_file)) != EOF){
         end = feof(in_file);
         if(end){
             return !end;
