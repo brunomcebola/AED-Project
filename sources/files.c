@@ -25,7 +25,7 @@ void initFile(const char *file) {
     in_file = fopen(file, "r");
     checkNull(in_file);
 
-    file_name = (char *) malloc((size_out+2) * sizeof(char)) ;
+    file_name = (char *) calloc((size_out+2) , sizeof(char)) ;
     checkNull(file_name);
     strncpy(file_name, aux, size_out-6);
 
