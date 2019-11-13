@@ -3,15 +3,17 @@
 #include "files.h"
 
 void modeB() {
-    int row = getBoardCoordinateX(), column = getBoardCoordinateY(),
-        rows = getBoardRows(), columns = getBoardColumns(),
-        el_row = getBoardElRow(row), el_column = getBoardElColumn(column),
-        tents_column = 0, exists = 0, tree = 0, tent = 0, tents_row = 0,
-        total_trees = 0, total_tents = 0;
-    char c = '\0';
+    static int row, column, rows, columns, el_row, el_column, tents_column,
+               tents_row, exists, tree, tent, total_tents, total_trees, i, j;
+    static char c;
+    row = getBoardCoordinateX(), column = getBoardCoordinateY(),
+    rows = getBoardRows(), columns = getBoardColumns(),
+    el_row = getBoardElRow(row), el_column = getBoardElColumn(column),
+    tents_column = 0, exists = 0, tree = 0, tent = 0, tents_row = 0,
+    total_trees = 0, total_tents = 0, c = '\0';
 
-    for(int i = 0; i < rows; i++){
-        for(int j = 0; j < columns; j++){
+    for(i = 0; i < rows; i++){
+        for(j = 0; j < columns; j++){
             c = readChar();
 
             if(c == '.') {
