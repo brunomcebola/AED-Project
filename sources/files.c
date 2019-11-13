@@ -96,14 +96,10 @@ int readElRowsAndColumns() {
     for(i = 0; i < rows; i++) {
         el[0] = '\0';
         j = 0;
-        if((el[j] = fgetc(in_file)) == EOF) {
-            return 0;
-        }
+        el[j] = fgetc(in_file);
         while (el[j] != ' ' && el[j] != '\n') {
             j++;
-            if((el[j] = fgetc(in_file)) == EOF) {
-                return 0;
-            }
+            el[j] = fgetc(in_file);
         }
 
         if (el[0] == ' ' || el[0] == '\n') {
@@ -121,14 +117,10 @@ int readElRowsAndColumns() {
     for(i = 0; i < columns; i++) {
         el[0] = '\0';
         j = 0;
-        if((el[j] = fgetc(in_file)) == EOF) {
-            return 0;
-        }
+        el[j] = fgetc(in_file);
         while (el[j] != ' ' && el[j] != '\n') {
             j++;
-            if((el[j] = fgetc(in_file)) == EOF) {
-                return 0;
-            }
+            el[j] = fgetc(in_file);
         }
         if (el[0] == ' ' || el[0] == '\n') {
             --i;
@@ -208,14 +200,10 @@ void maxSize() {
         for(i = 0; i < linhas; i++) {
             el[0] = '\0';
             j = 0;
-            if((el[j] = fgetc(in_file)) == EOF) {
-                return;
-            }
+            el[j] = fgetc(in_file);
             while (el[j] != ' ' && el[j] != '\n') {
                 j++;
-                if((el[j] = fgetc(in_file)) == EOF) {
-                    return;
-                }
+                el[j] = fgetc(in_file);
             }
 
         }
@@ -223,14 +211,10 @@ void maxSize() {
         for(i = 0; i < colunas; i++) {
             el[0] = '\0';
             j = 0;
-            if((el[j] = fgetc(in_file)) == EOF) {
-                return;
-            }
+            el[j] = fgetc(in_file);
             while (el[j] != ' ' && el[j] != '\n') {
                 j++;
-                if((el[j] = fgetc(in_file)) == EOF) {
-                    return;
-                }
+                el[j] = fgetc(in_file);
             }
         }
 
