@@ -4,12 +4,7 @@
 
 void modeA() {
     int rows = getBoardRows(), columns = getBoardColumns(),
-        tents = 0, trees = 0;
-
-    //get summation of tents in rows
-    for(int i = 0; i < rows; i++) {
-        tents += getBoardElRow(i);
-    }
+        tents = getBoardSum(), trees = 0;
 
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < columns; j++){
