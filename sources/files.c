@@ -218,10 +218,6 @@ void maxSize() {
                 }
             }
 
-            if (el[0] == ' ' || el[0] == '\n') {
-                --i;
-                continue;
-            }
         }
 
         for(i = 0; i < colunas; i++) {
@@ -235,11 +231,6 @@ void maxSize() {
                 if((el[j] = fgetc(in_file)) == EOF) {
                     exit(0);
                 }
-            }
-
-            if (el[0] == ' ' || el[0] == '\n') {
-                --i;
-                continue;
             }
         }
 
