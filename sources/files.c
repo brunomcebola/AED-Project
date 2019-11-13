@@ -76,27 +76,35 @@ int readMode() {
 }
 
 int readElRowsAndColumns() {
-    int *el_linha = NULL, *el_coluna = NULL;
+    int *el_linha = NULL, *el_coluna = NULL, rows = getBoardRows(),
+        columns = getBoardColumns(), sum_tents_row = 0, sum_tents_column = 0;
 
     //get number of elements in each row
-    el_linha = (int *) malloc(getBoardRows() * sizeof(int));
+    el_linha = (int *) malloc(rows * sizeof(int));
     checkNull(el_linha);
-    for(int i=0; i<getBoardRows(); i++) {
+    for(int i = 0; i < rows; i++) {
         if(fscanf(in_file, "%d", &el_linha[i]) != 1 ) {
             free(el_linha);
             return 0;
         }
+        sum_tents_row += el_linha[i];
     }
 
     //get number of elemets in each column
-    el_coluna = (int *) malloc(getBoardColumns() * sizeof(int));
+    el_coluna = (int *) malloc(columns * sizeof(int));
     checkNull(el_coluna);
-    for(int i=0; i<getBoardColumns(); i++) {
+    for(int i = 0; i < columns; i++) {
         if(fscanf(in_file, "%d", &el_coluna[i]) != 1 ) {
             free(el_linha);
             free(el_coluna);
             return 0;
         }
+        sum_tents_column += el_coluna[i];
+    }
+
+    if(sum_tents_row != sum_tents_column && (getBoardMode() == 'A' || getBoardMode() == 'C')) {
+        setBoardAnswer(2);
+        return 1;
     }
 
     setBoardElRows(el_linha);
@@ -172,7 +180,7 @@ void maxSize() {
 }
 
 int readLayout() {
-    int sum_tents_row = 0, sum_tents_column = 0, trees = 0;
+    int sum_tents_row = 0, trees = 0;
     char *tabuleiro = getBoardLayout();
     char c = '\0';
     int linha_atual = 0, coluna_atual = 0,
@@ -181,18 +189,14 @@ int readLayout() {
 
     if(getBoardMode() == 'C') {
         //get summation of tents in rows
-        for(int i=0; i<rows; i++) {
-            sum_tents_row += getBoardElRow(i);
-        }
-        //get summation of tents in columns
-        for(int j=0; j<columns; j++) {
-            sum_tents_column += getBoardElColumn(j);
-        }
-
-        if(sum_tents_row != sum_tents_column) {
-            setBoardAnswer(2);
+        if(getBoardAnswer() == 2){
             return 1;
         }
+
+        for(int i = 0; i < rows; i++) {
+            sum_tents_row += getBoardElRow(i);
+        }
+
         //save the actual number of tents in each column
         tents_column = (int *) calloc((unsigned int)columns , sizeof(int));
         checkNull(tents_column);

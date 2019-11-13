@@ -70,7 +70,7 @@ void modeB() {
         }
     }
 
-    if(!exists || tree >= 1 || tent >= 1) {
+    if(exists == 0 || tree >= 1 || tent >= 1) {
         setBoardAnswer(1);
         return;
     }
