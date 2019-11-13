@@ -15,18 +15,18 @@ FILE *out_file = NULL;
 
 //INNER FUNCTIONS
 void initFile(const char *file) {
-    int size = strlen(file);
-    char *file_name = NULL;
+    char *file_name = NULL, *aux = basename((char *)file);
+    int size_in = strlen(file), size_out = strlen(aux);
 
-    if(strcmp(".camp0", file+size-6) != 0) {
+    if(strcmp(".camp0", file+size_in-6) != 0) {
         exit(0);
     }
     in_file = fopen(file, "r");
     checkNull(in_file);
 
-    file_name = (char *) calloc((strlen(basename((char *)file))+2) , sizeof(char)) ;
+    file_name = (char *) malloc((size_out+2) * sizeof(char)) ;
     checkNull(file_name);
-    strncpy(file_name, basename((char *)file), strlen(basename((char *)file))-6);
+    strncpy(file_name, aux, size_out-6);
 
     out_file = fopen(strcat(file_name,".tents0"), "w");
     checkNull(out_file);
