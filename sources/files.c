@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libgen.h>
+#include <ctype.h>
 
 #include "../headers/files.h"
 #include "../headers/game.h"
@@ -79,7 +80,7 @@ int readMode() {
 
 int readElRowsAndColumns() {
     static int rows, columns, sum_tents_row, sum_tents_column,
-               *el_linha, *el_coluna, i;
+               *el_linha, *el_coluna, i, aux;
     static char mode, el[2];
     rows = getBoardRows();
     columns = getBoardColumns();
@@ -99,9 +100,12 @@ int readElRowsAndColumns() {
             --i;
             continue;
         }
-        el_linha[i] = atoi(el);
-        sum_tents_row += atoi(el);
+
+        aux = atoi(el);
+        el_linha[i] = aux;
+        sum_tents_row += aux;
     }
+
 
     //get number of elemets in each column
     for(i = 0; i < columns; i++) {
@@ -112,8 +116,9 @@ int readElRowsAndColumns() {
             --i;
             continue;
         }
-        el_coluna[i] = atoi(el);
-        sum_tents_column += atoi(el);
+        aux = atoi(el);
+        el_coluna[i] = aux;
+        sum_tents_column += aux;
     }
 
     if(sum_tents_row != sum_tents_column && (mode == 'A' || mode == 'C')) {
