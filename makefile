@@ -1,7 +1,7 @@
 PROJECT_NAME=projeto-aed
 
 CC=gcc
-FLAGS= -c -g -Wall -Wextra -ansi -pedantic -std=c99 #-O3 --> optimizes execution but might interfere with debug information
+FLAGS= -c -Wall -Wextra -ansi -pedantic -std=c99 -O3 #-O3 --> optimizes execution but might interfere with debug information
 
 #extra debug flags:
 #-fasynchronous-unwind-tables
