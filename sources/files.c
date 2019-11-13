@@ -79,33 +79,41 @@ int readMode() {
 
 int readElRowsAndColumns() {
     static int rows, columns, sum_tents_row, sum_tents_column,
-               el, *el_linha, *el_coluna, i;
-    static char mode;
+               *el_linha, *el_coluna, i;
+    static char mode, el[2];
     rows = getBoardRows();
     columns = getBoardColumns();
     sum_tents_row = 0;
     sum_tents_column = 0;
-    el = 0;
+    el[0] = '\0';
     el_linha = getBoardAllElRow();
     el_coluna = getBoardAllElColumn();
     mode = getBoardMode();
 
     //get number of elements in each row
     for(i = 0; i < rows; i++) {
-        if(fscanf(in_file, "%d", &el) != 1 ) {
+        if((el[0] = fgetc(in_file)) == EOF) {
             return 0;
         }
-        el_linha[i] = el;
-        sum_tents_row += el;
+        if (el[0] == ' ' || el[0] == '\n') {
+            --i;
+            continue;
+        }
+        el_linha[i] = atoi(el);
+        sum_tents_row += atoi(el);
     }
 
     //get number of elemets in each column
     for(i = 0; i < columns; i++) {
-        if(fscanf(in_file, "%d", &el) != 1 ) {
+        if((el[0] = fgetc(in_file)) == EOF) {
             return 0;
         }
-        el_coluna[i] = el;
-        sum_tents_column += el;
+        if (el[0] == ' ' || el[0] == '\n') {
+            --i;
+            continue;
+        }
+        el_coluna[i] = atoi(el);
+        sum_tents_column += atoi(el);
     }
 
     if(sum_tents_row != sum_tents_column && (mode == 'A' || mode == 'C')) {
