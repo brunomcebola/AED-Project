@@ -9,7 +9,7 @@ void setBoardMode(char);
 void setBoardCoordinates(int, int);
 void setBoardElRows(int *);
 void setBoardElColumns(int *);
-void setBoardLayout(char **);
+void setBoardLayout(char *);
 void setBoardAnswer(int);
 
 int getBoardRows(void);
@@ -18,7 +18,7 @@ char getBoardMode(void);
 int getBoardElRow(int);
 int getBoardElColumn(int);
 char getBoardLayoutElement(int, int);
-char **getBoardAllLayout(void);
+char *getBoardLayout(void);
 int getBoardAnswer(void);
 int getBoardCoordinateX(void);
 int getBoardCoordinateY(void);
@@ -26,5 +26,6 @@ int getBoardCoordinateY(void);
 void selMode(void);
 
 void freeBoard(void);
+void freeC(void);
 
 #endif
