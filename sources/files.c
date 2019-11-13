@@ -200,7 +200,11 @@ void maxSize() {
         for(i = 0; i < linhas; i++) {
             el[0] = '\0';
             j = 0;
+<<<<<<< HEAD
             (el[j] = fgetc(in_file));
+=======
+            el[j] = fgetc(in_file);
+>>>>>>> e889614d91517e8d2877a78e5d5b22c7294b3850
             while (el[j] != ' ' && el[j] != '\n') {
                 j++;
                 el[j] = fgetc(in_file);
