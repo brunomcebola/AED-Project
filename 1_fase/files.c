@@ -172,6 +172,7 @@ void maxSize() {
 }
 
 int readLayout() {
+    int sum_tents_row = 0, sum_tents_column = 0, trees = 0;
     char *tabuleiro = getBoardLayout();
     char c = '\0';
     int linha_atual = 0, coluna_atual = 0,
@@ -179,8 +180,21 @@ int readLayout() {
         tents_row = 0, *tents_column = NULL;
 
     if(getBoardMode() == 'C') {
+        //get summation of tents in rows
+        for(int i=0; i<rows; i++) {
+            sum_tents_row += getBoardElRow(i);
+        }
+        //get summation of tents in columns
+        for(int j=0; j<columns; j++) {
+            sum_tents_column += getBoardElColumn(j);
+        }
+
+        if(sum_tents_row != sum_tents_column) {
+            setBoardAnswer(2);
+            return 1;
+        }
         //save the actual number of tents in each column
-        tents_column = (int *) calloc(columns , sizeof(int));
+        tents_column = (int *) calloc((unsigned int)columns , sizeof(int));
         checkNull(tents_column);
 
         while(linha_atual != rows) {
@@ -189,7 +203,10 @@ int readLayout() {
             }
 
             if(c == 'T' || c == 'A' || c == '.'){
-                if(c == 'T'){
+                if (c == 'A') {
+                    trees++;
+                }
+                else if(c == 'T') {
                     tents_column[coluna_atual]++;
                     tents_row++;
                 }
@@ -213,6 +230,10 @@ int readLayout() {
                 setBoardAnswer(2);
                 break;
             }
+        }
+        if(sum_tents_row > trees) {
+            setBoardAnswer(2);
+            return 1;
         }
         free(tents_column);
         setBoardLayout(tabuleiro);

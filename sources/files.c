@@ -194,7 +194,7 @@ int readLayout() {
             return 1;
         }
         //save the actual number of tents in each column
-        tents_column = (int *) calloc(columns , sizeof(int));
+        tents_column = (int *) calloc((unsigned int)columns , sizeof(int));
         checkNull(tents_column);
 
         while(linha_atual != rows) {
