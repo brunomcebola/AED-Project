@@ -43,26 +43,32 @@ void modeC(void) {
 */
 int validateBoard(void) {
   static int i = 0, j = 0;
+  static long int position = 0;
   puzzle.numOfTents = 0, puzzle.numOfTrees = 0;
 
   i = puzzle.lineEdge;
 
+  position = (puzzle.lineEdge * puzzle.columnEdge) - 1;
   do {
     j = puzzle.columnEdge;
 
     do {
-      if ((puzzle.board[i*puzzle.columnEdge+j]) == 'T') {
+      if ((puzzle.board[position]) == '.') {
+        continue;
+      } else if ((puzzle.board[position]) == 'T') {
         if (((tentLooksForTree(j, i)) || puzzle.numOfTrees < puzzle.numOfTents)) {
           return 1;
         }
         puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
-      } else if ((puzzle.board[i*puzzle.columnEdge+j]) == 'A') {
+      } else if ((puzzle.board[position]) == 'A') {
         if ((treeLooksForTent(j, i) ||(puzzle.numOfTrees < puzzle.numOfTents) )) {
           return 1;
         }
         puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
       }
+      --position;
     } while(j--);
+    --position;
   } while(i--);
 
   return 0;
@@ -81,7 +87,7 @@ int tentLooksForTree(int coordX, int coordY) {
   static const int auxJumps2[5][2] = {{0, 0}, {0, 1}, {-1, 0}, {1, 0}, {0, -1}}; //used to check normal positions
   int auxX = 0, auxY = 0, i = 4;
 
-  puzzle.board[coordY*puzzle.columnEdge+coordX] = 'K'; //prevents reading same position multiple times
+  puzzle.board[coordY*puzzle.columnEdge+coordX] = '.'; //prevents reading same position multiple times
   puzzle.numOfTents++; //increases number of found tents
 
   do {
@@ -126,7 +132,7 @@ int treeLooksForTent(int coordX, int coordY) {
   static const int auxJumps[5][2] = {{0, 0}, {0, 1}, {-1, 0}, {1, 0}, {0, -1}}; //used to check only 4 valid positions for a tent
   int auxX, auxY, i = 4;
 
-  puzzle.board[coordY*puzzle.columnEdge+coordX] = 'K'; //prevents reading same position multiple times
+  puzzle.board[coordY*puzzle.columnEdge+coordX] = '.'; //prevents reading same position multiple times
   puzzle.numOfTrees++; //increases number of found trees
 
   do {
