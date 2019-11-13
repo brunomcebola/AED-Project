@@ -3,6 +3,7 @@
 
 void initBoard(void);
 
+void setBoardSum(int);
 void setBoardRows(int);
 void setBoardColumns(int);
 void setBoardMode(char);
@@ -12,6 +13,7 @@ void setBoardElColumns(int *);
 void setBoardLayout(char *);
 void setBoardAnswer(int);
 
+int getBoardSum(void);
 int getBoardRows(void);
 int getBoardColumns(void);
 char getBoardMode(void);
