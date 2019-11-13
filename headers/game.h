@@ -4,13 +4,10 @@
 void initBoard(void);
 
 void setBoardSum(int);
-void setBoardRows(int);
-void setBoardColumns(int);
+void setBoardRowsNColumns(int, int);
 void setBoardMode(char);
 void setBoardCoordinates(int, int);
-void setBoardElRows(int *);
-void setBoardElColumns(int *);
-void setBoardLayout(char *);
+void setBoardArrays(char *, int *, int *);
 void setBoardAnswer(int);
 
 int getBoardSum(void);
@@ -19,6 +16,8 @@ int getBoardColumns(void);
 char getBoardMode(void);
 int getBoardElRow(int);
 int getBoardElColumn(int);
+int *getBoardAllElRow(void);
+int *getBoardAllElColumn(void);
 char getBoardLayoutElement(int, int);
 char *getBoardLayout(void);
 int getBoardAnswer(void);
@@ -28,6 +27,5 @@ int getBoardCoordinateY(void);
 void selMode(void);
 
 void freeBoard(void);
-void freeC(void);
 
 #endif

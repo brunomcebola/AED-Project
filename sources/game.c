@@ -25,8 +25,6 @@ board jogo;
 void initBoard(void) {
     jogo.n_rows = 0;
     jogo.n_columns = 0;
-    jogo.n_el_row = NULL;
-    jogo.n_el_column = NULL;
     jogo.mode = '\0';
     jogo.x = 0;
     jogo.y = 0;
@@ -40,11 +38,8 @@ void setBoardSum(int sum) {
     jogo.sum = sum;
 }
 
-void setBoardRows(int lines) {
+void setBoardRowsNColumns(int lines, int columns) {
     jogo.n_rows = lines;
-}
-
-void setBoardColumns(int columns) {
     jogo.n_columns = columns;
 }
 
@@ -57,16 +52,10 @@ void setBoardCoordinates(int x, int y) {
     jogo.y = y;
 }
 
-void setBoardElRows(int *n_el_row) {
-    jogo.n_el_row = n_el_row;
-}
-
-void setBoardElColumns(int *n_el_column) {
-    jogo.n_el_column = n_el_column;
-}
-
-void setBoardLayout(char *layout) {
+void setBoardArrays(char *layout, int *n_el_row, int *n_el_column) {
     jogo.layout = layout;
+    jogo.n_el_row = n_el_row;
+    jogo.n_el_column = n_el_column;
 }
 
 void setBoardAnswer(int answer) {
@@ -94,6 +83,15 @@ char getBoardMode(void) {
 int getBoardElRow(int i) {
     return jogo.n_el_row[i];
 }
+
+int *getBoardAllElRow(void) {
+    return jogo.n_el_row;
+}
+
+int *getBoardAllElColumn(void) {
+    return jogo.n_el_column;
+}
+
 
 int getBoardElColumn(int j) {
     return jogo.n_el_column[j];
@@ -130,10 +128,10 @@ void selMode(void) {
             if(jogo.answer == 2){
                 jogo.answer = 0;
                 finishLayout();
+                break;
             }
-            else {
-                modeA();
-            }
+            modeA();
+
             break;
         case 'B':
             modeB();
@@ -141,10 +139,9 @@ void selMode(void) {
         case 'C':
             if(jogo.answer == 2){
                 jogo.answer = 1;
+                break;
             }
-            else {
-                modeC();
-            }
+            modeC();
             break;
         default:
             setBoardAnswer(-1);
@@ -153,17 +150,7 @@ void selMode(void) {
 
 //FREE
 void freeBoard(void) {
-    if(jogo.n_el_row != NULL) {
-        free(jogo.n_el_row);
-    }
-    if(jogo.n_el_column != NULL ) {
-        free(jogo.n_el_column);
-    }
-    initBoard();
-}
-
-void freeC(void) {
-    if(jogo.layout!=NULL){
-        free(jogo.layout);
-    }
+    free(jogo.n_el_row);
+    free(jogo.n_el_column);
+    free(jogo.layout);
 }
