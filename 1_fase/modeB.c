@@ -8,12 +8,15 @@ void modeB() {
         el_row = getBoardElRow(row), el_column = getBoardElColumn(column),
         tents_column = 0, exists = 0, tree = 0, tent = 0, tents_row = 0,
         total_trees = 0, total_tents = 0;
-
     char c = '\0';
 
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < columns; j++){
             c = readChar();
+
+            if(c == '.') {
+                continue;
+            }
 
             //element being verified
             if(i == row && j == column) {
@@ -23,22 +26,20 @@ void modeB() {
                 continue;
             }
 
+
             if(c == 'T') {
                 total_tents++;
+                if(j == column) {
+                    tents_column++;
+                }
+                if(i == row){
+                    tents_row++;
+                }
             }
             else if(c == 'A') {
                 total_trees ++;
             }
 
-            //get number of tents in column
-            if(j == column && c == 'T'){
-                tents_column++;
-            }
-
-            //get number of tents in row
-            if(i == row && c == 'T'){
-                tents_row++;
-            }
 
             //checks up and down for trees
             if((j == column && i == row - 1) || (j == column && i == row + 1)) {
