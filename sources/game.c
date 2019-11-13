@@ -117,7 +117,13 @@ void selMode(void) {
     }
     switch (jogo.mode) {
         case 'A':
-            modeA();
+            if(jogo.answer == 2){
+                jogo.answer = 0;
+                finishLayout();
+            }
+            else {
+                modeA();
+            }
             break;
         case 'B':
             modeB();
