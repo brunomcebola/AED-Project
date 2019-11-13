@@ -4,12 +4,14 @@
 
 void modeB() {
     int row = getBoardCoordinateX(), column = getBoardCoordinateY(),
-        tents_row = 0, tents_column = 0, exists = 0, tree = 0, tent = 0;
+        rows = getBoardRows(), columns = getBoardColumns(),
+        el_row = getBoardElRow(row), el_column = getBoardElColumn(column),
+        tents_column = 0, exists = 0, tree = 0, tent = 0, tents_row = 0;
 
     char c = '\0';
 
-    for(int i=0;i<getBoardRows();i++){
-        for(int j=0;j<getBoardColumns();j++){
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < columns; j++){
             c = readChar();
 
             //element being verified
@@ -73,7 +75,7 @@ void modeB() {
         return;
     }
 
-    if(tents_column >= getBoardElColumn(column) || tents_row >= getBoardElRow(row)){
+    if(tents_column >= el_column || tents_row >= el_row  || el_column == 0 || el_row == 0){
         setBoardAnswer(1);
         return;
     }
