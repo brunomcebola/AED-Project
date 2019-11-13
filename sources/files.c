@@ -118,8 +118,16 @@ int readElRowsAndColumns() {
 
     //get number of elemets in each column
     for(i = 0; i < columns; i++) {
-        if((el[0] = fgetc(in_file)) == EOF) {
+        el[0] = '\0';
+        j = 0;
+        if((el[j] = fgetc(in_file)) == EOF) {
             return 0;
+        }
+        while (el[j] != ' ' && el[j] != '\n') {
+            j++;
+            if((el[j] = fgetc(in_file)) == EOF) {
+                return 0;
+            }
         }
         if (el[0] == ' ' || el[0] == '\n') {
             --i;
