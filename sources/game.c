@@ -131,7 +131,6 @@ void selMode(void) {
                 break;
             }
             modeA();
-
             break;
         case 'B':
             modeB();
