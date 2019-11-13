@@ -46,14 +46,15 @@ int validateBoard(void) {
   static long int position = 0;
   puzzle.numOfTents = 0, puzzle.numOfTrees = 0;
 
-  i = puzzle.lineEdge;
+  i = puzzle.lineEdge - 1;
 
   position = (puzzle.lineEdge * puzzle.columnEdge) - 1;
   do {
-    j = puzzle.columnEdge;
+    j = puzzle.columnEdge - 1;
 
     do {
       if ((puzzle.board[position]) == '.') {
+        --position;
         continue;
       } else if ((puzzle.board[position]) == 'T') {
         if (((tentLooksForTree(j, i)) || puzzle.numOfTrees < puzzle.numOfTents)) {
@@ -61,7 +62,7 @@ int validateBoard(void) {
         }
         puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
       } else if ((puzzle.board[position]) == 'A') {
-        if ((treeLooksForTent(j, i) ||(puzzle.numOfTrees < puzzle.numOfTents) )) {
+        if ((treeLooksForTent(j, i) || (puzzle.numOfTrees < puzzle.numOfTents) )) {
           return 1;
         }
         puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
