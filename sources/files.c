@@ -193,7 +193,7 @@ void maxSize() {
         }
 
         while(mode < 'A' || mode > 'Z'){
-            aux = fscanf(in_file, "%c", &mode);
+            mode = fgetc(in_file);
         }
 
         if(mode == 'B') {
