@@ -181,17 +181,18 @@ int readLayout() {
 
     //get summation of tents in rows
     for(int i=0; i<rows; i++) {
-        tents_row += getBoardElRow(i);
+        sum_tents_row += getBoardElRow(i);
     }
     //get summation of tents in columns
     for(int j=0; j<columns; j++) {
-        tents_column += getBoardElColumn(j);
+        sum_tents_column += getBoardElColumn(j);
     }
 
     if(sum_tents_row != sum_tents_column) {
         setBoardAnswer(2);
         return 1;
     }
+
 
     if(getBoardMode() == 'C') {
         //save the actual number of tents in each column
