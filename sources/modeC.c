@@ -42,26 +42,29 @@ void modeC(void) {
 *
 */
 int validateBoard(void) {
-  static int retVal = 0, i = 0, j = 0;
+  static int i = 0, j = 0;
   puzzle.numOfTents = 0, puzzle.numOfTrees = 0;
 
-  for (i = 0; i < puzzle.lineEdge; i++) {
-    for (j = 0; j < puzzle.columnEdge; j++) {
+  i = puzzle.lineEdge;
+
+  do {
+    j = puzzle.columnEdge;
+
+    do {
       if ((puzzle.board[i*puzzle.columnEdge+j]) == 'T') {
-        retVal = tentLooksForTree(j, i);
-        if ((puzzle.numOfTrees < puzzle.numOfTents) || (retVal == -1)) {
+        if (((tentLooksForTree(j, i)) || puzzle.numOfTrees < puzzle.numOfTents)) {
           return 1;
         }
         puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
       } else if ((puzzle.board[i*puzzle.columnEdge+j]) == 'A') {
-        retVal = treeLooksForTent(j, i);
-        if ((puzzle.numOfTrees < puzzle.numOfTents) || (retVal == -1)) {
+        if ((treeLooksForTent(j, i) ||(puzzle.numOfTrees < puzzle.numOfTents) )) {
           return 1;
         }
         puzzle.numOfTents = 0, puzzle.numOfTrees = 0; //reinicializes count
       }
-    }
-  }
+    } while(j--);
+  } while(i--);
+
   return 0;
 }
 
