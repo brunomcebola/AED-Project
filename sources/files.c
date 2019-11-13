@@ -15,8 +15,9 @@ FILE *out_file = NULL;
 
 //INNER FUNCTIONS
 void initFile(const char *file) {
-    char *file_name = NULL, *aux = basename((char *)file);
+    char *file_name, *aux = basename((char *)file);
     int size_in = strlen(file), size_out = strlen(aux);
+
 
     if(strcmp(".camp0", file+size_in-6) != 0) {
         exit(0);
@@ -178,7 +179,7 @@ void maxSize() {
                max_column, *el_linha, *el_coluna, i, j;
     static char mode, *tabuleiro;
 
-    static char buffer[10000], *aux2;
+    static char el[20];
 
     max = 0, linhas = 0, colunas = 0, mux = 0, c = 0,
     x = 0, aux = 0, max_row = 0, max_column = 0,
@@ -204,10 +205,43 @@ void maxSize() {
             max = MAX(max,mux);
         }
 
-        aux2 = fgets(buffer, 10000, in_file);
+        for(i = 0; i < linhas; i++) {
+            el[0] = '\0';
+            j = 0;
+            if((el[j] = fgetc(in_file)) == EOF) {
+                exit(0);
+            }
+            while (el[j] != ' ' && el[j] != '\n') {
+                j++;
+                if((el[j] = fgetc(in_file)) == EOF) {
+                    exit(0);
+                }
+            }
 
-        aux2 = fgets(buffer, 10000, in_file);
-        checkNull(aux2);
+            if (el[0] == ' ' || el[0] == '\n') {
+                --i;
+                continue;
+            }
+        }
+
+        for(i = 0; i < colunas; i++) {
+            el[0] = '\0';
+            j = 0;
+            if((el[j] = fgetc(in_file)) == EOF) {
+                exit(0);
+            }
+            while (el[j] != ' ' && el[j] != '\n') {
+                j++;
+                if((el[j] = fgetc(in_file)) == EOF) {
+                    exit(0);
+                }
+            }
+
+            if (el[0] == ' ' || el[0] == '\n') {
+                --i;
+                continue;
+            }
+        }
 
         for(i = 0; i < linhas; i++){
             for(j = 0; j < colunas; j++){
