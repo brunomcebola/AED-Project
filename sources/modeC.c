@@ -5,6 +5,7 @@
 #include "../headers/bundle.h"
 
 
+
 int tentLooksForTree(int coordX, int coordY);
 int treeLooksForTent(int coordX, int coordY);
 int validateBoard(void);
