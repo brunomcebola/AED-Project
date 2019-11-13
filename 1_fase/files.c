@@ -179,8 +179,6 @@ void maxSize() {
                max_column, *el_linha, *el_coluna, i, j;
     static char mode, *tabuleiro;
 
-    static char el[20];
-
     max = 0, linhas = 0, colunas = 0, mux = 0, c = 0,
     x = 0, aux = 0, max_row = 0, max_column = 0,
     el_linha = NULL, el_coluna = NULL;
@@ -206,41 +204,10 @@ void maxSize() {
         }
 
         for(i = 0; i < linhas; i++) {
-            el[0] = '\0';
-            j = 0;
-            if((el[j] = fgetc(in_file)) == EOF) {
-                exit(0);
-            }
-            while (el[j] != ' ' && el[j] != '\n') {
-                j++;
-                if((el[j] = fgetc(in_file)) == EOF) {
-                    exit(0);
-                }
-            }
-
-            if (el[0] == ' ' || el[0] == '\n') {
-                --i;
-                continue;
-            }
+            aux = fscanf(in_file, "%d", &x);
         }
-
-        for(i = 0; i < colunas; i++) {
-            el[0] = '\0';
-            j = 0;
-            if((el[j] = fgetc(in_file)) == EOF) {
-                exit(0);
-            }
-            while (el[j] != ' ' && el[j] != '\n') {
-                j++;
-                if((el[j] = fgetc(in_file)) == EOF) {
-                    exit(0);
-                }
-            }
-
-            if (el[0] == ' ' || el[0] == '\n') {
-                --i;
-                continue;
-            }
+        for(j = 0; j < colunas; j++) {
+            aux = fscanf(in_file, "%d", &x);
         }
 
         for(i = 0; i < linhas; i++){
