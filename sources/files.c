@@ -79,33 +79,41 @@ int readMode() {
 
 int readElRowsAndColumns() {
     static int rows, columns, sum_tents_row, sum_tents_column,
-               el, *el_linha, *el_coluna, i;
-    static char mode;
+               *el_linha, *el_coluna, i;
+    static char mode, el[2];
     rows = getBoardRows();
     columns = getBoardColumns();
     sum_tents_row = 0;
     sum_tents_column = 0;
-    el = 0;
+    el[0] = '\0';
     el_linha = getBoardAllElRow();
     el_coluna = getBoardAllElColumn();
     mode = getBoardMode();
 
     //get number of elements in each row
     for(i = 0; i < rows; i++) {
-        if(fscanf(in_file, "%d", &el) != 1 ) {
+        if((el[0] = fgetc(in_file)) == EOF) {
             return 0;
         }
-        el_linha[i] = el;
-        sum_tents_row += el;
+        if (el[0] == ' ' || el[0] == '\n') {
+            --i;
+            continue;
+        }
+        el_linha[i] = atoi(el);
+        sum_tents_row += atoi(el);
     }
 
     //get number of elemets in each column
     for(i = 0; i < columns; i++) {
-        if(fscanf(in_file, "%d", &el) != 1 ) {
+        if((el[0] = fgetc(in_file)) == EOF) {
             return 0;
         }
-        el_coluna[i] = el;
-        sum_tents_column += el;
+        if (el[0] == ' ' || el[0] == '\n') {
+            --i;
+            continue;
+        }
+        el_coluna[i] = atoi(el);
+        sum_tents_column += atoi(el);
     }
 
     if(sum_tents_row != sum_tents_column && (mode == 'A' || mode == 'C')) {
@@ -123,7 +131,7 @@ char readChar() {
     c = '\0';
 
     while(c != 'A' && c != 'T' && c != '.'){
-        if(fscanf(in_file, "%c", &c) != 1) {
+        if((c = fgetc(in_file)) == EOF) {
             return '\0';
         }
     }
@@ -146,6 +154,8 @@ void maxSize() {
     static int max, linhas, colunas, mux, c, x, aux, max_row,
                max_column, *el_linha, *el_coluna, i, j;
     static char mode, *tabuleiro;
+
+    static char buffer[2048], *aux2;
 
     max = 0, linhas = 0, colunas = 0, mux = 0, c = 0,
     x = 0, aux = 0, max_row = 0, max_column = 0,
@@ -171,12 +181,10 @@ void maxSize() {
             max = MAX(max,mux);
         }
 
-        for(i = 0; i < linhas; i++){
-            aux = fscanf(in_file, "%d", &x);
-        }
-        for(i = 0; i < colunas; i++){
-            aux = fscanf(in_file, "%d", &x);
-        }
+        aux2 = fgets(buffer, 2047, in_file);
+
+        aux2 = fgets(buffer, 2047, in_file);
+        checkNull(aux2);
 
         for(i = 0; i < linhas; i++){
             for(j = 0; j < colunas; j++){
@@ -224,7 +232,7 @@ int readLayout() {
         checkNull(tents_column);
 
         while(linha_atual != rows) {
-            if(fscanf(in_file, "%c", &c) != 1) {
+            if((c = fgetc(in_file)) == EOF) {
                 return 0;
             }
 
@@ -320,7 +328,7 @@ int checkEOF(){
     static int end;
     end = 0, aux = '\0';
 
-    while(fscanf(in_file, "%c", &aux) == 1){
+    while((aux = fgetc(in_file)) != EOF){
         end = feof(in_file);
         if(end){
             return !end;
