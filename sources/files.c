@@ -167,6 +167,7 @@ void maxSize() {
     tabuleiro = (char *) malloc( max * sizeof(char));
     checkNull(tabuleiro);
     setBoardLayout(tabuleiro);
+
 }
 
 int readLayout() {
@@ -192,8 +193,6 @@ int readLayout() {
                     tents_row++;
                 }
 
-
-
                 tabuleiro[linha_atual*columns+coluna_atual] = c;
 
                 coluna_atual++;
@@ -202,7 +201,6 @@ int readLayout() {
                         setBoardAnswer(2);
                     }
                     tents_row = 0;
-
                     linha_atual++;
                     coluna_atual = 0;
                 }
