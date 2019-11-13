@@ -125,6 +125,7 @@ int readElRowsAndColumns() {
         setBoardAnswer(2);
         return 1;
     }
+    
 
     setBoardSum(sum_tents_row);
 
