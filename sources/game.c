@@ -4,14 +4,17 @@
 
 #include "../headers/game.h"
 #include "../headers/modeA.h"
+#include "../headers/modeB.h"
 #include "../headers/modeC.h"
+#include "../headers/files.h"
 
 typedef struct {
     int n_rows, n_columns, x, y;
     int *n_el_row, *n_el_column;
     char mode;
-    char **layout;
+    char *layout;
     int answer;
+    int sum;
 } board;
 
 board jogo;
@@ -22,22 +25,21 @@ board jogo;
 void initBoard(void) {
     jogo.n_rows = 0;
     jogo.n_columns = 0;
-    jogo.n_el_row = NULL;
-    jogo.n_el_column = NULL;
     jogo.mode = '\0';
     jogo.x = 0;
     jogo.y = 0;
-    jogo.layout = NULL;
     jogo.answer = 0;
+    jogo.sum = 0;
 }
 
 
 //SET FUNCTIONS
-void setBoardRows(int lines) {
-    jogo.n_rows = lines;
+void setBoardSum(int sum) {
+    jogo.sum = sum;
 }
 
-void setBoardColumns(int columns) {
+void setBoardRowsNColumns(int lines, int columns) {
+    jogo.n_rows = lines;
     jogo.n_columns = columns;
 }
 
@@ -50,16 +52,10 @@ void setBoardCoordinates(int x, int y) {
     jogo.y = y;
 }
 
-void setBoardElRows(int *n_el_row) {
-    jogo.n_el_row = n_el_row;
-}
-
-void setBoardElColumns(int *n_el_column) {
-    jogo.n_el_column = n_el_column;
-}
-
-void setBoardLayout(char **layout) {
+void setBoardArrays(char *layout, int *n_el_row, int *n_el_column) {
     jogo.layout = layout;
+    jogo.n_el_row = n_el_row;
+    jogo.n_el_column = n_el_column;
 }
 
 void setBoardAnswer(int answer) {
@@ -68,6 +64,10 @@ void setBoardAnswer(int answer) {
 
 
 //GET FUNCTIONS
+int getBoardSum(void) {
+    return jogo.sum;
+}
+
 int getBoardRows(void) {
     return jogo.n_rows;
 }
@@ -84,15 +84,24 @@ int getBoardElRow(int i) {
     return jogo.n_el_row[i];
 }
 
+int *getBoardAllElRow(void) {
+    return jogo.n_el_row;
+}
+
+int *getBoardAllElColumn(void) {
+    return jogo.n_el_column;
+}
+
+
 int getBoardElColumn(int j) {
     return jogo.n_el_column[j];
 }
 
 char getBoardLayoutElement(int i, int j) {
-    return jogo.layout[i][j];
+    return jogo.layout[i*jogo.n_columns + j];
 }
 
-char **getBoardAllLayout(void) {
+char *getBoardLayout(void) {
     return jogo.layout;
 }
 
@@ -110,37 +119,38 @@ int getBoardCoordinateY(void) {
 
 
 void selMode(void) {
+    if(jogo.answer == -1) {
+        finishLayout();
+        return;
+    }
     switch (jogo.mode) {
         case 'A':
+            if(jogo.answer == 2){
+                jogo.answer = 0;
+                finishLayout();
+                break;
+            }
             modeA();
+
+            break;
+        case 'B':
+            modeB();
             break;
         case 'C':
+            if(jogo.answer == 2){
+                jogo.answer = 1;
+                break;
+            }
             modeC();
             break;
         default:
             setBoardAnswer(-1);
-            break;
     }
 }
 
 //FREE
 void freeBoard(void) {
-    if(jogo.n_el_row != NULL) {
-        free(jogo.n_el_row);
-    }
-    if(jogo.n_el_column != NULL ) {
-        free(jogo.n_el_column);
-    }
-
-    if(jogo.layout != NULL) {
-        for(int i=0;i<jogo.n_rows;i++) {
-            if(jogo.layout[i] != NULL) {
-                free(jogo.layout[i]);
-            }
-        }
-    }
-    if(jogo.layout != NULL) {
-        free(jogo.layout);
-    }
-    initBoard();
+    free(jogo.n_el_row);
+    free(jogo.n_el_column);
+    free(jogo.layout);
 }

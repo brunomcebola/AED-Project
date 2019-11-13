@@ -1,34 +1,24 @@
 #include "../headers/modeA.h"
 #include "../headers/game.h"
+#include "../headers/files.h"
 
-void modeA(void) {
-    int tents_row = 0, tents_column = 0, trees = 0;
+void modeA() {
+    static int rows, columns, tents, trees, i, j;
+    rows = getBoardRows(), columns = getBoardColumns(), tents = getBoardSum(), trees = 0;
 
-    for(int i=0; i<getBoardRows(); i++) {
-        tents_row += getBoardElRow(i);
-    }
-    for(int j=0; j<getBoardColumns(); j++) {
-        tents_column += getBoardElColumn(j);
-    }
-
-    if(tents_row != tents_column) {
-        setBoardAnswer(0);
-        return;
-    }
-
-
-    for(int i=0; i<getBoardRows(); i++) {
-        for(int j=0; j<getBoardColumns(); j++) {
-            if(getBoardLayoutElement(i,j) == 'A') {
+    for(i = 0; i < rows; i++){
+        for(j = 0; j < columns; j++){
+            if(readChar() == 'A') {
                 trees++;
             }
         }
     }
-
-    if(tents_row > trees) {
-        setBoardAnswer(0);
+    //number of trees must be greater or equal
+    //to summation of tents in rows/columns
+    if(tents > trees) {
         return;
     }
 
+    //if all correct then answer is 1
     setBoardAnswer(1);
 }

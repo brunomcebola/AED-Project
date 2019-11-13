@@ -3,12 +3,9 @@
 
 #include "../headers/files.h"
 #include "../headers/game.h"
-#include "../headers/modeA.h"
 
 
 int main(int argc, char const *argv[]) {
-    int valid = 0;
-
     //check if two arguments are passed
     if (argc != 2) {
         exit(0);
@@ -17,15 +14,16 @@ int main(int argc, char const *argv[]) {
     initFile(argv[1]);
     initBoard();
 
+    maxSize();
+    begining();
+
     while(checkEOF()) {
-        valid = readFile();
-        if(valid) {
+        if(readFile()) {
             selMode();
             writeFile();
         }
-        freeBoard();
+        initBoard();
     }
-
     terminateFile();
 
     return 0;

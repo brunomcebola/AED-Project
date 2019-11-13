@@ -7,9 +7,10 @@
 #include "../headers/game.h"
 #include "../headers/bundle.h"
 
+#define MAX(a,b) (a > b ? a : b)
+
 FILE *in_file = NULL;
 FILE *out_file = NULL;
-
 
 //INNER FUNCTIONS
 void initFile(const char *file) {
@@ -32,21 +33,22 @@ void initFile(const char *file) {
     free(file_name);
 }
 
-int readRowsAndColumns(void) {
-    int linhas = 0, colunas = 0;
+int readRowsAndColumns() {
+    static int linhas, colunas;
+    linhas = 0, colunas = 0;
 
     //get number of rows and columns
     if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2) {
         return 0;
     }
-    setBoardRows(linhas);
-    setBoardColumns(colunas);
+    setBoardRowsNColumns(linhas, colunas);
     return 1;
 }
 
-int readMode(void) {
-    char mode = '\0';
-    int x = 0, y = 0;
+int readMode() {
+    static char mode;
+    static int x, y;
+    x = 0, y = 0, mode = '\0';
 
     //get test mode
     while(mode < 'A' || mode > 'Z'){
@@ -75,79 +77,215 @@ int readMode(void) {
     return 1;
 }
 
-int readElRowsAndColumns(void) {
-    int *el_linha = NULL, *el_coluna = NULL;
+int readElRowsAndColumns() {
+    static int rows, columns, sum_tents_row, sum_tents_column,
+               el, *el_linha, *el_coluna, i;
+    static char mode;
+    rows = getBoardRows();
+    columns = getBoardColumns();
+    sum_tents_row = 0;
+    sum_tents_column = 0;
+    el = 0;
+    el_linha = getBoardAllElRow();
+    el_coluna = getBoardAllElColumn();
+    mode = getBoardMode();
 
     //get number of elements in each row
-    el_linha = (int *) malloc(getBoardRows() * sizeof(int));
-    checkNull(el_linha);
-    for(int i=0; i<getBoardRows(); i++) {
-        if(fscanf(in_file, "%d", &el_linha[i]) != 1 ) {
-            free(el_linha);
+    for(i = 0; i < rows; i++) {
+        if(fscanf(in_file, "%d", &el) != 1 ) {
             return 0;
         }
+        el_linha[i] = el;
+        sum_tents_row += el;
     }
 
     //get number of elemets in each column
-    el_coluna = (int *) malloc(getBoardColumns() * sizeof(int));
-    checkNull(el_coluna);
-    for(int i=0; i<getBoardColumns(); i++) {
-        if(fscanf(in_file, "%d", &el_coluna[i]) != 1 ) {
-            free(el_linha);
-            free(el_coluna);
+    for(i = 0; i < columns; i++) {
+        if(fscanf(in_file, "%d", &el) != 1 ) {
             return 0;
         }
+        el_coluna[i] = el;
+        sum_tents_column += el;
     }
 
-    setBoardElRows(el_linha);
-    setBoardElColumns(el_coluna);
+    if(sum_tents_row != sum_tents_column && (mode == 'A' || mode == 'C')) {
+        setBoardAnswer(2);
+        return 1;
+    }
+
+    setBoardSum(sum_tents_row);
 
     return 1;
 }
 
-int readLayout(void) {
-    char **tabuleiro = NULL;
-    char c = '\0';
-    int linha_atual = 0, coluna_atual = 0;
+char readChar() {
+    static char c;
+    c = '\0';
 
-    tabuleiro = (char **) malloc(getBoardRows() * sizeof(char *));
-    checkNull(tabuleiro);
-    for(int i = 0; i < getBoardRows(); i++) {
-        tabuleiro[i] = (char *) malloc(getBoardColumns() * sizeof(char));
-        checkNull(tabuleiro[i]);
-    }
-    while(linha_atual!=getBoardRows()) {
+    while(c != 'A' && c != 'T' && c != '.'){
         if(fscanf(in_file, "%c", &c) != 1) {
-            return 0;
+            return '\0';
         }
-        if(c == 'T' || c == 'A' || c == '.'){
-            tabuleiro[linha_atual][coluna_atual] = c;
-            coluna_atual++;
-            if(coluna_atual == getBoardColumns()) {
-                linha_atual++;
-                coluna_atual = 0;
+    }
+
+    return c;
+}
+
+void finishLayout() {
+    static int rows, columns, i, j;
+    rows = getBoardRows(), columns = getBoardColumns();
+
+    for(i = 0; i < rows; i++){
+        for(j = 0; j < columns; j++){
+            readChar();
+        }
+    }
+}
+
+void maxSize() {
+    static int max, linhas, colunas, mux, c, x, aux, max_row,
+               max_column, *el_linha, *el_coluna, i, j;
+    static char mode, *tabuleiro;
+
+    max = 0, linhas = 0, colunas = 0, mux = 0, c = 0,
+    x = 0, aux = 0, max_row = 0, max_column = 0,
+    el_linha = NULL, el_coluna = NULL;
+    mode = '\0', tabuleiro = NULL;
+
+    while(checkEOF()) {
+        aux = fscanf(in_file, "%d %d", &linhas , &colunas);
+        if(aux != 2){
+            break;
+        }
+
+        while(mode < 'A' || mode > 'Z'){
+            aux = fscanf(in_file, "%c", &mode);
+        }
+
+        if(mode == 'B') {
+            aux = fscanf(in_file, "%d %d", &x, &x);
+        }
+        else if(mode == 'C') {
+            c = 1;
+            mux = linhas * colunas;
+            max = MAX(max,mux);
+        }
+
+        for(i = 0; i < linhas; i++){
+            aux = fscanf(in_file, "%d", &x);
+        }
+        for(i = 0; i < colunas; i++){
+            aux = fscanf(in_file, "%d", &x);
+        }
+
+        for(i = 0; i < linhas; i++){
+            for(j = 0; j < colunas; j++){
+                readChar();
             }
         }
+
+        max_row = MAX(max_row, linhas);
+        max_column = MAX(max_column, colunas);
+        mode = '\0';
     }
 
-    setBoardLayout(tabuleiro);
+    if(c == 1){
+        tabuleiro = (char *) malloc(max * sizeof(char));
+        checkNull(tabuleiro);
+    }
+
+    el_linha = (int *) malloc(max_row * sizeof(int));
+    checkNull(el_linha);
+    el_coluna = (int *) malloc(max_column * sizeof(int));
+    checkNull(el_coluna);
+    setBoardArrays(tabuleiro, el_linha, el_coluna);
+
+}
+
+int readLayout() {
+    static char *tabuleiro, c;
+    static int sum_tents, trees, linha_atual, coluna_atual,
+               rows, columns, tents_row, *tents_column, j;
+
+    sum_tents = 0, trees = 0, linha_atual = 0, coluna_atual = 0,
+    rows = getBoardRows(), columns = getBoardColumns(), tents_row = 0,
+    tents_column = NULL, tabuleiro = getBoardLayout(), c = '\0';
+
+    if(getBoardMode() == 'C') {
+        //get summation of tents in rows
+        if(getBoardAnswer() == 2){
+            return 1;
+        }
+
+        sum_tents = getBoardSum();
+
+        //save the actual number of tents in each column
+        tents_column = (int *) calloc((unsigned int)columns , sizeof(int));
+        checkNull(tents_column);
+
+        while(linha_atual != rows) {
+            if(fscanf(in_file, "%c", &c) != 1) {
+                return 0;
+            }
+
+            if(c == 'T' || c == 'A' || c == '.'){
+                if (c == 'A') {
+                    trees++;
+                }
+                else if(c == 'T') {
+                    tents_column[coluna_atual]++;
+                    tents_row++;
+                }
+
+                tabuleiro[linha_atual*columns+coluna_atual] = c;
+
+                coluna_atual++;
+                if(coluna_atual == columns) {
+                    if(tents_row > getBoardElRow(linha_atual)) {
+                        setBoardAnswer(2);
+                    }
+                    tents_row = 0;
+                    linha_atual++;
+                    coluna_atual = 0;
+                }
+            }
+        }
+
+        j = columns;
+        while(j--) {
+            if(tents_column[j] > getBoardElColumn(j)) {
+                setBoardAnswer(2);
+                break;
+            }
+        }
+
+        if(sum_tents > trees) {
+            setBoardAnswer(2);
+            free(tents_column);
+            return 1;
+        }
+        free(tents_column);
+    }
 
     return 1;
 }
+
 
 
 //OUTER FUNCTIONS
-int readFile(void) {
-
+int readFile() {
     if(!readRowsAndColumns()) {
         return 0;
     }
+
     if(!readMode()) {
         return 0;
     }
+
     if(!readElRowsAndColumns()) {
         return 0;
     }
+
     if(!readLayout()){
         return 0;
     }
@@ -155,22 +293,55 @@ int readFile(void) {
     return 1;
 }
 
-void writeFile (void) {
-    char mode = getBoardMode();
-    fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode);
-    if(mode == 'B') {
-        fprintf(out_file, "%d %d ", getBoardCoordinateX(), getBoardCoordinateX());
+void writeFile () {
+    static char mode;
+    mode = getBoardMode();
+
+    if(fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode) < 0) {
+        exit(0);
     }
-    fprintf(out_file, "%d\n", getBoardAnswer());
-    fprintf(out_file, "\n");
+    if(mode == 'B') {
+        if(fprintf(out_file, "%d %d ", getBoardCoordinateX(), getBoardCoordinateY()) < 0) {
+            exit(0);
+        }
+    }
+    if(fprintf(out_file, "%d\n\n", getBoardAnswer()) < 0) {
+        exit(0);
+    }
 
 }
 
-int checkEOF(void){
-    return !feof(in_file);
+void begining(){
+    fseek(in_file, 0, SEEK_SET) ;
 }
 
-void terminateFile(void) {
-    fclose(in_file);
-    fclose(out_file);
+int checkEOF(){
+    static char aux;
+    static int end;
+    end = 0, aux = '\0';
+
+    while(fscanf(in_file, "%c", &aux) == 1){
+        end = feof(in_file);
+        if(end){
+            return !end;
+        }
+
+        if(aux != '\n') {
+            fseek(in_file, -1, SEEK_CUR);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void terminateFile() {
+    if(fclose(in_file) != 0) {
+        exit(0);
+    }
+
+    if(fclose(out_file) != 0) {
+        exit(0);
+    }
+
+    freeBoard();
 }

@@ -1,7 +1,7 @@
 PROJECT_NAME=projeto-aed
 
 CC=gcc
-FLAGS=-c -Wall -Wextra -ansi -pedantic -std=c99 -g -Og -fasynchronous-unwind-tables -Werror=format-security -Wformat-security -Werror=implicit-function-declaration -Wl,-z,defs -Wundef -Wshadow -Wcast-align -Wstrict-prototypes -Wswitch-default -Wunreachable-code -Wformat=2 -Winit-self -Wuninitialized
+FLAGS=-c -Wall -Wextra -ansi -pedantic -std=c99 -O3 #-O3 --> optimizes execution but might interfere with debug information
 
 #extra debug flags:
 #-fasynchronous-unwind-tables
@@ -22,9 +22,6 @@ FLAGS=-c -Wall -Wextra -ansi -pedantic -std=c99 -g -Og -fasynchronous-unwind-tab
 
 
 #extra otimization flags:
-#-O3
-#-finline-functions
-#-funroll-loops
 #-flto
 #-march=native --> produces optimized code for the chip it's running on, might be dangerous
 
@@ -44,7 +41,7 @@ FILES_B_IN = $(shell ls ./camps/B/*.camp0)
 FILES_C_IN = $(shell ls ./camps/C/*.camp0)
 FILES_MIX_IN = $(shell ls ./camps/MIX/*.camp0)
 
-
+VALG = valgrind --leak-check=full
 
 #
 # Compilation and linking
@@ -75,52 +72,50 @@ objFolder:
 clean:
 	@ $(RM) ./objects/*.o $(PROJECT_NAME) *~
 	@ rmdir objects
-	@ $(RM) ./ans/* $(PROJECT_NAME) *~
-	@ rmdir ans
 
 .PHONY: all clean
 
 # test different modes
 
-moveA:
+movea:
 	for F in $(shell ls ./*.tents0); do mv $${F} ans/A ; done
 
-moveB:
+moveb:
 	for F in $(shell ls ./*.tents0); do mv $${F} ans/B ; done
 
-moveC:
+movec:
 	for F in $(shell ls ./*.tents0); do mv $${F} ans/C ; done
 
-moveM:
+movemix:
 	for F in $(shell ls ./*.tents0); do mv $${F} ans/MIX ; done
 
 a:
 	@ rm -r -f ./ans/A
 	@ mkdir -p ./ans/A
 	for F in ${FILES_A_IN}; do ./$(PROJECT_NAME) $${F} ; done
-	$(MAKE) moveA
+	$(MAKE) movea
 	@ diff -r ans/A tents/A
 
 b:
 	@ rm -r -f ./ans/B
 	@ mkdir -p ./ans/B
 	for F in ${FILES_B_IN}; do ./$(PROJECT_NAME) $${F} ; done
-	$(MAKE) moveB
+	$(MAKE) moveb
 	@ diff -r ans/B tents/B
 
 c:
 	@ rm -r -f ./ans/C
 	@ mkdir -p ./ans/C
 	for F in ${FILES_C_IN}; do ./$(PROJECT_NAME) $${F} ; done
-	$(MAKE) moveC
+	$(MAKE) movec
 	@ diff -r ans/C tents/C
 
 m:
 	@ rm -r -f ./ans/MIX
 	@ mkdir -p ./ans/MIX
 	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
-	$(MAKE) moveM
-	@ diff -r ans/A tents/A
+	$(MAKE) movemix
+	@ diff -r ans/MIX tents/MIX
 
 t:
 	$(MAKE) a
