@@ -2,6 +2,8 @@
 #include "game.h"
 #include "files.h"
 
+#include <stdio.h>
+
 void modeB() {
     static int row, column, rows, columns, el_row, el_column, tents_column,
                tents_row, exists, tree, tent, total_tents, total_trees, i, j;
@@ -77,7 +79,6 @@ void modeB() {
                     tent++;
                 }
             }
-
         }
     }
 

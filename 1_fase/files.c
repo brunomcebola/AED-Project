@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libgen.h>
+#include <ctype.h>
 
 #include "files.h"
 #include "game.h"
@@ -14,18 +15,19 @@ FILE *out_file = NULL;
 
 //INNER FUNCTIONS
 void initFile(const char *file) {
-    int size = strlen(file);
-    char *file_name = NULL;
+    char *file_name, *aux = basename((char *)file);
+    int size_in = strlen(file), size_out = strlen(aux);
 
-    if(strcmp(".camp0", file+size-6) != 0) {
+
+    if(strcmp(".camp0", file+size_in-6) != 0) {
         exit(0);
     }
     in_file = fopen(file, "r");
     checkNull(in_file);
 
-    file_name = (char *) calloc((strlen(basename((char *)file))+2) , sizeof(char)) ;
+    file_name = (char *) calloc((size_out+2) , sizeof(char)) ;
     checkNull(file_name);
-    strncpy(file_name, basename((char *)file), strlen(basename((char *)file))-6);
+    strncpy(file_name, aux, size_out-6);
 
     out_file = fopen(strcat(file_name,".tents0"), "w");
     checkNull(out_file);
@@ -79,39 +81,69 @@ int readMode() {
 
 int readElRowsAndColumns() {
     static int rows, columns, sum_tents_row, sum_tents_column,
-               el, *el_linha, *el_coluna, i;
-    static char mode;
+               *el_linha, *el_coluna, i, aux, j;
+    static char mode, el[20];
     rows = getBoardRows();
     columns = getBoardColumns();
     sum_tents_row = 0;
     sum_tents_column = 0;
-    el = 0;
+    el[0] = '\0';
     el_linha = getBoardAllElRow();
     el_coluna = getBoardAllElColumn();
     mode = getBoardMode();
 
     //get number of elements in each row
     for(i = 0; i < rows; i++) {
-        if(fscanf(in_file, "%d", &el) != 1 ) {
+        el[0] = '\0';
+        j = 0;
+        if((el[j] = fgetc(in_file)) == EOF) {
             return 0;
         }
-        el_linha[i] = el;
-        sum_tents_row += el;
+        while (el[j] != ' ' && el[j] != '\n') {
+            j++;
+            if((el[j] = fgetc(in_file)) == EOF) {
+                return 0;
+            }
+        }
+
+        if (el[0] == ' ' || el[0] == '\n') {
+            --i;
+            continue;
+        }
+
+        aux = atoi(el);
+        el_linha[i] = aux;
+        sum_tents_row += aux;
     }
+
 
     //get number of elemets in each column
     for(i = 0; i < columns; i++) {
-        if(fscanf(in_file, "%d", &el) != 1 ) {
+        el[0] = '\0';
+        j = 0;
+        if((el[j] = fgetc(in_file)) == EOF) {
             return 0;
         }
-        el_coluna[i] = el;
-        sum_tents_column += el;
+        while (el[j] != ' ' && el[j] != '\n') {
+            j++;
+            if((el[j] = fgetc(in_file)) == EOF) {
+                return 0;
+            }
+        }
+        if (el[0] == ' ' || el[0] == '\n') {
+            --i;
+            continue;
+        }
+        aux = atoi(el);
+        el_coluna[i] = aux;
+        sum_tents_column += aux;
     }
 
     if(sum_tents_row != sum_tents_column && (mode == 'A' || mode == 'C')) {
         setBoardAnswer(2);
         return 1;
     }
+
 
     setBoardSum(sum_tents_row);
 
@@ -147,7 +179,7 @@ void maxSize() {
                max_column, *el_linha, *el_coluna, i, j;
     static char mode, *tabuleiro;
 
-    static char buffer[2048], *aux2;
+    static char el[20];
 
     max = 0, linhas = 0, colunas = 0, mux = 0, c = 0,
     x = 0, aux = 0, max_row = 0, max_column = 0,
@@ -173,10 +205,43 @@ void maxSize() {
             max = MAX(max,mux);
         }
 
-        aux2 = fgets(buffer, 2047, in_file);
+        for(i = 0; i < linhas; i++) {
+            el[0] = '\0';
+            j = 0;
+            if((el[j] = fgetc(in_file)) == EOF) {
+                exit(0);
+            }
+            while (el[j] != ' ' && el[j] != '\n') {
+                j++;
+                if((el[j] = fgetc(in_file)) == EOF) {
+                    exit(0);
+                }
+            }
 
-        aux2 = fgets(buffer, 2047, in_file);
-        checkNull(aux2);
+            if (el[0] == ' ' || el[0] == '\n') {
+                --i;
+                continue;
+            }
+        }
+
+        for(i = 0; i < colunas; i++) {
+            el[0] = '\0';
+            j = 0;
+            if((el[j] = fgetc(in_file)) == EOF) {
+                exit(0);
+            }
+            while (el[j] != ' ' && el[j] != '\n') {
+                j++;
+                if((el[j] = fgetc(in_file)) == EOF) {
+                    exit(0);
+                }
+            }
+
+            if (el[0] == ' ' || el[0] == '\n') {
+                --i;
+                continue;
+            }
+        }
 
         for(i = 0; i < linhas; i++){
             for(j = 0; j < colunas; j++){
