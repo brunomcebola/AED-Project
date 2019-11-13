@@ -124,7 +124,7 @@ void selMode(void) {
             break;
         case 'C':
             if(jogo.answer == 2){
-                jogo.answer = 0;
+                jogo.answer = 1;
             }
             else {
                 modeC();
