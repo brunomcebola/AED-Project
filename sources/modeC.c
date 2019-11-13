@@ -78,11 +78,7 @@ int validateBoard(void) {
 *
 */
 int tentLooksForTree(int coordX, int coordY) {
-<<<<<<< HEAD
-  static int const auxJumps[8][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}, {-1, 1}, {1, 1}, {-1, -1}, {1, -1}}; //used to check positions
-=======
   static const int auxJumps[8][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}, {-1, 1}, {1, 1}, {-1, -1}, {1, -1}}; //used to check positions
->>>>>>> 28e7eb041a46ca45b904a9f67428e2474b91d073
   int auxX = 0, auxY = 0, i = 0, retVal = 0;
 
   puzzle.board[coordY*puzzle.columnEdge+coordX] = 'K'; //prevents reading same position multiple times
@@ -106,11 +102,7 @@ int tentLooksForTree(int coordX, int coordY) {
     }
     if ((puzzle.board[auxY*puzzle.columnEdge+auxX]) == 'T') { //if tent is found, it is in invalid place
       return -1;
-<<<<<<< HEAD
     } else if ((puzzle.board[auxY*puzzle.columnEdge+auxX]) == 'A') { //else looks for tree
-=======
-  } else if ((puzzle.board[auxY*puzzle.columnEdge+auxX]) == 'A') { //else looks for tree
->>>>>>> 28e7eb041a46ca45b904a9f67428e2474b91d073
       retVal = treeLooksForTent(auxX, auxY);
       if (retVal == -1) {
         return -1;
@@ -129,11 +121,7 @@ int tentLooksForTree(int coordX, int coordY) {
 *
 */
 int treeLooksForTent(int coordX, int coordY) {
-<<<<<<< HEAD
-  static int const auxJumps[4][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}}; //used to check only 4 valid positions for a tent
-=======
   static const int auxJumps[4][2] = {{0, 1}, {-1, 0}, {1, 0}, {0, -1}}; //used to check only 4 valid positions for a tent
->>>>>>> 28e7eb041a46ca45b904a9f67428e2474b91d073
   int auxX = 0, auxY = 0, i = 0, retVal = 0;
 
   puzzle.board[coordY*puzzle.columnEdge+coordX] = 'K'; //prevents reading same position multiple times
