@@ -209,12 +209,12 @@ void maxSize() {
             el[0] = '\0';
             j = 0;
             if((el[j] = fgetc(in_file)) == EOF) {
-                exit(0);
+                return;
             }
             while (el[j] != ' ' && el[j] != '\n') {
                 j++;
                 if((el[j] = fgetc(in_file)) == EOF) {
-                    exit(0);
+                    return;
                 }
             }
 
@@ -224,12 +224,12 @@ void maxSize() {
             el[0] = '\0';
             j = 0;
             if((el[j] = fgetc(in_file)) == EOF) {
-                exit(0);
+                return;
             }
             while (el[j] != ' ' && el[j] != '\n') {
                 j++;
                 if((el[j] = fgetc(in_file)) == EOF) {
-                    exit(0);
+                    return;
                 }
             }
         }
