@@ -2,6 +2,8 @@
 #include "../headers/game.h"
 #include "../headers/files.h"
 
+#include <stdio.h>
+
 void modeB() {
     static int row, column, rows, columns, el_row, el_column, tents_column,
                tents_row, exists, tree, tent, total_tents, total_trees, i, j;
@@ -11,7 +13,7 @@ void modeB() {
     el_row = getBoardElRow(row), el_column = getBoardElColumn(column),
     tents_column = 0, exists = 0, tree = 0, tent = 0, tents_row = 0,
     total_trees = 0, total_tents = 0, c = '\0';
-
+    
     for(i = 0; i < rows; i++){
         for(j = 0; j < columns; j++){
             c = readChar();
@@ -77,7 +79,6 @@ void modeB() {
                     tent++;
                 }
             }
-
         }
     }
 
