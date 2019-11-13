@@ -4,8 +4,6 @@
 #include "../headers/game.h"
 #include "../headers/bundle.h"
 
-
-
 int tentLooksForTree(int coordX, int coordY);
 int treeLooksForTent(int coordX, int coordY);
 int validateBoard(void);
@@ -19,8 +17,6 @@ typedef struct {
 
 mode_c_board puzzle = {0, 0, 0, 0, NULL};
 
-
-
 /*
 *   kickstarts modeC checking functions and sets answer for the problem
 *
@@ -29,7 +25,7 @@ mode_c_board puzzle = {0, 0, 0, 0, NULL};
 */
 void modeC(void) {
   static int retVal = 8;
-  
+
   puzzle.lineEdge = getBoardRows();
   puzzle.columnEdge = getBoardColumns();
   puzzle.board = getBoardLayout();
