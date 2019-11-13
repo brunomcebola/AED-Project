@@ -129,7 +129,8 @@ void maxSize() {
     char mode = '\0', *tabuleiro = NULL;
 
     while(checkEOF()) {
-        if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2){
+        aux = fscanf(in_file, "%d %d", &linhas , &colunas);
+        if(aux != 2){
             break;
         }
 
@@ -178,23 +179,20 @@ int readLayout() {
         rows = getBoardRows(), columns = getBoardColumns(),
         tents_row = 0, *tents_column = NULL;
 
-
-    //get summation of tents in rows
-    for(int i=0; i<rows; i++) {
-        sum_tents_row += getBoardElRow(i);
-    }
-    //get summation of tents in columns
-    for(int j=0; j<columns; j++) {
-        sum_tents_column += getBoardElColumn(j);
-    }
-
-    if(sum_tents_row != sum_tents_column) {
-        setBoardAnswer(2);
-        return 1;
-    }
-
-
     if(getBoardMode() == 'C') {
+        //get summation of tents in rows
+        for(int i=0; i<rows; i++) {
+            sum_tents_row += getBoardElRow(i);
+        }
+        //get summation of tents in columns
+        for(int j=0; j<columns; j++) {
+            sum_tents_column += getBoardElColumn(j);
+        }
+
+        if(sum_tents_row != sum_tents_column) {
+            setBoardAnswer(2);
+            return 1;
+        }
         //save the actual number of tents in each column
         tents_column = (int *) calloc(columns , sizeof(int));
         checkNull(tents_column);
