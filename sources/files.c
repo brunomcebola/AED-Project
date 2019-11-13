@@ -25,7 +25,7 @@ void initFile(const char *file) {
     in_file = fopen(file, "r");
     checkNull(in_file);
 
-    file_name = (char *) calloc((size_out+2) , sizeof(char)) ;
+    file_name = (char *) calloc((size_out+2), sizeof(char)) ;
     checkNull(file_name);
     strncpy(file_name, aux, size_out-6);
 
@@ -193,7 +193,7 @@ void maxSize() {
         }
 
         while(mode < 'A' || mode > 'Z'){
-            aux = fscanf(in_file, "%c", &mode);
+            mode = fgetc(in_file);
         }
 
         if(mode == 'B') {
@@ -209,37 +209,28 @@ void maxSize() {
             el[0] = '\0';
             j = 0;
             if((el[j] = fgetc(in_file)) == EOF) {
-                exit(0);
+                return;
             }
             while (el[j] != ' ' && el[j] != '\n') {
                 j++;
                 if((el[j] = fgetc(in_file)) == EOF) {
-                    exit(0);
+                    return;
                 }
             }
 
-            if (el[0] == ' ' || el[0] == '\n') {
-                --i;
-                continue;
-            }
         }
 
         for(i = 0; i < colunas; i++) {
             el[0] = '\0';
             j = 0;
             if((el[j] = fgetc(in_file)) == EOF) {
-                exit(0);
+                return;
             }
             while (el[j] != ' ' && el[j] != '\n') {
                 j++;
                 if((el[j] = fgetc(in_file)) == EOF) {
-                    exit(0);
+                    return;
                 }
-            }
-
-            if (el[0] == ' ' || el[0] == '\n') {
-                --i;
-                continue;
             }
         }
 
