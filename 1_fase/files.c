@@ -53,7 +53,7 @@ int readMode() {
     x = 0, y = 0, mode = '\0';
 
     //get test mode
-    while(mode < 'A' || mode > 'Z'){
+    while(!isalpha(mode)){
         if(fscanf(in_file, "%c", &mode) != 1 ) {
             return 0;
         }
@@ -184,7 +184,7 @@ void maxSize() {
             break;
         }
 
-        while(mode < 'A' || mode > 'Z'){
+        while(!isalpha(mode)){
             mode = fgetc(in_file);
         }
 
@@ -264,10 +264,7 @@ int readLayout() {
         checkNull(tents_column);
 
         while(linha_atual != rows) {
-            if((c = fgetc(in_file)) == EOF) {
-                return 0;
-            }
-
+            c = fgetc(in_file);
             if(c == 'T' || c == 'A' || c == '.'){
                 if (c == 'A') {
                     trees++;
