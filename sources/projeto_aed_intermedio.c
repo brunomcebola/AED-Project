@@ -22,7 +22,7 @@ int main(int argc, char const *argv[]) {
             selMode();
             writeFile();
         }
-        initBoard();
+        setBoardAnswer(0);
     }
     terminateFile();
 
