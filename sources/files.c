@@ -101,12 +101,11 @@ int readElRowsAndColumns() {
             j++;
             el[j] = fgetc(in_file);
         }
-
         if (el[0] == ' ' || el[0] == '\n') {
             --i;
             continue;
         }
-
+        el[j] = '\0';
         aux = atoi(el);
         el_linha[i] = aux;
         sum_tents_row += aux;
@@ -126,6 +125,7 @@ int readElRowsAndColumns() {
             --i;
             continue;
         }
+        el[j] = '\0';
         aux = atoi(el);
         el_coluna[i] = aux;
         sum_tents_column += aux;
