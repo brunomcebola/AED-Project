@@ -15,8 +15,8 @@ FILE *out_file = NULL;
 
 //INNER FUNCTIONS
 void initFile(const char *file) {
-    char *file_name, *aux = basename((char *)file);
-    int size_in = strlen(file), size_out = strlen(aux);
+    char *file_name;
+    int size_in = strlen(file), size_out = strlen(basename((char *)file));
 
 
     if(strcmp(".camp0", file+size_in-6) != 0) {
@@ -27,7 +27,7 @@ void initFile(const char *file) {
 
     file_name = (char *) calloc((size_out+2), sizeof(char)) ;
     checkNull(file_name);
-    strncpy(file_name, aux, size_out-6);
+    strncpy(file_name, basename((char *)file), size_out-6);
 
     out_file = fopen(strcat(file_name,".tents0"), "w");
     checkNull(out_file);
@@ -171,7 +171,7 @@ void maxSize() {
                max_column, *el_linha, *el_coluna, i, j;
     static char mode, *tabuleiro;
 
-    static char el[20];
+    static char el[100];
 
     max = 0, linhas = 0, colunas = 0, mux = 0, c = 0,
     x = 0, aux = 0, max_row = 0, max_column = 0,
@@ -194,14 +194,14 @@ void maxSize() {
         else if(mode == 'C') {
             c = 1;
             mux = linhas * colunas;
-            max = MAX(max,mux);
+            max = MAX(max, mux);
         }
 
         for(i = 0; i < linhas; i++) {
             el[0] = '\0';
             j = 0;
             el[j] = fgetc(in_file);
-            while (el[j] != ' ' && el[j] != '\n') {
+            while (isdigit(el[j])) {
                 j++;
                 el[j] = fgetc(in_file);
             }
@@ -212,7 +212,7 @@ void maxSize() {
             el[0] = '\0';
             j = 0;
             el[j] = fgetc(in_file);
-            while (el[j] != ' ' && el[j] != '\n') {
+            while (isdigit(el[j])) {
                 j++;
                 el[j] = fgetc(in_file);
             }
@@ -360,13 +360,13 @@ int checkEOF(){
     static int end;
     end = 0, aux = '\0';
 
-    while((aux = fgetc(in_file)) != EOF){
+    while((aux = fgetc(in_file))){
         end = feof(in_file);
         if(end){
             return !end;
         }
 
-        if(aux != '\n') {
+        if(isdigit(aux)) {
             fseek(in_file, -1, SEEK_CUR);
             return 1;
         }
