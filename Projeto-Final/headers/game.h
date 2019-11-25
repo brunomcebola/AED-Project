@@ -3,29 +3,21 @@
 
 void initBoard(void);
 
-void setBoardSum(int);
-void setBoardRowsNColumns(int, int);
-void setBoardMode(char);
-void setBoardCoordinates(int, int);
+void setBoardBio(int, int, int, int);
 void setBoardArrays(char *, int *, int *, char *);
-void setBoardAnswer(int);
 
-char *getBoardBuffer(void);
 int getBoardSum(void);
 int getBoardRows(void);
 int getBoardColumns(void);
-char getBoardMode(void);
 int getBoardElRow(int);
 int getBoardElColumn(int);
+int getBoardAnswer(void);
+char getBoardLayoutElement(int, int);
 int *getBoardAllElRow(void);
 int *getBoardAllElColumn(void);
-char getBoardLayoutElement(int, int);
+char *getBoardBuffer(void);
 char *getBoardLayout(void);
-int getBoardAnswer(void);
-int getBoardCoordinateX(void);
-int getBoardCoordinateY(void);
 
-void selMode(void);
 
 void freeBoard(void);
 
