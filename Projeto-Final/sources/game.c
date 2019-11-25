@@ -35,6 +35,7 @@ void initBoard(void) {
 
 
 //SET FUNCTIONS
+
 void setBoardSum(int sum) {
     jogo.sum = sum;
 }
@@ -66,6 +67,10 @@ void setBoardAnswer(int answer) {
 
 
 //GET FUNCTIONS
+char *getBoardBuffer(void) {
+    return jogo.buffer;
+}
+
 int getBoardSum(void) {
     return jogo.sum;
 }

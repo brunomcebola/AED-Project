@@ -10,6 +10,7 @@ void setBoardCoordinates(int, int);
 void setBoardArrays(char *, int *, int *, char *);
 void setBoardAnswer(int);
 
+char *getBoardBuffer(void);
 int getBoardSum(void);
 int getBoardRows(void);
 int getBoardColumns(void);
