@@ -11,6 +11,7 @@
 typedef struct {
     int n_rows, n_columns, x, y;
     int *n_el_row, *n_el_column;
+    char *buffer;
     char mode;
     char *layout;
     int answer;
@@ -52,10 +53,11 @@ void setBoardCoordinates(int x, int y) {
     jogo.y = y;
 }
 
-void setBoardArrays(char *layout, int *n_el_row, int *n_el_column) {
+void setBoardArrays(char *layout, int *n_el_row, int *n_el_column, char *buffer) {
     jogo.layout = layout;
     jogo.n_el_row = n_el_row;
     jogo.n_el_column = n_el_column;
+    jogo.buffer = buffer;
 }
 
 void setBoardAnswer(int answer) {

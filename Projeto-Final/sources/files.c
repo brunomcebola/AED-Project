@@ -5,12 +5,14 @@
 #include <ctype.h>
 
 #include "../headers/files.h"
+#include "../headers/game.h"
 #include "../headers/bundle.h"
 
 #define MAX(a,b) (a > b ? a : b)
 
 FILE *in_file = NULL;
 FILE *out_file = NULL;
+
 
 void initFile(const char *file) {
     char *file_name;
@@ -33,25 +35,157 @@ void initFile(const char *file) {
     free(file_name);
 }
 
+int readBio() {
+    int linhas = 0, colunas = 0, tents = 0, sum_tents_row = 0, trash = 0, i = 0,
+        sum_tents_column = 0, answer = 0, *el_linha = getBoardAllElRow(),
+        *el_coluna = getBoardAllElColumn();
 
-char readChar() {
-
-    while(c != 'A' && c != 'T' && c != '.'){
-        if((c = fgetc(in_file)) == EOF) {
-            return '\0';
-        }
+    //get number of rows and columns
+    if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2) {
+        return 0;
     }
 
-    return c;
+    for(i = 0; i < linhas; i++) {
+        trash = fscanf(in_file, " %d", &tents));
+        el_linha[i] = tents;
+        sum_tents_row += tents;
+    }
+
+    for(i = 0; i < colunas; i++) {
+        trash = fscanf(in_file, " %d", &tents));
+        el_coluna[i] = tents;
+        sum_tents_column += tents;
+    }
+
+    if(sum_tents_row != sum_tents_column) {
+        answer = -1;
+    }
+
+    //set data to board
+    setBoardRowsNColumns(linhas, colunas);
+    setBoardSum(sum_tents_row);
+    setBoardAnswer(answer);
+    return 1;
 }
 
 void finishLayout() {
-    static int rows, columns, i, j;
-    rows = getBoardRows(), columns = getBoardColumns();
+    int rows, i;
+    rows = getBoardRows();
 
     for(i = 0; i < rows; i++){
-        for(j = 0; j < columns; j++){
-            readChar();
+        fscanf(in_file, " %*s");
+    }
+}
+
+
+/*
+*               TODO: check if board is valid with preliminary checks before allocating memory
+*
+*/
+
+
+void maxSize() {
+    int max = 0, linhas = 0, colunas = 0, mux = 0, max_string = 0,
+    aux = 0, max_row = 0, max_column = 0, i = 0,
+    *el_linha = NULL, *el_coluna = NULL;
+    char *tabuleiro = NULL, *buffer = NULL;
+
+
+    while(checkEOF()) {
+        aux = fscanf(in_file, " %d %d", &linhas , &colunas);
+        if(aux != 2){
+            break;
+        }
+
+        max_string = MAX(max_string, colunas);
+        mux = linhas * colunas;
+        max = MAX(max, mux);
+
+        for(i = 0; i < linhas; i++) {
+            aux = fscanf(in_file, " %*d");
+        }
+
+        for(i = 0; i < colunas; i++) {
+            aux = fscanf(in_file, " %*d");
+        }
+
+        for(i = 0; i < linhas; i++){
+            aux = fscanf(in_file, " %*s");
+        }
+
+        max_row = MAX(max_row, linhas);
+        max_column = MAX(max_column, colunas);
+    }
+
+
+    tabuleiro = (char *) malloc(max * sizeof(char));
+    checkNull(tabuleiro);
+
+    buffer = (char *) malloc(max_string * sizeof(char));
+    checkNull(buffer);
+
+    el_linha = (int *) malloc(max_row * sizeof(int));
+    checkNull(el_linha);
+
+    el_coluna = (int *) malloc(max_column * sizeof(int));
+    checkNull(el_coluna);
+
+    setBoardArrays(tabuleiro, el_linha, el_coluna, buffer);
+
+}
+
+
+
+
+void writeFile () {
+    static char mode;
+    mode = getBoardMode();
+
+    if(fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode) < 0) {
+        exit(0);
+    }
+    if(mode == 'B') {
+        if(fprintf(out_file, "%d %d ", getBoardCoordinateX(), getBoardCoordinateY()) < 0) {
+            exit(0);
         }
     }
+    if(fprintf(out_file, "%d\n\n", getBoardAnswer()) < 0) {
+        exit(0);
+    }
+
+}
+
+void begining(){
+    fseek(in_file, 0, SEEK_SET) ;
+}
+
+int checkEOF(){
+    static char aux;
+    static int end;
+    end = 0, aux = '\0';
+
+    while((aux = fgetc(in_file))){
+        end = feof(in_file);
+        if(end){
+            return !end;
+        }
+
+        if(isdigit(aux)) {
+            fseek(in_file, -1, SEEK_CUR);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void terminateFile() {
+    if(fclose(in_file) != 0) {
+        exit(0);
+    }
+
+    if(fclose(out_file) != 0) {
+        exit(0);
+    }
+
+    freeBoard();
 }
