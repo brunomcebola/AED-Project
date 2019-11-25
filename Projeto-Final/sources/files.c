@@ -95,7 +95,7 @@ void maxSize() {
     char *tabuleiro = NULL, *buffer = NULL;
 
 
-    while(checkEOF()) {
+    while(!feof(in_file)) {
         aux = fscanf(in_file, " %d %d", &linhas , &colunas);
         if(aux != 2){
             break;
@@ -192,25 +192,6 @@ void writeFile () {
 
 void begining(){
     fseek(in_file, 0, SEEK_SET) ;
-}
-
-int checkEOF(){
-    static char aux;
-    static int end;
-    end = 0, aux = '\0';
-
-    while((aux = fgetc(in_file))){
-        end = feof(in_file);
-        if(end){
-            return !end;
-        }
-
-        if(isdigit(aux)) {
-            fseek(in_file, -1, SEEK_CUR);
-            return 1;
-        }
-    }
-    return 0;
 }
 
 void terminateFile() {
