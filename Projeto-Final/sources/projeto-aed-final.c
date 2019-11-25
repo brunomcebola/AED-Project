@@ -16,9 +16,11 @@ int main(int argc, char const *argv[]) {
     maxSize();
     begining();
 
-    while(checkEOF()) {
+    while(/*TODO: create check EOF reboot*/) {
         if(readFile()) {
-            solver();
+            if(getBoardAnswer() != -1) {
+                solver();
+            }
             writeFile();
         }
         setBoardAnswer(0);
