@@ -5,6 +5,7 @@ void initBoard(void);
 
 void setBoardBio(int, int, int, int);
 void setBoardArrays(char *, int *, int *, char *);
+void setBoardSeason(int);
 
 int getBoardSum(void);
 int getBoardRows(void);
