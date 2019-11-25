@@ -175,21 +175,19 @@ int readLayout() {
 
 
 void writeFile () {
-    static char mode;
-    mode = getBoardMode();
+    int answer = getBoardAnswer(), rows = getBoardRows(),
+        columns = getBoardColumns(), i = 0, j = 0;
+    char *layout = getBoardLayout();
 
-    if(fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode) < 0) {
+    if(fprintf(out_file, "%d %d %d\n", rows, columns, answer) < 0) {
         exit(0);
     }
-    if(mode == 'B') {
-        if(fprintf(out_file, "%d %d ", getBoardCoordinateX(), getBoardCoordinateY()) < 0) {
-            exit(0);
+
+    if(answer == 1){
+        for(i = 0; i < rows; i++){
+            for(j = 0; j < columns; j++)
         }
     }
-    if(fprintf(out_file, "%d\n\n", getBoardAnswer()) < 0) {
-        exit(0);
-    }
-
 }
 
 void begining(){
