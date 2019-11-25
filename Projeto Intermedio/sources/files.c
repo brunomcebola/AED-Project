@@ -267,14 +267,11 @@ int readLayout() {
         checkNull(tents_column);
 
         while(linha_atual != rows) {
-<<<<<<< HEAD
+
             if((c = fgetc(in_file)) == EOF) {
                 return 0;
             }
 
-=======
-            c = fgetc(in_file);
->>>>>>> fe28e4b50a913fedf6845a1065736460fbf8cb5e
             if(c == 'T' || c == 'A' || c == '.'){
                 if (c == 'A') {
                     trees++;

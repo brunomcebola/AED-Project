@@ -1,17 +1,29 @@
+/*
+*
+*           TODO: put flag for high or low season
+*
+*/
+
+
 int readLayout() {
-    char *tabuleiro = getBoardLayout(), c = '\0';
-    int sum_tents = 0, trees = 0, linha_atual = 0, coluna_atual = 0,
-    rows = getBoardRows(), columns = getBoardColumns(), tents_row = 0, *tents_column = NULL, j;
+    char *tabuleiro = getBoardLayout(), c = '\0', *buffer = getBoardBuffer();
+    int sum_tents = 0, trees = 0, i = 0,
+    rows = getBoardRows(), columns = getBoardColumns(), j;
 
+    tabuleiro = "";
 
-    sum_tents = getBoardSum();
+    for (i = 0; i < rows; i++) {
 
-    //save the actual number of tents in each column
-    tents_column = (int *) calloc((unsigned int)columns , sizeof(int));
-    checkNull(tents_column);
+        fscanf(in_file, " %s", buffer);
 
+        for (j = 0; i < columns; i++) {
+            if (buffer[i] == 'A') {
+                trees++;
+            }
+        }
+        strcat(tabuleiro, buffer);
+    }
 
-    free(tents_column);
 
 
     return 1;
