@@ -35,43 +35,6 @@ void initFile(const char *file) {
     free(file_name);
 }
 
-/*
-
-    TODO: chamar finishlayout when readbio da merda
-
-*/
-
-int readBio() {
-    int rows = 0, columns = 0, tents = 0, sum_tents_row = 0, trash = 0, i = 0,
-        sum_tents_column = 0, answer = 0, *el_linha = getBoardAllElRow(),
-        *el_coluna = getBoardAllElColumn();
-
-    //get number of rows and columns
-    if(fscanf(in_file, "%d %d", &rows , &columns) != 2) {
-        return 0;
-    }
-
-    for(i = 0; i < rows; i++) {
-        trash = fscanf(in_file, " %d", &tents);
-        el_linha[i] = tents;
-        sum_tents_row += tents;
-    }
-
-    for(i = 0; i < columns; i++) {
-        trash = fscanf(in_file, " %d", &tents);
-        el_coluna[i] = tents;
-        sum_tents_column += tents;
-    }
-
-    if(sum_tents_row != sum_tents_column) {
-        answer = -1;
-    }
-
-    //set data to board
-    setBoardBio(rows, columns, sum_tents_row, answer);
-    return 1;
-}
-
 void finishLayout() {
     int rows, i;
     rows = getBoardRows();
@@ -81,13 +44,10 @@ void finishLayout() {
     }
 }
 
-
 /*
 *               TODO: check if board is valid with preliminary checks before allocating memory
 *
 */
-
-
 void maxSize() {
     int max = 0, linhas = 0, colunas = 0, mux = 0, max_string = 0,
     aux = 0, max_row = 0, max_column = 0, i = 0,
@@ -138,13 +98,38 @@ void maxSize() {
 
 }
 
+int readBio(void) {
+    int rows = 0, columns = 0, tents = 0, sum_tents_row = 0, trash = 0, i = 0,
+        sum_tents_column = 0, answer = 0, *el_linha = getBoardAllElRow(),
+        *el_coluna = getBoardAllElColumn();
 
-/*
-*           0 for error, 1 for good
-*           TODO: put flag for high or low season
-*
-*/
-int readLayout() {
+    //get number of rows and columns
+    if(fscanf(in_file, "%d %d", &rows , &columns) != 2) {
+        return 0;
+    }
+
+    for(i = 0; i < rows; i++) {
+        trash = fscanf(in_file, " %d", &tents);
+        el_linha[i] = tents;
+        sum_tents_row += tents;
+    }
+
+    for(i = 0; i < columns; i++) {
+        trash = fscanf(in_file, " %d", &tents);
+        el_coluna[i] = tents;
+        sum_tents_column += tents;
+    }
+
+    if(sum_tents_row != sum_tents_column) {
+        answer = -1;
+    }
+
+    //set data to board
+    setBoardBio(rows, columns, sum_tents_row, answer);
+    return 1;
+}
+
+int readLayout(void) {
     char *tabuleiro = getBoardLayout(), *buffer = getBoardBuffer();
     int trees = 0, i = 0, rows = getBoardRows(), columns = getBoardColumns(), j, num_asked_tents = getBoardSum();
 
@@ -173,6 +158,20 @@ int readLayout() {
     return 1;
 }
 
+int readFile(void){
+    if(!readBio()){
+        return 0;
+    }
+    if(getBoardAnswer() == -1){
+        finishLayout();
+    }
+    else {
+        if(!readLayout()){
+            return 0;
+        }
+    }
+    return 1;
+}
 
 void writeFile () {
     int answer = getBoardAnswer(), rows = getBoardRows(),
