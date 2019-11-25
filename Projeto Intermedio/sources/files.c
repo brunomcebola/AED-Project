@@ -5,7 +5,6 @@
 #include <ctype.h>
 
 #include "../headers/files.h"
-#include "../headers/game.h"
 #include "../headers/bundle.h"
 
 #define MAX(a,b) (a > b ? a : b)
