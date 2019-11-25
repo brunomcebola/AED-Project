@@ -142,18 +142,16 @@ void maxSize() {
 
 
 void writeFile () {
-    static char mode;
-    mode = getBoardMode();
+    int answer = getBoardAnswer(), rows = getBoardRows(), columns = getBoardColumns();
 
-    if(fprintf(out_file, "%d %d %c ", getBoardRows(), getBoardColumns(), mode) < 0) {
+    if(fprintf(out_file, "%d %d %d\n", rows, columns, answer) < 0) {
         exit(0);
     }
-    if(mode == 'B') {
-        if(fprintf(out_file, "%d %d ", getBoardCoordinateX(), getBoardCoordinateY()) < 0) {
-            exit(0);
-        }
+
+    if(answer == 1){
+        
     }
-    if(fprintf(out_file, "%d\n\n", getBoardAnswer()) < 0) {
+    if(fprintf(out_file, "%d\n\n", answer) < 0) {
         exit(0);
     }
 
