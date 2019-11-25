@@ -176,7 +176,7 @@ int readLayout() {
 
 void writeFile () {
     int answer = getBoardAnswer(), rows = getBoardRows(),
-        columns = getBoardColumns(), i = 0, j = 0;
+        columns = getBoardColumns(), i = 0;
     char *layout = getBoardLayout();
 
     if(fprintf(out_file, "%d %d %d\n", rows, columns, answer) < 0) {
@@ -185,7 +185,7 @@ void writeFile () {
 
     if(answer == 1){
         for(i = 0; i < rows; i++){
-            for(j = 0; j < columns; j++)
+            fprintf(out_file, "%.*s\n", columns, layout+(i*columns));
         }
     }
 }
