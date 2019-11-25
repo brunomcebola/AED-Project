@@ -122,7 +122,7 @@ void maxSize() {
     }
 
 
-    tabuleiro = (char *) malloc(max * sizeof(char));
+    tabuleiro = (char *) malloc((max+1) * sizeof(char));
     checkNull(tabuleiro);
 
     buffer = (char *) malloc(max_string * sizeof(char));
@@ -139,6 +139,40 @@ void maxSize() {
 }
 
 
+/*
+*
+*           TODO: put flag for high or low season
+*
+*/
+int readLayout() {
+    char *tabuleiro = getBoardLayout(), c = '\0', *buffer = getBoardBuffer();
+    int sum_tents = 0, trees = 0, i = 0,
+    rows = getBoardRows(), columns = getBoardColumns(), j, num_asked_tents = getBoardSum();
+
+    tabuleiro = "";
+
+    for (i = 0; i < rows; i++) {
+
+        fscanf(in_file, " %s", buffer);
+
+        for (j = 0; i < columns; i++) {
+            if (buffer[i] == 'A') {
+                trees++;
+            }
+        }
+        strcat(tabuleiro, buffer);
+    }
+
+    if (trees == num_asked_tents) {
+        setBoardSeason(/*high*/);
+    } else if (trees > num_asked_tents) {
+        setBoardSeason(/*low*/);
+    } else {
+        return 0;
+    }
+
+    return 1;
+}
 
 
 void writeFile () {
