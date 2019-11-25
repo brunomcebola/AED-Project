@@ -145,7 +145,7 @@ void maxSize() {
 *
 */
 int readLayout() {
-    char *tabuleiro = getBoardLayout(), c = '\0', *buffer = getBoardBuffer();
+    char *tabuleiro = getBoardLayout(), *buffer = getBoardBuffer();
     int trees = 0, i = 0, rows = getBoardRows(), columns = getBoardColumns(), j, num_asked_tents = getBoardSum();
 
     tabuleiro = "";
