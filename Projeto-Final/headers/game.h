@@ -7,7 +7,7 @@ void setBoardSum(int);
 void setBoardRowsNColumns(int, int);
 void setBoardMode(char);
 void setBoardCoordinates(int, int);
-void setBoardArrays(char *, int *, int *);
+void setBoardArrays(char *, int *, int *, char *);
 void setBoardAnswer(int);
 
 int getBoardSum(void);
