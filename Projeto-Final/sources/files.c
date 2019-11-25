@@ -176,19 +176,19 @@ int readLayout() {
 
 
 void writeFile () {
-    int answer = getBoardAnswer(), rows = getBoardRows(), columns = getBoardColumns();
+    int answer = getBoardAnswer(), rows = getBoardRows(),
+        columns = getBoardColumns(), i = 0, j = 0;
+    char *layout = getBoardLayout();
 
     if(fprintf(out_file, "%d %d %d\n", rows, columns, answer) < 0) {
         exit(0);
     }
 
     if(answer == 1){
-        
+        for(i = 0; i < rows; i++){
+            for(j = 0; j < columns; j++)
+        }
     }
-    if(fprintf(out_file, "%d\n\n", answer) < 0) {
-        exit(0);
-    }
-
 }
 
 void begining(){
