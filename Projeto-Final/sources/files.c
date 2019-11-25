@@ -140,14 +140,13 @@ void maxSize() {
 
 
 /*
-*
+*           0 for error, 1 for good
 *           TODO: put flag for high or low season
 *
 */
 int readLayout() {
     char *tabuleiro = getBoardLayout(), c = '\0', *buffer = getBoardBuffer();
-    int sum_tents = 0, trees = 0, i = 0,
-    rows = getBoardRows(), columns = getBoardColumns(), j, num_asked_tents = getBoardSum();
+    int trees = 0, i = 0, rows = getBoardRows(), columns = getBoardColumns(), j, num_asked_tents = getBoardSum();
 
     tabuleiro = "";
 
@@ -164,9 +163,9 @@ int readLayout() {
     }
 
     if (trees == num_asked_tents) {
-        setBoardSeason(/*high*/);
+        setBoardSeason(1);
     } else if (trees > num_asked_tents) {
-        setBoardSeason(/*low*/);
+        setBoardSeason(2);
     } else {
         return 0;
     }

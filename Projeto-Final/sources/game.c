@@ -12,6 +12,7 @@ typedef struct {
     char *layout;
     int answer;
     int sum;
+    int season;
 } board;
 
 board jogo;
@@ -24,6 +25,7 @@ void initBoard(void) {
     jogo.n_columns = 0;
     jogo.answer = 0;
     jogo.sum = 0;
+    jogo.season = 0;
 }
 
 
@@ -42,6 +44,10 @@ void setBoardArrays(char *layout, int *n_el_row, int *n_el_column, char *buffer)
     jogo.buffer = buffer;
 }
 
+
+void setBoardSeason(int season) {
+    jogo.season = season;
+}
 
 
 //GET FUNCTIONS
