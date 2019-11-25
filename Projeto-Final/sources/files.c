@@ -13,7 +13,6 @@
 FILE *in_file = NULL;
 FILE *out_file = NULL;
 
-
 void initFile(const char *file) {
     char *file_name;
     int size_in = strlen(file), size_out = strlen(basename((char *)file));
