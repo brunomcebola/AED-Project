@@ -39,7 +39,7 @@ int readRowsAndColumns() {
     linhas = 0, colunas = 0;
 
     //get number of rows and columns
-    if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2) {
+    if(fscanf(in_file, " %d %d", &linhas , &colunas) != 2) {
         return 0;
     }
     setBoardRowsNColumns(linhas, colunas);
