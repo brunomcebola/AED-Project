@@ -35,24 +35,30 @@ void initFile(const char *file) {
     free(file_name);
 }
 
+/*
+
+    TODO: chamar finishlayout when readbio da merda
+
+*/
+
 int readBio() {
-    int linhas = 0, colunas = 0, tents = 0, sum_tents_row = 0, trash = 0, i = 0,
+    int rows = 0, columns = 0, tents = 0, sum_tents_row = 0, trash = 0, i = 0,
         sum_tents_column = 0, answer = 0, *el_linha = getBoardAllElRow(),
         *el_coluna = getBoardAllElColumn();
 
     //get number of rows and columns
-    if(fscanf(in_file, "%d %d", &linhas , &colunas) != 2) {
+    if(fscanf(in_file, "%d %d", &rows , &columns) != 2) {
         return 0;
     }
 
-    for(i = 0; i < linhas; i++) {
-        trash = fscanf(in_file, " %d", &tents));
+    for(i = 0; i < rows; i++) {
+        trash = fscanf(in_file, " %d", &tents);
         el_linha[i] = tents;
         sum_tents_row += tents;
     }
 
-    for(i = 0; i < colunas; i++) {
-        trash = fscanf(in_file, " %d", &tents));
+    for(i = 0; i < columns; i++) {
+        trash = fscanf(in_file, " %d", &tents);
         el_coluna[i] = tents;
         sum_tents_column += tents;
     }
@@ -62,9 +68,7 @@ int readBio() {
     }
 
     //set data to board
-    setBoardRowsNColumns(linhas, colunas);
-    setBoardSum(sum_tents_row);
-    setBoardAnswer(answer);
+    setBoardBio(rows, columns, sum_tents_row, answer);
     return 1;
 }
 
