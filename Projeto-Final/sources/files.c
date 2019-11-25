@@ -140,7 +140,7 @@ void maxSize() {
 
 
 /*
-*
+*           0 for error, 1 for good
 *           TODO: put flag for high or low season
 *
 */
