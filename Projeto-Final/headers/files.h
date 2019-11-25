@@ -1,6 +1,7 @@
 #ifndef files_included
 #define files_included
 
+int reachedEOF(void);
 void initFile(const char *);
 void finishLayout(void);
 void maxSize(void);

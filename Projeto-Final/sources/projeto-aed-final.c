@@ -16,7 +16,7 @@ int main(int argc, char const *argv[]) {
     maxSize();
     begining();
 
-    while(/*TODO: create check EOF reboot*/) {
+    while(!reachedEOF()) {
         if(readFile()) {
             if(getBoardAnswer() != -1) {
                 solver();

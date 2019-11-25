@@ -13,6 +13,13 @@
 FILE *in_file = NULL;
 FILE *out_file = NULL;
 
+int reachedEOF(void) {
+  if (feof(in_file)) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
 
 void initFile(const char *file) {
     char *file_name;
