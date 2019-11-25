@@ -33,3 +33,26 @@ void initFile(const char *file) {
 
     free(file_name);
 }
+
+
+char readChar() {
+
+    while(c != 'A' && c != 'T' && c != '.'){
+        if((c = fgetc(in_file)) == EOF) {
+            return '\0';
+        }
+    }
+
+    return c;
+}
+
+void finishLayout() {
+    static int rows, columns, i, j;
+    rows = getBoardRows(), columns = getBoardColumns();
+
+    for(i = 0; i < rows; i++){
+        for(j = 0; j < columns; j++){
+            readChar();
+        }
+    }
+}
