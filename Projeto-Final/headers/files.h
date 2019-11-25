@@ -7,7 +7,6 @@ void maxSize(void);
 int readFile(void);
 void writeFile(void);
 void begining(void);
-int checkEOF(void);
 void terminateFile(void);
 
 #endif
