@@ -92,28 +92,44 @@ movemix:
 a:
 	@ rm -r -f ./ans/A
 	@ mkdir -p ./ans/A
+<<<<<<< HEAD
 	for F in ${FILES_A_IN}; do valgrind --leak-check=full --track-origins=yes ./$(PROJECT_NAME) $${F} ; done
+=======
+	for F in ${FILES_A_IN}; do ./$(PROJECT_NAME) $${F} ; done
+>>>>>>> fe28e4b50a913fedf6845a1065736460fbf8cb5e
 	$(MAKE) movea
 	@ diff -r ans/A tents/A
 
 b:
 	@ rm -r -f ./ans/B
 	@ mkdir -p ./ans/B
+<<<<<<< HEAD
 	for F in ${FILES_B_IN}; do valgrind --leak-check=full --track-origins=yes ./$(PROJECT_NAME) $${F} ; done
+=======
+	for F in ${FILES_B_IN}; do ./$(PROJECT_NAME) $${F} ; done
+>>>>>>> fe28e4b50a913fedf6845a1065736460fbf8cb5e
 	$(MAKE) moveb
 	@ diff -r ans/B tents/B
 
 c:
 	@ rm -r -f ./ans/C
 	@ mkdir -p ./ans/C
+<<<<<<< HEAD
 	for F in ${FILES_C_IN}; do valgrind --leak-check=full --track-origins=yes ./$(PROJECT_NAME) $${F} ; done
+=======
+	for F in ${FILES_C_IN}; do ./$(PROJECT_NAME) $${F} ; done
+>>>>>>> fe28e4b50a913fedf6845a1065736460fbf8cb5e
 	$(MAKE) movec
 	@ diff -r ans/C tents/C
 
 m:
 	@ rm -r -f ./ans/MIX
 	@ mkdir -p ./ans/MIX
+<<<<<<< HEAD
 	for F in ${FILES_MIX_IN}; do valgrind --leak-check=full --track-origins=yes ./$(PROJECT_NAME) $${F} ; done
+=======
+	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
+>>>>>>> fe28e4b50a913fedf6845a1065736460fbf8cb5e
 	$(MAKE) movemix
 	@ diff -r ans/MIX tents/MIX
 
