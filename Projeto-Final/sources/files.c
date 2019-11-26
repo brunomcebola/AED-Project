@@ -34,7 +34,7 @@ void initFile(const char *file) {
 
     file_name = (char *) calloc((size_out+2), sizeof(char)) ;
     checkNull(file_name);
-    strncpy(file_name, basename((char *)file), size_out-6);
+    strncpy(file_name, basename((char *)file), size_out-5);
 
     out_file = fopen(strcat(file_name,".tents"), "w");
     checkNull(out_file);
