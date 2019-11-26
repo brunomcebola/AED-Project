@@ -156,8 +156,6 @@ int readBio(void) {
     int rows = 0, columns = 0, tents = 0, trash = 0, i = 0,
         *el_linha = getBoardAllElRow(), *el_coluna = getBoardAllElColumn();
 
-        printf("aa\n");
-
     //get number of rows and columns
     if(board_ptr == NULL) {
         fscanf(in_file, " ");
@@ -267,6 +265,12 @@ void terminateFile() {
         exit(0);
     }
 
+
+    while(board != NULL){
+        board_ptr = board;
+        board = board->next;
+        free(board_ptr);
+    }
 
 
     freeBoard();
