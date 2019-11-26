@@ -3,7 +3,7 @@
 
 void initBoard(void);
 
-void setBoardBio(int, int, int, int);
+void setBoardBio(int, int, int);
 void setBoardArrays(char *, int *, int *, char *);
 void setBoardSeason(int);
 void setBoardAnswer(int);

@@ -30,11 +30,10 @@ void initBoard(void) {
 
 
 //SET FUNCTIONS
-void setBoardBio(int rows, int columns, int sum, int answer) {
+void setBoardBio(int rows, int columns, int sum) {
     jogo.n_rows = rows;
     jogo.n_columns = columns;
     jogo.sum = sum;
-    jogo.answer = answer;
 }
 
 void setBoardArrays(char *layout, int *n_el_row, int *n_el_column, char *buffer) {
