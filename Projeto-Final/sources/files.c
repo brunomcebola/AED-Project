@@ -88,7 +88,7 @@ void maxSize() {
     }
 
 
-    tabuleiro = (char *) malloc((max+1) * sizeof(char));
+    tabuleiro = (char *) calloc(max+2, sizeof(char));
     checkNull(tabuleiro);
 
     buffer = (char *) calloc(max_column+1, sizeof(char));
