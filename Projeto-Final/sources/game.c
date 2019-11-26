@@ -13,7 +13,7 @@ typedef struct {
     int answer;
     int sum;
     int season;
-} board;
+}board;
 
 board jogo;
 

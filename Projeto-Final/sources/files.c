@@ -14,11 +14,11 @@ FILE *in_file = NULL;
 FILE *out_file = NULL;
 
 int reachedEOF(void) {
-  if (feof(in_file)) {
-    return 1;
-  } else {
-    return 0;
-  }
+    if (feof(in_file)) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 void initFile(const char *file) {
@@ -34,7 +34,7 @@ void initFile(const char *file) {
 
     file_name = (char *) calloc((size_out+2), sizeof(char)) ;
     checkNull(file_name);
-    strncpy(file_name, basename((char *)file), size_out-6);
+    strncpy(file_name, basename((char *)file), size_out-5);
 
     out_file = fopen(strcat(file_name,".tents"), "w");
     checkNull(out_file);
@@ -88,7 +88,7 @@ void maxSize() {
     }
 
 
-    tabuleiro = (char *) calloc(max+2, sizeof(char));
+    tabuleiro = (char *) calloc(max+1, sizeof(char));
     checkNull(tabuleiro);
 
     buffer = (char *) calloc(max_column+1, sizeof(char));
@@ -140,7 +140,8 @@ int readLayout(void) {
     char *tabuleiro = getBoardLayout(), *buffer = getBoardBuffer();
     int trees = 0, i = 0, rows = getBoardRows(), columns = getBoardColumns(), j, num_asked_tents = getBoardSum();
 
-    tabuleiro[1] = '\0';
+    tabuleiro[0] = '\0';
+    buffer[0]= '\0';
 
     for (i = 0; i < rows; i++) {
 
