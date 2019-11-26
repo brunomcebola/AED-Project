@@ -56,7 +56,7 @@ void finishLayout() {
 *
 */
 void maxSize() {
-    int max = 0, linhas = 0, colunas = 0, mux = 0, max_string = 0,
+    int max = 0, linhas = 0, colunas = 0, mux = 0,
     aux = 0, max_row = 0, max_column = 0, i = 0,
     *el_linha = NULL, *el_coluna = NULL;
     char *tabuleiro = NULL, *buffer = NULL;
@@ -68,7 +68,6 @@ void maxSize() {
             break;
         }
 
-        max_string = MAX(max_string, colunas);
         mux = linhas * colunas;
         max = MAX(max, mux);
 
@@ -92,7 +91,7 @@ void maxSize() {
     tabuleiro = (char *) malloc((max+1) * sizeof(char));
     checkNull(tabuleiro);
 
-    buffer = (char *) malloc(max_string * sizeof(char));
+    buffer = (char *) calloc(max_column+1, sizeof(char));
     checkNull(buffer);
 
     el_linha = (int *) malloc(max_row * sizeof(int));
@@ -111,7 +110,7 @@ int readBio(void) {
         *el_coluna = getBoardAllElColumn();
 
     //get number of rows and columns
-    if(fscanf(in_file, "%d %d", &rows , &columns) != 2) {
+    if(fscanf(in_file, " %d %d", &rows , &columns) != 2) {
         return 0;
     }
 
@@ -133,6 +132,7 @@ int readBio(void) {
 
     //set data to board
     setBoardBio(rows, columns, sum_tents_row, answer);
+
     return 1;
 }
 
@@ -140,17 +140,19 @@ int readLayout(void) {
     char *tabuleiro = getBoardLayout(), *buffer = getBoardBuffer();
     int trees = 0, i = 0, rows = getBoardRows(), columns = getBoardColumns(), j, num_asked_tents = getBoardSum();
 
-    tabuleiro = "";
+    tabuleiro[1] = '\0';
 
     for (i = 0; i < rows; i++) {
 
         fscanf(in_file, " %s", buffer);
 
-        for (j = 0; i < columns; i++) {
-            if (buffer[i] == 'A') {
+        for (j = 0; j < columns; j++) {
+            if (buffer[j] == 'A') {
                 trees++;
             }
+
         }
+
         strcat(tabuleiro, buffer);
     }
 

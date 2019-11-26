@@ -19,7 +19,7 @@ int main(int argc, char const *argv[]) {
     while(!reachedEOF()) {
         if(readFile()) {
             if(getBoardAnswer() != -1) {
-                solver();
+                //solver();
             }
             writeFile();
         }

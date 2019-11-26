@@ -49,6 +49,10 @@ void setBoardSeason(int season) {
     jogo.season = season;
 }
 
+void setBoardAnswer(int answer) {
+    jogo.answer = answer;
+}
+
 
 //GET FUNCTIONS
 char *getBoardBuffer(void) {
