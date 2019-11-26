@@ -3,7 +3,6 @@
 
 int reachedEOF(void);
 void initFile(const char *);
-void finishLayout(void);
 void maxSize(void);
 int readFile(void);
 void writeFile(void);

@@ -10,6 +10,14 @@
 
 #define MAX(a,b) (a > b ? a : b)
 
+typedef struct _Board {
+    int valid, sum;
+    struct _Board *next;
+} Board;
+
+Board *board = NULL;
+Board *board_ptr = NULL;
+
 FILE *in_file = NULL;
 FILE *out_file = NULL;
 
@@ -42,49 +50,87 @@ void initFile(const char *file) {
     free(file_name);
 }
 
-void finishLayout() {
-    int rows, i;
-    rows = getBoardRows();
+void finishLayout(int flag) {
+    int rows = -1, columns, i;
 
-    for(i = 0; i < rows; i++){
-        fscanf(in_file, " %*s");
+    if(flag) {
+        fscanf(in_file, " %d %d", &rows, &columns);
+
+        for(i = 0; i < rows; i++) {
+            fscanf(in_file, " %*d");
+        }
+
+        for(i = 0; i < columns; i++) {
+            fscanf(in_file, " %*d");
+        }
+        setBoardBio(rows, columns, 0);
+        setBoardAnswer(-1);
     }
+    else {
+        rows = getBoardRows();
+        for(i = 0; i < rows; i++){
+            fscanf(in_file, " %*s");
+        }
+    }
+
 }
 
-/*
-*               TODO: check if board is valid with preliminary checks before allocating memory
-*
-*/
-void maxSize() {
-    int max = 0, linhas = 0, colunas = 0, mux = 0,
-    aux = 0, max_row = 0, max_column = 0, i = 0,
-    *el_linha = NULL, *el_coluna = NULL;
-    char *tabuleiro = NULL, *buffer = NULL;
 
+void maxSize() {
+    int max = 0, linhas = 0, colunas = 0, mux = 0, tents = 0,
+    aux = 0, max_row = 0, max_column = 0, i = 0, sum_tents_row = 0,
+    *el_linha = NULL, *el_coluna = NULL, valid = 1, sum_tents_column = 0;
+    char *tabuleiro = NULL, *buffer = NULL;
+    Board *file_aux = NULL;
 
     while(!feof(in_file)) {
+        valid = 1;
+        sum_tents_row = 0;
+        sum_tents_column = 0;
+
         aux = fscanf(in_file, " %d %d", &linhas , &colunas);
         if(aux != 2){
             break;
         }
 
-        mux = linhas * colunas;
-        max = MAX(max, mux);
-
         for(i = 0; i < linhas; i++) {
-            aux = fscanf(in_file, " %*d");
+            aux = fscanf(in_file, " %d", &tents);
+            sum_tents_row += tents;
         }
 
         for(i = 0; i < colunas; i++) {
-            aux = fscanf(in_file, " %*d");
+            aux = fscanf(in_file, " %d", &tents);
+            sum_tents_column += tents;
         }
 
         for(i = 0; i < linhas; i++){
             aux = fscanf(in_file, " %*s");
         }
 
-        max_row = MAX(max_row, linhas);
-        max_column = MAX(max_column, colunas);
+        if(sum_tents_row != sum_tents_column) {
+            valid = 0;
+        }
+
+        mux = linhas * colunas;
+        max = valid ? MAX(max, mux): max;
+
+        max_row = valid ? MAX(max_row, linhas): max_row;
+        max_column = valid ? MAX(max_column, colunas): max_column;
+
+        file_aux = malloc(sizeof(Board));
+        checkNull(file_aux);
+        file_aux -> valid = valid;
+        file_aux -> sum = sum_tents_row;
+        file_aux -> next = NULL;
+
+        if(board == NULL) {
+            board = file_aux;
+        }
+        else {
+            board_ptr->next = file_aux;
+        }
+        board_ptr = file_aux;
+
     }
 
 
@@ -102,36 +148,46 @@ void maxSize() {
 
     setBoardArrays(tabuleiro, el_linha, el_coluna, buffer);
 
+    board_ptr = board;
+
 }
 
 int readBio(void) {
-    int rows = 0, columns = 0, tents = 0, sum_tents_row = 0, trash = 0, i = 0,
-        sum_tents_column = 0, answer = 0, *el_linha = getBoardAllElRow(),
-        *el_coluna = getBoardAllElColumn();
+    int rows = 0, columns = 0, tents = 0, trash = 0, i = 0,
+        *el_linha = getBoardAllElRow(), *el_coluna = getBoardAllElColumn();
+
+        printf("aa\n");
 
     //get number of rows and columns
-    if(fscanf(in_file, " %d %d", &rows , &columns) != 2) {
+    if(board_ptr == NULL) {
+        fscanf(in_file, " ");
         return 0;
     }
 
-    for(i = 0; i < rows; i++) {
-        trash = fscanf(in_file, " %d", &tents);
-        el_linha[i] = tents;
-        sum_tents_row += tents;
+    if(board_ptr -> valid){
+        trash = fscanf(in_file, " %d %d", &rows , &columns);
+        if(trash != 2) {
+            return 0;
+        }
+
+        for(i = 0; i < rows; i++) {
+            trash = fscanf(in_file, " %d", &tents);
+            el_linha[i] = tents;
+        }
+
+        for(i = 0; i < columns; i++) {
+            trash = fscanf(in_file, " %d", &tents);
+            el_coluna[i] = tents;
+        }
+
+        //set data to board
+        setBoardBio(rows, columns, board_ptr -> sum);
+    }
+    else {
+        finishLayout(1);
     }
 
-    for(i = 0; i < columns; i++) {
-        trash = fscanf(in_file, " %d", &tents);
-        el_coluna[i] = tents;
-        sum_tents_column += tents;
-    }
-
-    if(sum_tents_row != sum_tents_column) {
-        answer = -1;
-    }
-
-    //set data to board
-    setBoardBio(rows, columns, sum_tents_row, answer);
+    board_ptr = board_ptr -> next;
 
     return 1;
 }
@@ -172,7 +228,7 @@ int readFile(void){
         return 0;
     }
     if(getBoardAnswer() == -1){
-        finishLayout();
+        finishLayout(0);
     }
     else {
         if(!readLayout()){
@@ -210,6 +266,8 @@ void terminateFile() {
     if(fclose(out_file) != 0) {
         exit(0);
     }
+
+
 
     freeBoard();
 }
