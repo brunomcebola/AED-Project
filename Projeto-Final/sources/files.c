@@ -133,20 +133,21 @@ void maxSize() {
 
     }
 
+    if(max == 0){
+        tabuleiro = (char *) malloc((max+1) * sizeof(char));
+        checkNull(tabuleiro);
 
-    tabuleiro = (char *) calloc(max+1, sizeof(char));
-    checkNull(tabuleiro);
+        buffer = (char *) malloc((max_column+1) * sizeof(char));
+        checkNull(buffer);
 
-    buffer = (char *) calloc(max_column+1, sizeof(char));
-    checkNull(buffer);
+        el_linha = (int *) malloc(max_row * sizeof(int));
+        checkNull(el_linha);
 
-    el_linha = (int *) malloc(max_row * sizeof(int));
-    checkNull(el_linha);
+        el_coluna = (int *) malloc(max_column * sizeof(int));
+        checkNull(el_coluna);
 
-    el_coluna = (int *) malloc(max_column * sizeof(int));
-    checkNull(el_coluna);
-
-    setBoardArrays(tabuleiro, el_linha, el_coluna, buffer);
+        setBoardArrays(tabuleiro, el_linha, el_coluna, buffer);
+    }
 
     board_ptr = board;
 
