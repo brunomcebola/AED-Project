@@ -8,7 +8,7 @@
 #include "../headers/game.h"
 #include "../headers/bundle.h"
 
-#include "../headers/defs.h"
+#include "../headers/solver.h"
 
 #define MAX(a,b) (a > b ? a : b)
 
@@ -23,6 +23,8 @@ Board *board_ptr = NULL;
 FILE *in_file = NULL;
 FILE *out_file = NULL;
 
+HeadNode *row_vector = NULL, *column_vector = NULL;
+
 
 void initFile(const char *file) {
     char *file_name;
@@ -32,14 +34,13 @@ void initFile(const char *file) {
         exit(0);
     }
     in_file = fopen(file, "r");
-    checkNull(1, in_file);
 
-    file_name = (char *) calloc((size_out+2), sizeof(char)) ;
-    checkNull(1, file_name);
+    file_name = (char *) calloc((size_out+2), sizeof(char));
     strncpy(file_name, basename((char *)file), size_out-5);
 
     out_file = fopen(strcat(file_name,".tents"), "w");
-    checkNull(out_file);
+
+    checkNull(2, in_file, file_name, out_file);
 
     free(file_name);
 }
@@ -72,12 +73,10 @@ void finishLayout(int flag) {
 void maxSize() {
     int max = 0, linhas = 0, colunas = 0, mux = 0, tents = 0,
     aux = 0, max_row = 0, max_column = 0, i = 0, sum_tents_row = 0,
-    *el_linha = NULL, *el_coluna = NULL, valid = 1, sum_tents_column = 0;
+    valid = 1, sum_tents_column = 0;
 
     char *tabuleiro = NULL, *buffer = NULL;
     Board *file_aux = NULL;
-    HeadNode *row_vector = NULL, *column_vector = NULL;
-
 
     while(!feof(in_file)) {
         valid = 1;
@@ -114,7 +113,7 @@ void maxSize() {
         max_column = valid ? MAX(max_column, colunas): max_column;
 
         file_aux = malloc(sizeof(Board));
-        checkNull(file_aux);
+        checkNull(1, file_aux);
         file_aux -> valid = valid;
         file_aux -> sum = sum_tents_row;
         file_aux -> next = NULL;
@@ -131,21 +130,16 @@ void maxSize() {
 
     if(max != 0){
         tabuleiro = (char *) malloc((max+1) * sizeof(char));
-        checkNull(tabuleiro);
 
         buffer = (char *) malloc((max_column+1) * sizeof(char));
-        checkNull(buffer);
-
-        el_linha = (int *) malloc(max_row * sizeof(int));
-        checkNull(el_linha);
-
-        el_coluna = (int *) malloc(max_column * sizeof(int));
-        checkNull(el_coluna);
 
         row_vector = (HeadNode *) malloc(max_row * sizeof(HeadNode));
-        checkNull(row_vector);
 
-        setBoardArrays(tabuleiro, el_linha, el_coluna, buffer);
+        column_vector = (HeadNode *) malloc(max_row * sizeof(HeadNode));
+
+        checkNull(4, tabuleiro, buffer, row_vector, column_vector);
+
+        setBoardArrays(tabuleiro, buffer);
     }
 
     board_ptr = board;
@@ -153,8 +147,7 @@ void maxSize() {
 }
 
 int readBio(void) {
-    int rows = 0, columns = 0, tents = 0, trash = 0, i = 0,
-        *el_linha = getBoardAllElRow(), *el_coluna = getBoardAllElColumn();
+    int rows = 0, columns = 0, tents = 0, trash = 0, i = 0;
 
     //get number of rows and columns
     if(board_ptr == NULL) {
@@ -170,12 +163,16 @@ int readBio(void) {
 
         for(i = 0; i < rows; i++) {
             trash = fscanf(in_file, " %d", &tents);
-            el_linha[i] = tents;
+            row_vector[i].puzzleTents = tents;
+            row_vector[i].tentsNeeded = tents;
+            row_vector[i].first = NULL;
         }
 
         for(i = 0; i < columns; i++) {
             trash = fscanf(in_file, " %d", &tents);
-            el_coluna[i] = tents;
+            column_vector[i].puzzleTents = tents;
+            column_vector[i].tentsNeeded = tents;
+            column_vector[i].first = NULL;
         }
 
         //set data to board

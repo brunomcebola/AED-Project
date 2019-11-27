@@ -7,7 +7,6 @@
 
 typedef struct {
     int n_rows, n_columns;
-    int *n_el_row, *n_el_column;
     char *buffer;
     char *layout;
     int answer;
@@ -36,10 +35,8 @@ void setBoardBio(int rows, int columns, int sum) {
     jogo.sum = sum;
 }
 
-void setBoardArrays(char *layout, int *n_el_row, int *n_el_column, char *buffer) {
+void setBoardArrays(char *layout, char *buffer) {
     jogo.layout = layout;
-    jogo.n_el_row = n_el_row;
-    jogo.n_el_column = n_el_column;
     jogo.buffer = buffer;
 }
 
@@ -70,23 +67,6 @@ int getBoardColumns(void) {
     return jogo.n_columns;
 }
 
-int getBoardElRow(int i) {
-    return jogo.n_el_row[i];
-}
-
-int *getBoardAllElRow(void) {
-    return jogo.n_el_row;
-}
-
-int *getBoardAllElColumn(void) {
-    return jogo.n_el_column;
-}
-
-
-int getBoardElColumn(int j) {
-    return jogo.n_el_column[j];
-}
-
 char getBoardLayoutElement(int i, int j) {
     return jogo.layout[i*jogo.n_columns + j];
 }
@@ -101,8 +81,6 @@ int getBoardAnswer(void) {
 
 //FREE
 void freeBoard(void) {
-    free(jogo.n_el_row);
-    free(jogo.n_el_column);
     free(jogo.layout);
     free(jogo.buffer);
 }
