@@ -21,13 +21,7 @@ Board *board_ptr = NULL;
 FILE *in_file = NULL;
 FILE *out_file = NULL;
 
-int reachedEOF(void) {
-    if (feof(in_file)) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
+
 
 void initFile(const char *file) {
     char *file_name;
@@ -132,7 +126,7 @@ void maxSize() {
 
     }
 
-    if(max == 0){
+    if(max != 0){
         tabuleiro = (char *) malloc((max+1) * sizeof(char));
         checkNull(tabuleiro);
 
@@ -255,6 +249,14 @@ void writeFile () {
 
 void begining(){
     fseek(in_file, 0, SEEK_SET) ;
+}
+
+int reachedEOF(void) {
+    if (feof(in_file)) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 void terminateFile() {
