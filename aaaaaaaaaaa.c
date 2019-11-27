@@ -39,6 +39,39 @@ typedef struct {
 }board;
 
 
+
+void findPossibleLocations(char *tabuleiro, int linhas, int colunas) {
+
+	int i, j;
+
+	for (i = 0; i < linhas; i += colunas) {
+
+		for (j = 0; j < colunas; j++) {
+
+			if (tabuleiro[i+j] == 'A') {
+				if (tabuleiro[(i+j)-1] == '.') {
+					tabuleiro[(i+j)-1] = 'P';
+				}
+
+				if (tabuleiro[(i+j)+1] == '.') {
+					tabuleiro[(i+j)+1] = 'P';
+				}
+
+				if (tabuleiro[(i+j)-colunas] == '.') {
+					tabuleiro[(i+j)-colunas] = 'P';
+				}
+
+				if (tabuleiro[(i+j)+colunas] == '.') {
+					tabuleiro[(i+j)+colunas] = 'P';
+				}
+			}
+
+		}
+	}
+}
+
+
+
 /*
 *
 * direction: 1 for horizontal, 0 for vertical
