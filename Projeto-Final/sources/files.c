@@ -319,21 +319,18 @@ int readBio(void) {
     return 1;
 }
 
-//falar com o kiko sobre esta função
-
 /*******************************************************************************
 * Function name: readLyout()                                                   *
 *                                                                              *
 * Arguments: none                                                              *
 *                                                                              *
 * Return: 1 - everything was read correctly                                    *
-*         0 - something went wrong during file reading                         *
+*         0 - something went wrong during file reading or layout               *
+*             is unadmissable                                                  *
 *                                                                              *
-* Side-effects: if layout is marked as inadmissible then it is skipped         *
+* Side-effects: determines and saves which season is being evaluated           *
 *                                                                              *
-* Description: Reads and saves layout description                              *
-*              saves tents per row and tents per column in the array of        *
-*              structures declared in solver.c                                 *
+* Description: Reads game layout                                               *
 *                                                                              *
 *******************************************************************************/
 int readLayout(void) {
@@ -344,20 +341,24 @@ int readLayout(void) {
     tabuleiro[0] = '\0';
     buffer[0]= '\0';
 
+    //reads layoutrow by row
     for (i = 0; i < rows; i++) {
 
         fscanf(in_file, " %s", buffer);
 
         for (j = 0; j < columns; j++) {
+            //counts number of trees placed in the layout
             if (buffer[j] == 'A') {
                 trees++;
             }
 
         }
 
+        //fills the array containing the layout
         strcat(tabuleiro, buffer);
     }
 
+    //sets which season is being evaluated
     if (trees == num_asked_tents) {
         setBoardSeason(1);
     } else if (trees > num_asked_tents) {
@@ -443,7 +444,7 @@ void writeFile (void) {
 *                                                                              *
 *******************************************************************************/
 void terminateFile(void) {
-    //closes input and output file 
+    //closes input and output file
     if(fclose(in_file) != 0) {
         exit(0);
     }
