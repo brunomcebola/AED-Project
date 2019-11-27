@@ -12,10 +12,10 @@ typedef struct _TreeNode {
     int x, y;
     int hasTent;
     int num_playables;
-    struct _Node *North;
-    struct _Node *South;
-    struct _Node *West;
-    struct _Node *East;
+    PlayableNode *North;
+    PlayableNode *South;
+    PlayableNode *West;
+    PlayableNode *East;
 } TreeNode;
 
 
