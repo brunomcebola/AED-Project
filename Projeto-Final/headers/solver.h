@@ -1,7 +1,7 @@
 #ifndef solver_included
 #define solver_included
 
-typedef struct _Playable_Node PlayableNode;
+typedef struct _PlayableNode PlayableNode;
 
 typedef struct _HeadNode{
     int puzzleTents;
@@ -9,6 +9,11 @@ typedef struct _HeadNode{
     PlayableNode *first;
 } HeadNode;
 
+HeadNode *getSolverVectorRow(void);
+HeadNode *getSolverVectorColumn(void);
+
 void setSolverVectors(HeadNode* , HeadNode*);
+
+void freeSolver(void);
 
 #endif

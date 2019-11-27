@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include "../headers/solver.h"
 
-typedef struct _Playable_Node {
+struct _PlayableNode {
     int x, y;
     int valid;
-    struct _Playable_Node *horizontal_next;
-    struct _Playable_Node *vertical_next;
-} PlayableNode;
+    struct PlayableNode *horizontal_next;
+    struct PlayableNode *vertical_next;
+};
 
 typedef struct _TreeNode {
     int x, y;
@@ -21,7 +21,20 @@ typedef struct _TreeNode {
 
 HeadNode *row_vector = NULL, *column_vector = NULL;
 
+HeadNode *getSolverVectorRow(void) {
+    return row_vector;
+}
+
+HeadNode *getSolverVectorColumn(void) {
+    return column_vector;
+}
+
 void setSolverVectors(HeadNode* row, HeadNode* column) {
     row_vector = row;
     column_vector = column;
+}
+
+void freeSolver(void) {
+    free(row_vector);
+    free(column_vector);
 }

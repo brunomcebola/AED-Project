@@ -7,7 +7,6 @@
 #include "../headers/files.h"
 #include "../headers/game.h"
 #include "../headers/bundle.h"
-
 #include "../headers/solver.h"
 
 #define MAX(a,b) (a > b ? a : b)
@@ -22,8 +21,6 @@ Board *board_ptr = NULL;
 
 FILE *in_file = NULL;
 FILE *out_file = NULL;
-
-HeadNode *row_vector = NULL, *column_vector = NULL;
 
 
 void initFile(const char *file) {
@@ -77,6 +74,7 @@ void maxSize() {
 
     char *tabuleiro = NULL, *buffer = NULL;
     Board *file_aux = NULL;
+    HeadNode *row_vector = NULL, *column_vector = NULL;
 
     while(!feof(in_file)) {
         valid = 1;
@@ -140,6 +138,7 @@ void maxSize() {
         checkNull(4, tabuleiro, buffer, row_vector, column_vector);
 
         setBoardArrays(tabuleiro, buffer);
+        setSolverVectors(row_vector, column_vector);
     }
 
     board_ptr = board;
@@ -148,6 +147,8 @@ void maxSize() {
 
 int readBio(void) {
     int rows = 0, columns = 0, tents = 0, trash = 0, i = 0;
+    HeadNode *row_vector = getSolverVectorRow(),
+             *column_vector = getSolverVectorColumn();
 
     //get number of rows and columns
     if(board_ptr == NULL) {
@@ -278,6 +279,6 @@ void terminateFile() {
         free(board_ptr);
     }
 
-
     freeBoard();
+    freeSolver();
 }
