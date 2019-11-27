@@ -75,7 +75,6 @@ void finishLayout(int flag) {
 
 }
 
-
 void maxSize() {
     int max = 0, linhas = 0, colunas = 0, mux = 0, tents = 0,
     aux = 0, max_row = 0, max_column = 0, i = 0, sum_tents_row = 0,
