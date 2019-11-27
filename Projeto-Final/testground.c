@@ -4,6 +4,18 @@
 
 #include "headers/defs.h"
 
+typedef struct {
+    int n_rows, n_columns;
+    int *n_el_row, *n_el_column;
+    char *buffer;
+    char *layout;
+    HeadNode *horizontals;
+    HeadNode *verticals;
+    int answer;
+    int sum;
+    int season;
+} board;
+
 void findPossibleLocations(char *tabuleiro, int linhas, int colunas) {
 
 	int i, j;

@@ -8,6 +8,8 @@
 #include "../headers/game.h"
 #include "../headers/bundle.h"
 
+#include "../headers/defs.h"
+
 #define MAX(a,b) (a > b ? a : b)
 
 typedef struct _Board {
@@ -20,6 +22,7 @@ Board *board_ptr = NULL;
 
 FILE *in_file = NULL;
 FILE *out_file = NULL;
+
 
 
 
