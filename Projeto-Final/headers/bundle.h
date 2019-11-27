@@ -1,6 +1,6 @@
 #ifndef bundle_included
 #define bundle_included
 
-void checkNull(void *);
+void checkNull(int num, ...);
 
 #endif

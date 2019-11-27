@@ -24,21 +24,18 @@ FILE *in_file = NULL;
 FILE *out_file = NULL;
 
 
-
-
 void initFile(const char *file) {
     char *file_name;
     int size_in = strlen(file), size_out = strlen(basename((char *)file));
-
 
     if(strcmp(".camp", file+size_in-5) != 0) {
         exit(0);
     }
     in_file = fopen(file, "r");
-    checkNull(in_file);
+    checkNull(1, in_file);
 
     file_name = (char *) calloc((size_out+2), sizeof(char)) ;
-    checkNull(file_name);
+    checkNull(1, file_name);
     strncpy(file_name, basename((char *)file), size_out-5);
 
     out_file = fopen(strcat(file_name,".tents"), "w");
@@ -76,8 +73,11 @@ void maxSize() {
     int max = 0, linhas = 0, colunas = 0, mux = 0, tents = 0,
     aux = 0, max_row = 0, max_column = 0, i = 0, sum_tents_row = 0,
     *el_linha = NULL, *el_coluna = NULL, valid = 1, sum_tents_column = 0;
+
     char *tabuleiro = NULL, *buffer = NULL;
     Board *file_aux = NULL;
+    HeadNode *row_vector = NULL, *column_vector = NULL;
+
 
     while(!feof(in_file)) {
         valid = 1;
@@ -141,6 +141,9 @@ void maxSize() {
 
         el_coluna = (int *) malloc(max_column * sizeof(int));
         checkNull(el_coluna);
+
+        row_vector = (HeadNode *) malloc(max_row * sizeof(HeadNode));
+        checkNull(row_vector);
 
         setBoardArrays(tabuleiro, el_linha, el_coluna, buffer);
     }
