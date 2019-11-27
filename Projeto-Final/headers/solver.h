@@ -3,7 +3,7 @@
 
 typedef struct _PlayableNode PlayableNode;
 
-typedef struct _HeadNode{
+typedef struct _HeadNode {
     int puzzleTents;
     int tentsNeeded;
     PlayableNode *first;

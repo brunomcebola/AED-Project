@@ -4,8 +4,8 @@
 struct _PlayableNode {
     int x, y;
     int valid;
-    struct PlayableNode *horizontal_next;
-    struct PlayableNode *vertical_next;
+    PlayableNode *horizontal_next;
+    PlayableNode *vertical_next;
 };
 
 typedef struct _TreeNode {
