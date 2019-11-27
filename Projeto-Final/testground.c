@@ -54,7 +54,7 @@ void findPossibleLocations(char *tabuleiro, int linhas, int colunas) {
 *
 */
 void addAtEnd(HeadNode *head, PlayableNode *toInsert, int direction) {
-    PlayableNode *aux = head->first;
+	PlayableNode *aux = head->first;
 
     if (head->first == NULL) {
         head->first = toInsert;
