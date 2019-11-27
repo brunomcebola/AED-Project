@@ -328,7 +328,7 @@ int readBio(void) {
 *         0 - something went wrong during file reading or layout               *
 *             is unadmissable                                                  *
 *                                                                              *
-* Side-effects: determines and saves which season is being evaluated           *
+* Side-effects: Determines and saves which season is being evaluated           *
 *                                                                              *
 * Description: Reads game layout                                               *
 *                                                                              *
