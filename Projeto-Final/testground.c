@@ -16,6 +16,15 @@ typedef struct {
 } board;
 
 
+typedef struct _ChangeNode {
+    int changeType;
+    PlayableNode *P;
+    TreeNode *T;
+    HeadNode *H;
+    int previous_value;
+    int valueID;
+}ChangeNode;
+
 
 void freePossibleLocations(HeadNode *horizontal, int colunas) {
     int i = colunas+1;

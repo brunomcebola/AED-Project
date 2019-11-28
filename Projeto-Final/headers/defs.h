@@ -4,6 +4,10 @@
 typedef struct _Playable_Node {
     int x, y;
     int valid;
+    int connectedForwardVertical;
+    int connectedBackwardVertical;
+    int connectedForwardHorizontal;
+    int connectedBackwardHorizontal;
     struct _Playable_Node *horizontal_next;
     struct _Playable_Node *vertical_next;
     struct _Playable_Node *horizontal_prev;
