@@ -269,6 +269,9 @@ void finishLayout(int flag) {
 *              structures declared in solver.c                                 *
 *                                                                              *
 *******************************************************************************/
+
+//ver problema quando ha algum tabuleiro errado de tamanho menor do que o maximo
+
 int readBio(void) {
     int rows = 0, columns = 0, tents = 0, trash = 0, i = 0;
     HeadNode *row_vector = getSolverVectorRow(),

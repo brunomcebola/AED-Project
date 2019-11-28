@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "../headers/solver.h"
 
+//perguntar ao stor
+
 struct _PlayableNode {
     int x, y;
     int valid;
