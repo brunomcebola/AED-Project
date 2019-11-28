@@ -6,16 +6,16 @@ typedef struct _Playable_Node {
     int valid;
     struct _Playable_Node *horizontal_next;
     struct _Playable_Node *vertical_next;
+    struct _Playable_Node *horizontal_prev;
+    struct _Playable_Node *vertical_prev;
 } PlayableNode;
 
 typedef struct _TreeNode {
     int x, y;
     int hasTent;
     int num_playables;
-    struct _Node *North;
-    struct _Node *South;
-    struct _Node *West;
-    struct _Node *East;
+    int North, South, East, West;
+    struct _TreeNode *next;
 } TreeNode;
 
 typedef struct {
