@@ -340,29 +340,30 @@ int readLayout(void) {
     int trees = 0, i = 0, rows = getBoardRows(), columns = getBoardColumns(),
         j = 0, num_asked_tents = getBoardSum();
 
+        int index = 0;
     tabuleiro[0] = '\0';
     buffer[0]= '\0';
 
     //reads layoutrow by row
-    for (i = 0; i < rows; i++) {
+    for (i = 0; i < rows; i++, index += columns) {
 
         fscanf(in_file, " %s", buffer);
 
         for (j = 0; j < columns; j++) {
             //counts number of trees placed in the layout
             if (buffer[j] == 'A') {
-                trees++;
+                trees++; /* TODO: remove this comparison from here without fucking up everything, it's done more efficiently later */
             }
 
         }
 
         //fills the array containing the layout
-        strcat(tabuleiro, buffer);
+        strcpy(&tabuleiro[index], buffer);
     }
 
     //sets which season is being evaluated
     if (trees == num_asked_tents) {
-        setBoardSeason(1);
+        setBoardSeason(1); /* TODO: pass these functions to find all possible locations func */
     } else if (trees > num_asked_tents) {
         setBoardSeason(2);
     } else {

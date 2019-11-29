@@ -1,4 +1,4 @@
-#include "./headers/defs.h"
+#include "../headers/defs.h"
 #include <stdlib.h>
 
 
