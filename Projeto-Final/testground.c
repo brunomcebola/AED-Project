@@ -25,6 +25,127 @@ typedef struct _ChangeNode {
     int valueID;
 }ChangeNode;
 
+void MergeSort(TreeNode**);
+
+
+/*TODO: create return value*/
+void checkLonelyTree(TreeNode** list) {
+    MergeSort(list);
+    if ((*list)->num_playables == 0) {
+        /*TODO: crete erorr message to propagate*/
+    }
+    if ((*list)->num_playables == 1) {
+        if ((*list)->North == 1) {
+            /* TODO: insert select spot as tent function */
+        } else if ((*list)->South == 1) {
+            /* TODO: insert select spot as tent function */
+        } else if ((*list)->West == 1) {
+            /* TODO: insert select spot as tent function */
+        } else {
+            /* TODO: insert select spot as tent function */
+        }
+    }
+}
+
+
+/*
+*   return 1 for removed, 0 for not removed
+*
+*
+*/
+
+int removeFromValidPositions(HeadNode* horizontals, int x, int y) {
+    PlayableNode *aux = horizontals[x].first;
+    while (aux->x != x) {
+        aux = aux->horizontal_next;
+    }
+    if (aux->valid != 0) {
+        aux->valid = 0;
+        /* TODO: insert save change func */
+        return 1;
+    }
+    return 0;
+}
+
+void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, HeadNode **horizontals, int colunas, int linhas) {
+    int verticalChange = 1, horizontalChange =1, index = (node->y*colunas) + node->x;
+    int x = node->x, y = node->y;
+    node->isTent = 1;
+    if (node->connectedForwardVertical) {
+        if (node->vertical_next->valid != 0) {
+            node->vertical_next->valid = 0;
+            ++verticalChange;
+            /* TODO: insert save change func */
+        }
+    }
+    if (node->connectedBackwardVertical) {
+        if (node->vertical_prev->valid != 0) {
+            node->vertical_prev->valid = 0;
+            ++verticalChange;
+            /* TODO: insert save change func */
+        }
+    }
+    if (node->connectedForwardHorizontal) {
+        if (node->horizontal_next->valid != 0) {
+            node->horizontal_next->valid = 0;
+            ++horizontalChange;
+            /* TODO: insert save change func */
+        }
+    }
+    if (node->connectedBackwardHorizontal) {
+        if (node->horizontal_prev->valid != 0) {
+            node->horizontal_prev->valid = 0;
+            ++horizontalChange;
+            /* TODO: insert save change func */
+        }
+    }
+    if (y != 0) {
+        if (x != 0) {
+            if (tabuleiro[index-colunas-1] == 'P') {
+                if(removeFromValidPositions(*horizontals, x-1, y-1)) {
+                    --(*horizontals[x-1]).availablePositions;
+                    --(*verticals[y-1]).availablePositions;
+                }
+                /* TODO: insert save change func */
+            }
+        }
+        if (x != colunas-1) {
+            if (tabuleiro[index-colunas+1] == 'P') {
+                if(removeFromValidPositions(*horizontals, x+1, y-1)) {
+                    --(*horizontals[x+1]).availablePositions;
+                    --(*verticals[y-1]).availablePositions;
+                }
+                /* TODO: insert save change func */
+            }
+        }
+    }
+    if (y != linhas-1) {
+        if (x != 0) {
+            if (tabuleiro[index+colunas-1] == 'P') {
+                if(removeFromValidPositions(*horizontals, x-1, y+1)) {
+                    --(*horizontals[x-1]).availablePositions;
+                    --(*verticals[y+1]).availablePositions;
+                }
+                /* TODO: insert save change func */
+            }
+        }
+        if (x != colunas-1) {
+            if (tabuleiro[index+colunas+1] == 'P') {
+                if(removeFromValidPositions(*horizontals, x+1, y+1)) {
+                    --(*horizontals[x+1]).availablePositions;
+                    --(*verticals[y+1]).availablePositions;
+                }
+                /* TODO: insert save change func */
+            }
+        }
+    }
+
+    (*verticals[x]).availablePositions -= verticalChange;
+    --(*verticals[x]).tentsNeeded;
+    --(*horizontals[y]).tentsNeeded;
+    (*horizontals[y]).availablePositions -= horizontalChange;
+}
+
 
 void freePossibleLocations(HeadNode *horizontal, int colunas) {
     int i = colunas+1;
@@ -138,14 +259,14 @@ void FrontBackSplit(TreeNode* source,
 
 TreeNode * findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
 
-	int i, j, linha_atual = 0, numPlayables;
+	int i, j, linha_atual = 0, numPlayables, index = 0;
     TreeNode *list = NULL, *newTree = NULL;
 
-	for (i = 0; i < linhas; i++, linha_atual += colunas) {
+	for (i = 0; i < linhas; i++, linha_atual += colunas, ++index) {
 
-		for (j = 0; j < colunas; j++) {
+		for (j = 0; j < colunas; j++, ++index) {
 
-			if (tabuleiro[linha_atual+j] == 'A') {
+			if (tabuleiro[index] == 'A') {
 
                 numPlayables = 0;
                 newTree = (TreeNode *) malloc(sizeof(TreeNode));
@@ -156,30 +277,38 @@ TreeNode * findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadN
                 newTree->South = 0;
 
                 if (horizontals[i].puzzleTents != 0) {
-                    if (tabuleiro[(linha_atual+j)-1] != 'A') {
-    					tabuleiro[(linha_atual+j)-1] = 'P';
-                        numPlayables++;
-                        newTree->West = 1;
-    				}
+                    if (j != 0) {
+                        if (tabuleiro[index-1] != 'A') {
+        					tabuleiro[index-1] = 'P';
+                            numPlayables++;
+                            newTree->West = 1;
+        				}
+                    }
 
-    				if (tabuleiro[(linha_atual+j)+1] != 'A') {
-    					tabuleiro[(linha_atual+j)+1] = 'P';
-                        numPlayables++;
-                        newTree->East = 1;
-    				}
+                    if (j != colunas-1) {
+                        if (tabuleiro[index+1] != 'A') {
+        					tabuleiro[index+1] = 'P';
+                            numPlayables++;
+                            newTree->East = 1;
+        				}
+                    }
+
                 }
 				if (verticals[j].puzzleTents != 0) {
-                    if (tabuleiro[(linha_atual+j)-colunas] != 'A') {
-    					tabuleiro[(linha_atual+j)-colunas] = 'P';
-                        numPlayables++;
-                        newTree->North = 1;
-    				}
-
-    				if (tabuleiro[(linha_atual+j)+colunas] != 'A') {
-    					tabuleiro[(linha_atual+j)+colunas] = 'P';
-                        numPlayables++;
-                        newTree->South = 1;
-    				}
+                    if (i != 0) {
+                        if (tabuleiro[index-colunas] != 'A') {
+        					tabuleiro[index-colunas] = 'P';
+                            numPlayables++;
+                            newTree->North = 1;
+        				}
+                    }
+                    if (i != linhas-1) {
+                        if (tabuleiro[index+colunas] != 'A') {
+        					tabuleiro[index+colunas] = 'P';
+                            numPlayables++;
+                            newTree->South = 1;
+        				}
+                    }
                 }
                 newTree->x = j;
                 newTree->y = i;
@@ -205,22 +334,26 @@ void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *to
 
     if (headVertical->first == NULL) {
         headVertical->first = toInsert;
+        headVertical->availablePositions = 1;
     } else {
         while (auxVertical->vertical_next != NULL) {
             auxVertical = auxVertical->vertical_next;
         }
         auxVertical->vertical_next = toInsert;
         toInsert->vertical_prev = auxVertical;
+        ++(headVertical->availablePositions);
     }
 
     if (headHorizontal->first == NULL) {
         headHorizontal->first = toInsert;
+        headHorizontal->availablePositions = 1;
     } else {
         while (auxHorizontal->horizontal_next != NULL) {
             auxHorizontal = auxHorizontal->horizontal_next;
         }
         auxHorizontal->horizontal_next = toInsert;
         toInsert->horizontal_prev = auxHorizontal;
+        ++(headHorizontal->availablePositions);
     }
 }
 
@@ -245,11 +378,12 @@ void createGraph(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals
                 newNode = (PlayableNode *) malloc(sizeof(PlayableNode));
                 newNode->x = j;
                 newNode->y = i;
-                newNode->valid = 0;
+                newNode->valid = 1;
                 newNode->horizontal_next = NULL;
                 newNode->vertical_next = NULL;
                 newNode->horizontal_prev = NULL;
                 newNode->vertical_prev = NULL;
+                newNode->isTent = 0;
                 addAtEnd(&(horizontals[i]), &(verticals[j]),newNode);
             }
         }

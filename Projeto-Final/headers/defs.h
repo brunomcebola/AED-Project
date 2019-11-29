@@ -4,6 +4,7 @@
 typedef struct _Playable_Node {
     int x, y;
     int valid;
+    int isTent;
     int connectedForwardVertical;
     int connectedBackwardVertical;
     int connectedForwardHorizontal;
@@ -25,6 +26,7 @@ typedef struct _TreeNode {
 typedef struct {
     int puzzleTents;
     int tentsNeeded;
+    int availablePositions;
     PlayableNode *first;
 } HeadNode;
 
