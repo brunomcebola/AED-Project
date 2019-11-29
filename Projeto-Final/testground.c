@@ -133,7 +133,7 @@ void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, He
 *                    2 - ok and changes
 *                    0 - not ok
 *
-*
+* sorts tree list and checks if any trees are either lonely or only have one valid position
 */
 int checkLonelyTree(TreeNode** list, HeadNode **verticals, HeadNode **horizontals, int linhas, int colunas, char *tabuleiro) {
     TreeNode *aux;
@@ -193,7 +193,7 @@ int checkLonelyTree(TreeNode** list, HeadNode **verticals, HeadNode **horizontal
 
 /*
 *   return 1 for removed, 0 for not removed
-*
+*   checks if a P position is valid, if it is invalidate it and save change
 *
 */
 
@@ -210,6 +210,10 @@ int removeFromValidPositions(HeadNode* horizontals, int x, int y) {
     return 0;
 }
 
+
+/* marks a P position as a tent and invalidates any other 7 positions
+* TODO: modify it as needed
+*/
 void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, HeadNode **horizontals, int colunas, int linhas) {
     int verticalChange = 1, horizontalChange = 1, index = (node->y*colunas) + node->x;
     int x = node->x, y = node->y;
@@ -290,6 +294,7 @@ void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, He
 }
 
 
+/* frees graph of possible locations */
 void freePossibleLocations(HeadNode *horizontal, int colunas) {
     int i = colunas+1;
     PlayableNode *aux1 = NULL, *aux2 = NULL;
@@ -304,7 +309,8 @@ void freePossibleLocations(HeadNode *horizontal, int colunas) {
     }
 }
 
-
+/* frees list of freeTreeList
+* TODO: modify it as needed */
 void freeTreeList(TreeNode *list) {
     TreeNode *aux1 = NULL, *aux2 = NULL;
 
@@ -317,154 +323,96 @@ void freeTreeList(TreeNode *list) {
 }
 
 
-
-TreeNode* SortedMerge(TreeNode* a, TreeNode* b);
-void FrontBackSplit(TreeNode* source,
-                    TreeNode** frontRef, TreeNode** backRef);
-
-/* sorts the linked list by changing next pointers (not data) */
-void MergeSort(TreeNode** headRef)
-{
-    TreeNode* head = *headRef;
-    TreeNode* a;
-    TreeNode* b;
-
-    /* Base case -- length 0 or 1 */
-    if ((head == NULL) || (head->next == NULL)) {
-        return;
-    }
-
-    /* Split head into 'a' and 'b' sublists */
-    FrontBackSplit(head, &a, &b);
-
-    /* Recursively sort the sublists */
-    MergeSort(&a);
-    MergeSort(&b);
-
-    /* answer = merge the two sorted lists together */
-    *headRef = SortedMerge(a, b);
-}
-
-/* See https:// www.geeksforgeeks.org/?p=3622 for details of this
-function */
-TreeNode* SortedMerge(TreeNode* a, TreeNode* b)
-{
-    TreeNode* result = NULL;
-
-    /* Base cases */
-    if (a == NULL)
-        return (b);
-    else if (b == NULL)
-        return (a);
-
-    /* Pick either a or b, and recur */
-    if (a->num_playables <= b->num_playables) {
-        result = a;
-        result->next = SortedMerge(a->next, b);
-    }
-    else {
-        result = b;
-        result->next = SortedMerge(a, b->next);
-    }
-    return (result);
-}
-
-/* UTILITY FUNCTIONS */
-/* Split the nodes of the given list into front and back halves,
-    and return the two lists using the reference parameters.
-    If the length is odd, the extra node should go in the front list.
-    Uses the fast/slow pointer strategy. */
-void FrontBackSplit(TreeNode* source,
-                    TreeNode** frontRef, TreeNode** backRef)
-{
-    TreeNode* fast;
-    TreeNode* slow;
-    slow = source;
-    fast = source->next;
-
-    /* Advance 'fast' two nodes, and advance 'slow' one node */
-    while (fast != NULL) {
-        fast = fast->next;
-        if (fast != NULL) {
-            slow = slow->next;
-            fast = fast->next;
+/* If a row or column has 0 tents, it fills that row/column with 0 so no P positions are wrongly marked */
+void eliminateInvalidRowsANdColumns(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
+    int i, j, index = 0;
+    for (i = 0; i < linhas; ++i) {
+        if (horizontals[i].puzzleTents == 0) {
+            index = i*colunas;
+            for (j = 0; j < colunas; ++j, ++index) {
+                if (tabuleiro[index] != 'A') {
+                    tabuleiro[index] = '0';
+                }
+            }
         }
     }
+    for (i = 0; i < linhas; ++i) {
+        if (horizontals[i].puzzleTents == 0) {
+            index = i;
+            for (j = 0; j < colunas; ++j, index += colunas) {
+                if (tabuleiro[index] != 'A') {
+                    tabuleiro[index] = '0';
+                }
+            }
+        }
+    }
+}
 
-    /* 'slow' is before the midpoint in the list, so split it in two
-    at that point. */
-    *frontRef = source;
-    *backRef = slow->next;
-    slow->next = NULL;
+/* Restores all 0 values to . as they should, call it only befor printing */
+void restore0ValuesToDots(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
+    int i, j, index = 0;
+    for (i = 0; i < linhas; ++i) {
+        if (horizontals[i].puzzleTents == 0) {
+            index = i*colunas;
+            for (j = 0; j < colunas; ++j, ++index) {
+                if (tabuleiro[index] == '0') {
+                    tabuleiro[index] = '.';
+                }
+            }
+        }
+    }
+    for (i = 0; i < linhas; ++i) {
+        if (horizontals[i].puzzleTents == 0) {
+            index = i;
+            for (j = 0; j < colunas; ++j, index += colunas) {
+                if (tabuleiro[index] == '0') {
+                    tabuleiro[index] = '.';
+                }
+            }
+        }
+    }
 }
 
 
-/*TODO: change funcs so that all P are put regardless of number of tents asked*/
+/* Fids all P postions that are not 0 */
+void findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
 
+	int i, j, index = 0;
 
-TreeNode * findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
+	for (i = 0; i < linhas; ++i) {
 
-	int i, j, linha_atual = 0, numPlayables, index = 0;
-    TreeNode *list = NULL, *newTree = NULL;
-
-	for (i = 0; i < linhas; i++, linha_atual += colunas, ++index) {
-
-		for (j = 0; j < colunas; j++, ++index) {
+		for (j = 0; j < colunas; ++j, ++index) {
 
 			if (tabuleiro[index] == 'A') {
 
-                numPlayables = 0;
-                newTree = (TreeNode *) malloc(sizeof(TreeNode));
-                checkNull(1, newTree);
-                newTree->x = j;
-                newTree->y = i;
-                newTree->West = 0;
-                newTree->East = 0;
-                newTree->North = 0;
-                newTree->South = 0;
-
-                if (horizontals[i].puzzleTents != 0) {
-                    if (j != 0) {
-                        if (tabuleiro[index-1] != 'A') {
-        					tabuleiro[index-1] = 'P';
-                            numPlayables++;
-                            newTree->West = 1;
-        				}
-                    }
-
-                    if (j != colunas-1) {
-                        if (tabuleiro[index+1] != 'A') {
-        					tabuleiro[index+1] = 'P';
-                            numPlayables++;
-                            newTree->East = 1;
-        				}
-                    }
-
+                if (j != 0) {
+                    if (tabuleiro[index-1] == '.') {
+    					tabuleiro[index-1] = 'P';
+    				}
                 }
-				if (verticals[j].puzzleTents != 0) {
-                    if (i != 0) {
-                        if (tabuleiro[index-colunas] != 'A') {
-        					tabuleiro[index-colunas] = 'P';
-                            numPlayables++;
-                            newTree->North = 1;
-        				}
-                    }
-                    if (i != linhas-1) {
-                        if (tabuleiro[index+colunas] != 'A') {
-        					tabuleiro[index+colunas] = 'P';
-                            numPlayables++;
-                            newTree->South = 1;
-        				}
-                    }
+
+                if (j != colunas-1) {
+                    if (tabuleiro[index+1] == '.') {
+    					tabuleiro[index+1] = 'P';
+    				}
                 }
-                newTree->num_playables = numPlayables;
-                newTree->next = list;
-                list = newTree;
+
+
+                if (i != 0) {
+                    if (tabuleiro[index-colunas] == '.') {
+    					tabuleiro[index-colunas] = 'P';
+    				}
+                }
+                if (i != linhas-1) {
+                    if (tabuleiro[index+colunas] == '.') {
+    					tabuleiro[index+colunas] = 'P';
+
+    				}
+                }
 			}
 
 		}
 	}
-    return list;
 }
 
 
@@ -472,7 +420,7 @@ TreeNode * findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadN
 /*
 *
 * direction: 1 for horizontal, 0 for vertical
-*
+* TODO: modificar a funcao dependendo do que for preciso na funcao de baixo
 */
 void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *toInsert, int colunas) {
 	PlayableNode *auxVertical = headVertical->first, *auxHorizontal = headHorizontal->first;
@@ -511,21 +459,15 @@ void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *to
 }
 
 
+//cria o grapho tanto com as tendas como com as arvores
 void createGraph(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
     int j = 0, i = 0, linha_atual = 0;
     PlayableNode *newNode = NULL;
 
     for (i = 0; i < linhas; i++, linha_atual += colunas) {
 
-        if (horizontals[i].puzzleTents == 0) {
-            continue;
-        }
-
+        /* MODIFIED: Nao podemos saltar colunas ou linhas pq podem la estar arvores */
         for (j = 0; j < colunas; j++) {
-
-            if (verticals[j].puzzleTents == 0) {
-                continue;
-            }
 
             if (tabuleiro[linha_atual+j] == 'P') {
                 newNode = (PlayableNode *) malloc(sizeof(PlayableNode));
@@ -538,6 +480,8 @@ void createGraph(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals
                 newNode->vertical_prev = NULL;
                 newNode->isTent = 0;
                 addAtEnd(&(horizontals[i]), &(verticals[j]),newNode, colunas);
+            } else if (tabuleiro[linha_atual+j] == 'A') {
+
             }
         }
     }
