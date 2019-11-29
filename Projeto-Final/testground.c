@@ -37,7 +37,7 @@ void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, He
 *                    2 - ok and changes
 *                    0 - not ok
 *
-*
+* sorts tree list and checks if any trees are either lonely or only have one valid position
 */
 int checkLonelyTree(TreeNode** list, HeadNode **verticals, HeadNode **horizontals, int linhas, int colunas, char *tabuleiro) {
     TreeNode *aux;
@@ -97,7 +97,7 @@ int checkLonelyTree(TreeNode** list, HeadNode **verticals, HeadNode **horizontal
 
 /*
 *   return 1 for removed, 0 for not removed
-*
+*   checks if a P position is valid, if it is invalidate it and save change
 *
 */
 
@@ -114,6 +114,10 @@ int removeFromValidPositions(HeadNode* horizontals, int x, int y) {
     return 0;
 }
 
+
+/* marks a P position as a tent and invalidates any other 7 positions
+* TODO: modify it as needed
+*/
 void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, HeadNode **horizontals, int colunas, int linhas) {
     int verticalChange = 1, horizontalChange = 1, index = (node->y*colunas) + node->x;
     int x = node->x, y = node->y;
@@ -194,6 +198,7 @@ void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, He
 }
 
 
+/* frees graph of possible locations */
 void freePossibleLocations(HeadNode *horizontal, int colunas) {
     int i = colunas+1;
     PlayableNode *aux1 = NULL, *aux2 = NULL;
@@ -208,7 +213,8 @@ void freePossibleLocations(HeadNode *horizontal, int colunas) {
     }
 }
 
-
+/* frees list of freeTreeList
+* TODO: modify it as needed */
 void freeTreeList(TreeNode *list) {
     TreeNode *aux1 = NULL, *aux2 = NULL;
 
@@ -221,6 +227,7 @@ void freeTreeList(TreeNode *list) {
 }
 
 
+/* If a row or column has 0 tents, it fills that row/column with 0 so no P positions are wrongly marked */
 void eliminateInvalidRowsANdColumns(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
     int i, j, index = 0;
     for (i = 0; i < linhas; ++i) {
@@ -245,7 +252,7 @@ void eliminateInvalidRowsANdColumns(char *tabuleiro, int linhas, int colunas, He
     }
 }
 
-
+/* Restores all 0 values to . as they should, call it only befor printing */
 void restore0ValuesToDots(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
     int i, j, index = 0;
     for (i = 0; i < linhas; ++i) {
@@ -271,7 +278,7 @@ void restore0ValuesToDots(char *tabuleiro, int linhas, int colunas, HeadNode *ho
 }
 
 
-/*TODO: change funcs so that all P are put regardless of number of tents asked*/
+/* Fids all P postions that are not 0 */
 void findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
 
 	int i, j, index = 0;
@@ -317,7 +324,7 @@ void findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *h
 /*
 *
 * direction: 1 for horizontal, 0 for vertical
-*
+* TODO: modificar a funcao dependendo do que for preciso na funcao de baixo
 */
 void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *toInsert, int colunas) {
 	PlayableNode *auxVertical = headVertical->first, *auxHorizontal = headHorizontal->first;
@@ -356,21 +363,15 @@ void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *to
 }
 
 
+//cria o grapho tanto com as tendas como com as arvores
 void createGraph(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
     int j = 0, i = 0, linha_atual = 0;
     PlayableNode *newNode = NULL;
 
     for (i = 0; i < linhas; i++, linha_atual += colunas) {
 
-        if (horizontals[i].puzzleTents == 0) {
-            continue;
-        }
-
+        /* MODIFIED: Nao podemos saltar colunas ou linhas pq podem la estar arvores */
         for (j = 0; j < colunas; j++) {
-
-            if (verticals[j].puzzleTents == 0) {
-                continue;
-            }
 
             if (tabuleiro[linha_atual+j] == 'P') {
                 newNode = (PlayableNode *) malloc(sizeof(PlayableNode));
@@ -384,7 +385,7 @@ void createGraph(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals
                 newNode->isTent = 0;
                 addAtEnd(&(horizontals[i]), &(verticals[j]),newNode, colunas);
             } else if (tabuleiro[linha_atual+j] == 'A') {
-                
+
             }
         }
     }
