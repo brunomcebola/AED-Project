@@ -17,9 +17,8 @@ typedef struct _Playable_Node {
 
 typedef struct _TreeNode {
     int x, y;
-    int hasTent;
+    int hasTentAssigned;
     int num_playables;
-    int North, South, East, West;
     struct _TreeNode *next;
 } TreeNode;
 
