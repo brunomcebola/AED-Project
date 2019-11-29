@@ -16,11 +16,39 @@ typedef struct {
 } board;
 
 
-/* TODO: create the TreeNode ***treesInfo */
+TreeNode *** createTreeInfo(int colunas, int linhas) {
+    TreeNode ***TreeInfo = NULL;
+    TreeInfo = (TreeNode ***) malloc(linhas * sizeof(TreeNode **));
+    for (int i = 0; i < colunas; ++i) {
+        TreeInfo[i] = (TreeNode **) malloc(linhas * sizeof(TreeNode *));
+    }
+    return TreeInfo;
+}
+
+
+
+void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInfo) {
+    int j = 0, i = 0, index = 0;
+
+    for (i = 0; i < linhas; ++i) {
+
+        for (j = 0; j < colunas; ++j, ++index) {
+
+            if (tabuleiro[index] == 'A') {
+                free(treesInfo[i][j]);
+            }
+        }
+        free(treesInfo[i]);
+    }
+    free(treesInfo);
+}
+
 
 
 
 void MergeSort(TreeNode**);
+
+
 
 /* checks if P position is alone
 *  returns 0 when not alone, 1 when not alone
@@ -218,7 +246,7 @@ int mark_P_as_T(char *tabuleiro, int linhas, int colunas, HeadNode **horizontals
 
         }
     }
-    
+
     return 0;
 }
 
@@ -303,9 +331,9 @@ TreeNode * createTreeList(char *tabuleiro, int linhas, int colunas, HeadNode *ho
     int j = 0, i = 0, index = 0;
     TreeNode *list = NULL;
 
-    for (i = 0; i < linhas; i++) {
+    for (i = 0; i < linhas; ++i) {
 
-        for (j = 0; j < colunas; j++, ++index) {
+        for (j = 0; j < colunas; ++j, ++index) {
 
             if (tabuleiro[index] == 'A') {
                 treesInfo[i][j] = (TreeNode *) malloc(sizeof(TreeNode));
