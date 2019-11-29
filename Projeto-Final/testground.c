@@ -39,14 +39,14 @@ void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, He
 *
 *
 */
-void checkLonelyTree(TreeNode** list, HeadNode **verticals, HeadNode **horizontals, int linhas, int colunas, char *tabuleiro) {
+int checkLonelyTree(TreeNode** list, HeadNode **verticals, HeadNode **horizontals, int linhas, int colunas, char *tabuleiro) {
     TreeNode *aux;
     PlayableNode *node;
     MergeSort(list);
     aux = *list;
     while ((aux)->num_playables == 0) {
         if ((aux)->hasTent == 0) {
-            /*TODO: crete erorr message to propagate*/
+            return 0;
         }
         aux = aux->next;
         if (aux == NULL) {
@@ -55,7 +55,7 @@ void checkLonelyTree(TreeNode** list, HeadNode **verticals, HeadNode **horizonta
     }
 
     if (aux == NULL) {
-        return;
+        return 1;
     }
 
     if ((aux)->num_playables == 1) {
@@ -85,7 +85,13 @@ void checkLonelyTree(TreeNode** list, HeadNode **verticals, HeadNode **horizonta
             }
             makeSpotATent(tabuleiro, node, verticals, horizontals, colunas, linhas);
         }
+
+        aux->hasTent = 1;
+        /* TODO: insert save change func */
+
+        return 2;
     }
+    return 1;
 }
 
 
@@ -297,6 +303,8 @@ void FrontBackSplit(TreeNode* source,
 }
 
 
+/*TODO: change funcs so that all P are put regardless of number of tents asked*/
+
 
 TreeNode * findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
 
@@ -312,6 +320,8 @@ TreeNode * findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadN
                 numPlayables = 0;
                 newTree = (TreeNode *) malloc(sizeof(TreeNode));
                 checkNull(1, newTree);
+                newTree->x = j;
+                newTree->y = i;
                 newTree->West = 0;
                 newTree->East = 0;
                 newTree->North = 0;
@@ -351,8 +361,6 @@ TreeNode * findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadN
         				}
                     }
                 }
-                newTree->x = j;
-                newTree->y = i;
                 newTree->num_playables = numPlayables;
                 newTree->next = list;
                 list = newTree;
