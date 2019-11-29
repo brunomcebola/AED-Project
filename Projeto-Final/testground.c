@@ -83,12 +83,44 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
 }
 
 
+int checkNeededTents(char * tabuleiro, int linhas, int colunas, HeadNode** horizontals, HeadNode** verticals) {
+    int i = 0, j = 0, index = 0;
+    for (i = 0; i < linhas; i++, index += colunas) {
+        if (horizontals[i]->tentsNeeded == horizontals[i]->availablePositions) {
+            horizontals[i]->tentsNeeded = horizontals[i]->availablePositions = 0;
+            for (j = 0; j < colunas; j++) {
+                if (tabuleiro[index+j] == 'P') {
+                    /* TODO: implement function to put tent there and assign one tree */
+                }
+            }
+        } else if (horizontals[i]->tentsNeeded > horizontals[i]->availablePositions) {
+            return 0;
+        }
+    }
+
+    for (i = 0; i < colunas; i++) {
+        if (verticals[i]->tentsNeeded == verticals[i]->availablePositions) {
+            verticals[i]->tentsNeeded = verticals[i]->availablePositions = 0;
+            for (j = 0; j < colunas; j += colunas) {
+                if (tabuleiro[i+j] == 'P') {
+                    /* TODO: implement function to put tent there and assign one tree */
+                }
+            }
+        } else if (verticals[i]->tentsNeeded > verticals[i]->availablePositions) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
+
 /*
 *   Propagates consequences of a given play, if it makes puzzle unsolvable undo changes
 *
 */
 
-int makeSureGuesses(int season, TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas) {
+int makeSureGuesses(int season, TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, HeadNode **horizontals, HeadNode **verticals) {
     int modified = 1;
     while (modified) {
         if (modified == 404) {
@@ -104,7 +136,7 @@ int makeSureGuesses(int season, TreeNode*** treeInfo, TreeNode** list, char * ta
 
         modified = 0;
 
-        if ((modified = checkNeededTents())) {
+        if ((modified = checkNeededTents(tabuleiro, linhas, colunas, horizontals, verticals))) {
             continue;
         }
 
