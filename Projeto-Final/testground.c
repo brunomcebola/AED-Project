@@ -101,8 +101,8 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, HeadNode** horiz
     for (i = 0; i < colunas; i++) {
         if (verticals[i]->tentsNeeded == verticals[i]->availablePositions) {
             verticals[i]->tentsNeeded = verticals[i]->availablePositions = 0;
-            for (j = 0; j < colunas; j += colunas) {
-                if (tabuleiro[i+j] == 'P') {
+            for (j = 0; j < colunas; ++j, index+= colunas) {
+                if (tabuleiro[i+index] == 'P') {
                     /* TODO: implement function to put tent there and assign one tree */
                 }
             }
@@ -407,10 +407,10 @@ void eliminateInvalidRowsANdColumns(char *tabuleiro, int linhas, int colunas, He
             }
         }
     }
-    for (i = 0; i < linhas; ++i) {
-        if (horizontals[i].puzzleTents == 0) {
+    for (i = 0; i < colunas; ++i) {
+        if (verticals[i].puzzleTents == 0) {
             index = i;
-            for (j = 0; j < colunas; ++j, index += colunas) {
+            for (j = 0; j < linhas; ++j, index += colunas) {
                 if (tabuleiro[index] != 'A') {
                     tabuleiro[index] = '.';
                 }
