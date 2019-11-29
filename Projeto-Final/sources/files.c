@@ -162,7 +162,7 @@ void maxSize() {
 
         row_vector = (HeadNode *) malloc(max_row * sizeof(HeadNode));
 
-        column_vector = (HeadNode *) malloc(max_row * sizeof(HeadNode));
+        column_vector = (HeadNode *) malloc(max_column * sizeof(HeadNode));
 
         checkNull(4, tabuleiro, buffer, row_vector, column_vector);
 
@@ -270,8 +270,6 @@ void finishLayout(int flag) {
 *                                                                              *
 *******************************************************************************/
 
-//ver problema quando ha algum tabuleiro errado de tamanho menor do que o maximo
-
 int readBio(void) {
     int rows = 0, columns = 0, tents = 0, trash = 0, i = 0;
     HeadNode *row_vector = getSolverVectorRow(),
@@ -284,6 +282,7 @@ int readBio(void) {
 
     //if layout is valid reads its description
     if(board_ptr -> valid){
+
         //gets layout rows and columns
         trash = fscanf(in_file, " %d %d", &rows , &columns);
         //error in this scanf => error in the following => return 0
@@ -386,8 +385,8 @@ int readLayout(void) {
 * Description: Main function to choose what needs to be done to current game   *
 *                                                                              *
 *******************************************************************************/
-int readFile(void){
-    if(!readBio()){
+int readFile(void) {
+        if(!readBio()){
         return 0;
     }
     if(getBoardAnswer() == -1){
