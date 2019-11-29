@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "headers/defs.h"
+#include "headers/sort.h"
 
 typedef struct {
     int n_rows, n_columns;
@@ -16,6 +17,110 @@ typedef struct {
 } board;
 
 
+/* TODO: general solver function */
+
+/*return values: 1 - ok and changes
+*                2 - ok but no changes
+*                404 - not ok
+*/
+
+int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas) {
+    TreeNode *aux;
+    int index;
+    MergeSort(list);
+    aux = *list;
+
+    if (aux == NULL) {
+        return 2;
+    }
+
+    if ((aux)->num_playables == 0) {
+        return 404;
+    }
+
+    while (aux->hasTentAssigned == 1) {
+        if (aux->next == NULL || aux->num_playables > 1) {
+            return 2;
+        }
+        aux = aux->next;
+    }
+
+    if ((aux)->num_playables == 1){
+
+        index = (aux->y)*colunas + aux->x;
+
+
+        if (aux->x != 0) {
+            if (tabuleiro[index-1] == 'P') {
+                /* TODO: insert take only available spot as tent function */
+                return 1;
+            }
+        }
+
+        if (aux->x != colunas-1) {
+            if (tabuleiro[index+1] == 'P') {
+                /* TODO: insert take only available spot as tent function */
+                return 1;
+            }
+        }
+
+        if (aux->y != 0) {
+            if (tabuleiro[index-colunas] == 'P') {
+                /* TODO: insert take only available spot as tent function */
+                return 1;
+            }
+        }
+
+        if (aux->y != linhas-1) {
+            if (tabuleiro[index+colunas] == 'P') {
+                /* TODO: insert take only available spot as tent function */
+                return 1;
+            }
+        }
+
+    }
+    return 404;
+}
+
+
+/*
+*   Propagates consequences of a given play, if it makes puzzle unsolvable undo changes
+*
+*/
+
+int makeSureGuesses(int season, TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas) {
+    int modified = 1;
+    while (modified) {
+        if (modified == 404) {
+            return 0;
+        }
+        modified = 0;
+
+        if (season == 1) {
+            if ((modified = checkForLonelyTrees(treeInfo, list, tabuleiro, linhas, colunas)) == 1) {
+                continue;
+            }
+        }
+
+        modified = 0;
+
+        if ((modified = checkNeededTents())) {
+            continue;
+        }
+
+        if ((modified = checkCosecutive())) {
+            continue;
+        }
+    }
+    return 1;
+}
+
+
+/* TODO: change changedNode to include coordinates and not pointers */
+
+/* TODO: eliminate all PlayableNode stuff it won't be used */
+
+
 TreeNode *** createTreeInfo(int colunas, int linhas) {
     TreeNode ***TreeInfo = NULL;
     TreeInfo = (TreeNode ***) malloc(linhas * sizeof(TreeNode **));
@@ -27,6 +132,8 @@ TreeNode *** createTreeInfo(int colunas, int linhas) {
 
 
 
+/* Frees treeInfo data structure and replaces all K (assigned trees) to A (trees) */
+
 void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInfo) {
     int j = 0, i = 0, index = 0;
 
@@ -36,17 +143,15 @@ void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInf
 
             if (tabuleiro[index] == 'A') {
                 free(treesInfo[i][j]);
+            } else if (tabuleiro[index] == 'K') {
+                tabuleiro[index] = 'A';
+                free(treesInfo[i][j]);
             }
         }
         free(treesInfo[i]);
     }
     free(treesInfo);
 }
-
-
-
-
-void MergeSort(TreeNode**);
 
 
 
@@ -147,7 +252,10 @@ void assignTreeToTent(TreeNode ***treesInfo, int x, int y, char *tabuleiro, int 
 /*return values: 1 - ok
 *                0 - not ok
 */
-int mark_P_as_T(char *tabuleiro, int linhas, int colunas, HeadNode **horizontals, HeadNode **verticals, int x, int y, int index, TreeNode ***treesInfo) {
+
+/* TODO: modify function so it changes trees adjacent to P's numOfPlayables to -=1 */
+int mark_P_as_T_for_random_A(char *tabuleiro, int linhas, int colunas, HeadNode **horizontals, HeadNode **verticals, int x, int y, int index, TreeNode ***treesInfo) {
+
     tabuleiro[index] = 'T';
     /* TODO: save change */
 
