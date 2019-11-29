@@ -221,154 +221,95 @@ void freeTreeList(TreeNode *list) {
 }
 
 
-
-TreeNode* SortedMerge(TreeNode* a, TreeNode* b);
-void FrontBackSplit(TreeNode* source,
-                    TreeNode** frontRef, TreeNode** backRef);
-
-/* sorts the linked list by changing next pointers (not data) */
-void MergeSort(TreeNode** headRef)
-{
-    TreeNode* head = *headRef;
-    TreeNode* a;
-    TreeNode* b;
-
-    /* Base case -- length 0 or 1 */
-    if ((head == NULL) || (head->next == NULL)) {
-        return;
-    }
-
-    /* Split head into 'a' and 'b' sublists */
-    FrontBackSplit(head, &a, &b);
-
-    /* Recursively sort the sublists */
-    MergeSort(&a);
-    MergeSort(&b);
-
-    /* answer = merge the two sorted lists together */
-    *headRef = SortedMerge(a, b);
-}
-
-/* See https:// www.geeksforgeeks.org/?p=3622 for details of this
-function */
-TreeNode* SortedMerge(TreeNode* a, TreeNode* b)
-{
-    TreeNode* result = NULL;
-
-    /* Base cases */
-    if (a == NULL)
-        return (b);
-    else if (b == NULL)
-        return (a);
-
-    /* Pick either a or b, and recur */
-    if (a->num_playables <= b->num_playables) {
-        result = a;
-        result->next = SortedMerge(a->next, b);
-    }
-    else {
-        result = b;
-        result->next = SortedMerge(a, b->next);
-    }
-    return (result);
-}
-
-/* UTILITY FUNCTIONS */
-/* Split the nodes of the given list into front and back halves,
-    and return the two lists using the reference parameters.
-    If the length is odd, the extra node should go in the front list.
-    Uses the fast/slow pointer strategy. */
-void FrontBackSplit(TreeNode* source,
-                    TreeNode** frontRef, TreeNode** backRef)
-{
-    TreeNode* fast;
-    TreeNode* slow;
-    slow = source;
-    fast = source->next;
-
-    /* Advance 'fast' two nodes, and advance 'slow' one node */
-    while (fast != NULL) {
-        fast = fast->next;
-        if (fast != NULL) {
-            slow = slow->next;
-            fast = fast->next;
+void eliminateInvalidRowsANdColumns(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
+    int i, j, index = 0;
+    for (i = 0; i < linhas; ++i) {
+        if (horizontals[i].puzzleTents == 0) {
+            index = i*colunas;
+            for (j = 0; j < colunas; ++j, ++index) {
+                if (tabuleiro[index] != 'A') {
+                    tabuleiro[index] = '0';
+                }
+            }
         }
     }
+    for (i = 0; i < linhas; ++i) {
+        if (horizontals[i].puzzleTents == 0) {
+            index = i;
+            for (j = 0; j < colunas; ++j, index += colunas) {
+                if (tabuleiro[index] != 'A') {
+                    tabuleiro[index] = '0';
+                }
+            }
+        }
+    }
+}
 
-    /* 'slow' is before the midpoint in the list, so split it in two
-    at that point. */
-    *frontRef = source;
-    *backRef = slow->next;
-    slow->next = NULL;
+
+void restore0ValuesToDots(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
+    int i, j, index = 0;
+    for (i = 0; i < linhas; ++i) {
+        if (horizontals[i].puzzleTents == 0) {
+            index = i*colunas;
+            for (j = 0; j < colunas; ++j, ++index) {
+                if (tabuleiro[index] == '0') {
+                    tabuleiro[index] = '.';
+                }
+            }
+        }
+    }
+    for (i = 0; i < linhas; ++i) {
+        if (horizontals[i].puzzleTents == 0) {
+            index = i;
+            for (j = 0; j < colunas; ++j, index += colunas) {
+                if (tabuleiro[index] == '0') {
+                    tabuleiro[index] = '.';
+                }
+            }
+        }
+    }
 }
 
 
 /*TODO: change funcs so that all P are put regardless of number of tents asked*/
+void findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
 
+	int i, j, index = 0;
 
-TreeNode * findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
+	for (i = 0; i < linhas; ++i) {
 
-	int i, j, linha_atual = 0, numPlayables, index = 0;
-    TreeNode *list = NULL, *newTree = NULL;
-
-	for (i = 0; i < linhas; i++, linha_atual += colunas, ++index) {
-
-		for (j = 0; j < colunas; j++, ++index) {
+		for (j = 0; j < colunas; ++j, ++index) {
 
 			if (tabuleiro[index] == 'A') {
 
-                numPlayables = 0;
-                newTree = (TreeNode *) malloc(sizeof(TreeNode));
-                checkNull(1, newTree);
-                newTree->x = j;
-                newTree->y = i;
-                newTree->West = 0;
-                newTree->East = 0;
-                newTree->North = 0;
-                newTree->South = 0;
-
-                if (horizontals[i].puzzleTents != 0) {
-                    if (j != 0) {
-                        if (tabuleiro[index-1] != 'A') {
-        					tabuleiro[index-1] = 'P';
-                            numPlayables++;
-                            newTree->West = 1;
-        				}
-                    }
-
-                    if (j != colunas-1) {
-                        if (tabuleiro[index+1] != 'A') {
-        					tabuleiro[index+1] = 'P';
-                            numPlayables++;
-                            newTree->East = 1;
-        				}
-                    }
-
+                if (j != 0) {
+                    if (tabuleiro[index-1] == '.') {
+    					tabuleiro[index-1] = 'P';
+    				}
                 }
-				if (verticals[j].puzzleTents != 0) {
-                    if (i != 0) {
-                        if (tabuleiro[index-colunas] != 'A') {
-        					tabuleiro[index-colunas] = 'P';
-                            numPlayables++;
-                            newTree->North = 1;
-        				}
-                    }
-                    if (i != linhas-1) {
-                        if (tabuleiro[index+colunas] != 'A') {
-        					tabuleiro[index+colunas] = 'P';
-                            numPlayables++;
-                            newTree->South = 1;
-        				}
-                    }
+
+                if (j != colunas-1) {
+                    if (tabuleiro[index+1] == '.') {
+    					tabuleiro[index+1] = 'P';
+    				}
                 }
-                newTree->num_playables = numPlayables;
-                newTree->next = list;
-                list = newTree;
+
+
+                if (i != 0) {
+                    if (tabuleiro[index-colunas] == '.') {
+    					tabuleiro[index-colunas] = 'P';
+    				}
+                }
+                if (i != linhas-1) {
+                    if (tabuleiro[index+colunas] == '.') {
+    					tabuleiro[index+colunas] = 'P';
+
+    				}
+                }
 			}
 
 		}
 	}
-    return list;
 }
 
 
@@ -442,6 +383,8 @@ void createGraph(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals
                 newNode->vertical_prev = NULL;
                 newNode->isTent = 0;
                 addAtEnd(&(horizontals[i]), &(verticals[j]),newNode, colunas);
+            } else if (tabuleiro[linha_atual+j] == 'A') {
+                
             }
         }
     }
