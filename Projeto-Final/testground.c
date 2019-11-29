@@ -218,7 +218,9 @@ void freeTreeList(TreeNode *list) {
 }
 
 
-/* If a row or column has 0 tents, it fills that row/column with 0 so no P positions are wrongly marked */
+/* If a row or column has 0 tents, it fills that row/column with . so no P positions are wrongly marked
+*  must call it after find possible locations is called
+*/
 void eliminateInvalidRowsANdColumns(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
     int i, j, index = 0;
     for (i = 0; i < linhas; ++i) {
@@ -226,31 +228,6 @@ void eliminateInvalidRowsANdColumns(char *tabuleiro, int linhas, int colunas, He
             index = i*colunas;
             for (j = 0; j < colunas; ++j, ++index) {
                 if (tabuleiro[index] != 'A') {
-                    tabuleiro[index] = '0';
-                }
-            }
-        }
-    }
-    for (i = 0; i < linhas; ++i) {
-        if (horizontals[i].puzzleTents == 0) {
-            index = i;
-            for (j = 0; j < colunas; ++j, index += colunas) {
-                if (tabuleiro[index] != 'A') {
-                    tabuleiro[index] = '0';
-                }
-            }
-        }
-    }
-}
-
-/* Restores all 0 values to . as they should, call it only befor printing */
-void restore0ValuesToDots(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
-    int i, j, index = 0;
-    for (i = 0; i < linhas; ++i) {
-        if (horizontals[i].puzzleTents == 0) {
-            index = i*colunas;
-            for (j = 0; j < colunas; ++j, ++index) {
-                if (tabuleiro[index] == '0') {
                     tabuleiro[index] = '.';
                 }
             }
@@ -260,7 +237,7 @@ void restore0ValuesToDots(char *tabuleiro, int linhas, int colunas, HeadNode *ho
         if (horizontals[i].puzzleTents == 0) {
             index = i;
             for (j = 0; j < colunas; ++j, index += colunas) {
-                if (tabuleiro[index] == '0') {
+                if (tabuleiro[index] != 'A') {
                     tabuleiro[index] = '.';
                 }
             }
@@ -272,7 +249,7 @@ void restore0ValuesToDots(char *tabuleiro, int linhas, int colunas, HeadNode *ho
 /* Fids all P postions that are not 0 */
 void findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
 
-	int i, j, index = 0, numOfTents = 0;
+	int i, j, index = 0, numOfTrees = 0;
 
 	for (i = 0; i < linhas; ++i) {
 
@@ -280,7 +257,7 @@ void findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *h
 
 			if (tabuleiro[index] == 'A') {
 
-                ++numOfTents; /* TODO: create comparison to check season and insert it in puzzle parameters or exit earlier if num trees < numOfTents */
+                ++numOfTrees; /* TODO: create comparison to check season and insert it in puzzle parameters or exit earlier if num trees < numOfTents */
 
                 if (j != 0) {
                     if (tabuleiro[index-1] == '.') {
@@ -319,7 +296,7 @@ void findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *h
 * direction: 1 for horizontal, 0 for vertical
 * TODO: modificar a funcao dependendo do que for preciso na funcao de baixo
 */
-void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *toInsert, int colunas) {
+/*void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *toInsert, int colunas) {
 	PlayableNode *auxVertical = headVertical->first, *auxHorizontal = headHorizontal->first;
 
     if (headVertical->first == NULL) {
@@ -353,33 +330,44 @@ void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *to
         }
         ++(headHorizontal->availablePositions);
     }
-}
+}*/
 
 
 //cria o grapho tanto com as tendas como com as arvores
-void createGraph(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
-    int j = 0, i = 0, linha_atual = 0;
-    PlayableNode *newNode = NULL;
-    TreeNode *newTree = NULL;
+TreeNode * createTreeList(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
+    int j = 0, i = 0, index = 0;
+    TreeNode *list=NULL, *newTree = NULL;
 
-    for (i = 0; i < linhas; i++, linha_atual += colunas) {
+    for (i = 0; i < linhas; i++) {
 
-        /* MODIFIED: Nao podemos saltar colunas ou linhas pq podem la estar arvores */
-        for (j = 0; j < colunas; j++) {
+        for (j = 0; j < colunas; j++, ++index) {
 
-            if (tabuleiro[linha_atual+j] == 'P') {
-                newNode = (PlayableNode *) malloc(sizeof(PlayableNode));
-                newNode->x = j;
-                newNode->y = i;
-                newNode->valid = 1;
-                newNode->horizontal_next = NULL;
-                newNode->vertical_next = NULL;
-                newNode->horizontal_prev = NULL;
-                newNode->vertical_prev = NULL;
-                newNode->isTent = 0;
-                addAtEnd(&(horizontals[i]), &(verticals[j]),newNode, colunas);
-            } else if (tabuleiro[linha_atual+j] == 'A') {
+            if (tabuleiro[index] == 'A') {
 
+                if (j != 0) {
+                    if (tabuleiro[index-1] == 'P') {
+    					/* TODO: implement code */
+    				}
+                }
+
+                if (j != colunas-1) {
+                    if (tabuleiro[index+1] == 'P') {
+    					/* TODO: implement code */
+    				}
+                }
+
+
+                if (i != 0) {
+                    if (tabuleiro[index-colunas] == 'P') {
+    					/* TODO: implement code */
+    				}
+                }
+                if (i != linhas-1) {
+                    if (tabuleiro[index+colunas] == 'P') {
+    					/* TODO: implement code */
+
+    				}
+                }
             }
         }
     }
