@@ -16,9 +16,211 @@ typedef struct {
 } board;
 
 
+/* TODO: create the TreeNode ***treesInfo */
+
+
+
 void MergeSort(TreeNode**);
 
+/* checks if P position is alone
+*  returns 0 when not alone, 1 when not alone
+*  TODO: create 3 more functions so it reduces number of comparisons (doesn't have to compare with tree removing it)
+*/
+int checkIfPAlone(char *tabuleiro, int indexAUX, int x, int y, int colunas, int linhas) {
+    if (x != 0) {
 
+        if (tabuleiro[indexAUX-1] == 'A') {
+            return 0;
+        }
+    }
+
+    if (x != colunas-1) {
+
+        if (tabuleiro[indexAUX+1] == 'A') {
+            return 0;
+        }
+    }
+
+    if (y != 0) {
+
+        if (tabuleiro[indexAUX-colunas] == 'A') {
+            return 0;
+        }
+    }
+    if (y != linhas-1) {
+
+        if (tabuleiro[indexAUX+colunas] == 'A') {
+            return 0;
+
+        }
+    }
+    return 1;
+}
+
+/*
+*  assigns a tree to a tent, does all necessary modifications like checking if any P is left alone
+*
+*/
+
+void assignTreeToTent(TreeNode ***treesInfo, int x, int y, char *tabuleiro, int index, int colunas, int linhas, HeadNode **horizontals, HeadNode **verticals) {
+
+
+    treesInfo[y][x]->hasTentAssigned = 1;
+    tabuleiro[index] = 'K';
+    /* TODO: save changes */
+
+    if (x != 0) {
+        if (tabuleiro[index-1] == 'P') {
+            if (checkIfPAlone(tabuleiro, index-1, x-1, y, colunas, linhas)) {
+                tabuleiro[index-1] = '.';
+                --(*horizontals[x-1]).availablePositions;
+                --(*verticals[y]).availablePositions;
+                /* TODO: save changes */
+            }
+        }
+    }
+
+    if (x != colunas-1) {
+        if (tabuleiro[index+1] == 'P') {
+            if (checkIfPAlone(tabuleiro, index+1, x+1, y, colunas, linhas)) {
+                tabuleiro[index+1] = '.';
+                --(*horizontals[x+1]).availablePositions;
+                --(*verticals[y]).availablePositions;
+                /* TODO: save changes */
+            }
+        }
+    }
+
+
+    if (y != 0) {
+        if (tabuleiro[index-colunas] == 'P') {
+            if (checkIfPAlone(tabuleiro, index-colunas, x, y-1, colunas, linhas)) {
+                tabuleiro[index-colunas] = '.';
+                --(*horizontals[x]).availablePositions;
+                --(*verticals[y-1]).availablePositions;
+                /* TODO: save changes */
+            }
+        }
+    }
+    if (y != linhas-1) {
+        if (tabuleiro[index+colunas] == 'P') {
+            if (checkIfPAlone(tabuleiro, index+colunas, x, y+1, colunas, linhas)) {
+                tabuleiro[index+colunas] = '.';
+                --(*horizontals[x]).availablePositions;
+                --(*verticals[y+1]).availablePositions;
+                /* TODO: save changes */
+            }
+
+        }
+    }
+}
+
+
+/*return values: 1 - ok
+*                0 - not ok
+*/
+int mark_P_as_T(char *tabuleiro, int linhas, int colunas, HeadNode **horizontals, HeadNode **verticals, int x, int y, int index, TreeNode ***treesInfo) {
+    tabuleiro[index] = 'T';
+    /* TODO: save change */
+
+
+
+    //removes all diogonal P positions
+    if (y != 0) {
+
+        if (x != 0) {
+
+            if (tabuleiro[index-colunas-1] == 'P') {
+                removeFromValidPositions(); /* TODO: implement this function */
+                --(*horizontals[x-1]).availablePositions;
+                --(*verticals[y-1]).availablePositions;
+                /* TODO: insert save change func */
+            }
+        }
+
+        if (x != colunas-1) {
+
+            if (tabuleiro[index-colunas+1] == 'P') {
+                removeFromValidPositions(); /* TODO: implement this function */
+                --(*horizontals[x+1]).availablePositions;
+                --(*verticals[y-1]).availablePositions;
+                /* TODO: insert save change func */
+            }
+        }
+    }
+
+    if (y != linhas-1) {
+
+        if (x != 0) {
+            if (tabuleiro[index+colunas-1] == 'P') {
+                removeFromValidPositions(); /* TODO: implement this function */
+                --(*horizontals[x-1]).availablePositions;
+                --(*verticals[y+1]).availablePositions;
+                /* TODO: insert save change func */
+            }
+        }
+
+        if (x != colunas-1) {
+            if (tabuleiro[index+colunas+1] == 'P') {
+                removeFromValidPositions(); /* TODO: implement this function */
+                --(*horizontals[x+1]).availablePositions;
+                --(*verticals[y+1]).availablePositions;
+                /* TODO: insert save change func */
+            }
+        }
+    }
+
+
+
+    //tries to assign tent to each available tree, it either finds solution or it is not part of solution
+
+    if (x != 0) {
+
+        if (tabuleiro[index-1] == 'A') {
+            assignTreeToTent(treesInfo, x-1, y, tabuleiro, index-1, colunas, linhas, horizontals, verticals);
+            /* TODO: make code to keep cycle going */
+            if (/* TODO complete if with solver return value */) {
+                return 1;
+            }
+        }
+    }
+
+    if (x != colunas-1) {
+
+        if (tabuleiro[index+1] == 'A') {
+            assignTreeToTent(treesInfo, x+1, y, tabuleiro, index+1, colunas, linhas, horizontals, verticals);
+            /* TODO: make code to keep cycle going */
+            if (/* TODO complete if with solver return value */) {
+                return 1;
+            }
+        }
+    }
+
+    if (y != 0) {
+
+        if (tabuleiro[index-colunas] == 'A') {
+            assignTreeToTent(treesInfo, x, y-1, tabuleiro, index-colunas, colunas, linhas, horizontals, verticals);
+            /* TODO: make code to keep cycle going */
+            if (/* TODO complete if with solver return value */) {
+                return 1;
+            }
+        }
+    }
+
+    if (y != linhas-1) {
+
+        if (tabuleiro[index+colunas] == 'A') {
+            assignTreeToTent(treesInfo, x, y+1, tabuleiro, index+colunas, colunas, linhas, horizontals, verticals);
+            /* TODO: make code to keep cycle going */
+            if (/* TODO complete if with solver return value */) {
+                return 1;
+            }
+
+        }
+    }
+    
+    return 0;
+}
 
 
 
@@ -97,47 +299,48 @@ void findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *h
 
 
 //cria o grapho tanto com as tendas como com as arvores
-TreeNode * createTreeList(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
+TreeNode * createTreeList(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals, TreeNode ***treesInfo) {
     int j = 0, i = 0, index = 0;
-    TreeNode *list = NULL, *newTree = NULL;
+    TreeNode *list = NULL;
 
     for (i = 0; i < linhas; i++) {
 
         for (j = 0; j < colunas; j++, ++index) {
 
             if (tabuleiro[index] == 'A') {
-                newTree = (TreeNode *) malloc(sizeof(TreeNode));
-                newTree->x = j;
-                newTree->y = i;
-                newTree->hasTentAssigned = 0;
-                newTree->num_playables = 0;
+                treesInfo[i][j] = (TreeNode *) malloc(sizeof(TreeNode));
+                treesInfo[i][j]->x = j;
+                treesInfo[i][j]->y = i;
+                treesInfo[i][j]->hasTentAssigned = 0;
+                treesInfo[i][j]->num_playables = 0;
                 if (j != 0) {
                     if (tabuleiro[index-1] == 'P') {
-    					++(newTree->num_playables);
+    					++(treesInfo[i][j]->num_playables);
     				}
                 }
 
                 if (j != colunas-1) {
                     if (tabuleiro[index+1] == 'P') {
-    					++(newTree->num_playables);
+    					++(treesInfo[i][j]->num_playables);
     				}
                 }
 
 
                 if (i != 0) {
                     if (tabuleiro[index-colunas] == 'P') {
-    					++(newTree->num_playables);
+    					++(treesInfo[i][j]->num_playables);
     				}
                 }
                 if (i != linhas-1) {
                     if (tabuleiro[index+colunas] == 'P') {
-    					++(newTree->num_playables);
+    					++(treesInfo[i][j]->num_playables);
 
     				}
                 }
-                newTree->next = list;
-                list = newTree;
+                treesInfo[i][j]->next = list;
+                list = treesInfo[i][j];
             }
         }
     }
+    return list;
 }
