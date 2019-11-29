@@ -28,21 +28,62 @@ typedef struct _ChangeNode {
 void MergeSort(TreeNode**);
 
 
-/*TODO: create return value*/
-void checkLonelyTree(TreeNode** list) {
+void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, HeadNode **horizontals, int colunas, int linhas);
+
+
+/*
+*
+*     return values: 1 - ok but no changes
+*                    2 - ok and changes
+*                    0 - not ok
+*
+*
+*/
+void checkLonelyTree(TreeNode** list, HeadNode **verticals, HeadNode **horizontals, int linhas, int colunas, char *tabuleiro) {
+    TreeNode *aux;
+    PlayableNode *node;
     MergeSort(list);
-    if ((*list)->num_playables == 0) {
-        /*TODO: crete erorr message to propagate*/
+    aux = *list;
+    while ((aux)->num_playables == 0) {
+        if ((aux)->hasTent == 0) {
+            /*TODO: crete erorr message to propagate*/
+        }
+        aux = aux->next;
+        if (aux == NULL) {
+            break;
+        }
     }
-    if ((*list)->num_playables == 1) {
-        if ((*list)->North == 1) {
-            /* TODO: insert select spot as tent function */
-        } else if ((*list)->South == 1) {
-            /* TODO: insert select spot as tent function */
-        } else if ((*list)->West == 1) {
-            /* TODO: insert select spot as tent function */
+
+    if (aux == NULL) {
+        return;
+    }
+
+    if ((aux)->num_playables == 1) {
+
+        if ((aux)->North == 1) {
+            node = (*horizontals[(aux->y)-1]).first;
+            while (node->x != aux->x) {
+                node = node->horizontal_next;
+            }
+            makeSpotATent(tabuleiro, node, verticals, horizontals, colunas, linhas);
+        } else if ((aux)->South == 1) {
+            node = (*horizontals[(aux->y)+1]).first;
+            while (node->x != aux->x) {
+                node = node->horizontal_next;
+            }
+            makeSpotATent(tabuleiro, node, verticals, horizontals, colunas, linhas);
+        } else if ((aux)->West == 1) {
+            node = (*horizontals[(aux->y)]).first;
+            while (node->x != aux->x-1) {
+                node = node->horizontal_next;
+            }
+            makeSpotATent(tabuleiro, node, verticals, horizontals, colunas, linhas);
         } else {
-            /* TODO: insert select spot as tent function */
+            node = (*horizontals[(aux->y)]).first;
+            while (node->x != aux->x+1) {
+                node = node->horizontal_next;
+            }
+            makeSpotATent(tabuleiro, node, verticals, horizontals, colunas, linhas);
         }
     }
 }
@@ -68,7 +109,7 @@ int removeFromValidPositions(HeadNode* horizontals, int x, int y) {
 }
 
 void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, HeadNode **horizontals, int colunas, int linhas) {
-    int verticalChange = 1, horizontalChange =1, index = (node->y*colunas) + node->x;
+    int verticalChange = 1, horizontalChange = 1, index = (node->y*colunas) + node->x;
     int x = node->x, y = node->y;
     node->isTent = 1;
     if (node->connectedForwardVertical) {
@@ -329,7 +370,7 @@ TreeNode * findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadN
 * direction: 1 for horizontal, 0 for vertical
 *
 */
-void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *toInsert) {
+void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *toInsert, int colunas) {
 	PlayableNode *auxVertical = headVertical->first, *auxHorizontal = headHorizontal->first;
 
     if (headVertical->first == NULL) {
@@ -341,6 +382,10 @@ void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *to
         }
         auxVertical->vertical_next = toInsert;
         toInsert->vertical_prev = auxVertical;
+        if (auxVertical->y == (toInsert->y) -colunas) {
+            auxVertical->connectedForwardVertical = 1;
+            toInsert->connectedBackwardVertical = 1;
+        }
         ++(headVertical->availablePositions);
     }
 
@@ -353,6 +398,10 @@ void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *to
         }
         auxHorizontal->horizontal_next = toInsert;
         toInsert->horizontal_prev = auxHorizontal;
+        if (auxVertical->x == (toInsert->x) -1) {
+            auxVertical->connectedForwardHorizontal = 1;
+            toInsert->connectedBackwardHorizontal = 1;
+        }
         ++(headHorizontal->availablePositions);
     }
 }
@@ -384,7 +433,7 @@ void createGraph(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals
                 newNode->horizontal_prev = NULL;
                 newNode->vertical_prev = NULL;
                 newNode->isTent = 0;
-                addAtEnd(&(horizontals[i]), &(verticals[j]),newNode);
+                addAtEnd(&(horizontals[i]), &(verticals[j]),newNode, colunas);
             }
         }
     }
