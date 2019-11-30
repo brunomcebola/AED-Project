@@ -293,6 +293,9 @@ int readBio(void) {
         //gets number of tents per row and initializes the structs in row array
         for(i = 0; i < rows; i++) {
             trash = fscanf(in_file, " %d", &tents);
+            if (tents > (columns/2)) {
+                setBoardAnswer(-1);
+            }
             row_vector[i].puzzleTents = tents;
             row_vector[i].tentsNeeded = tents;
             row_vector[i].availablePositions = 0;
@@ -303,6 +306,9 @@ int readBio(void) {
         //columns array
         for(i = 0; i < columns; i++) {
             trash = fscanf(in_file, " %d", &tents);
+            if (tents > (rows/2)) {
+                setBoardAnswer(-1);
+            }
             column_vector[i].puzzleTents = tents;
             column_vector[i].tentsNeeded = tents;
             column_vector[i].availablePositions = 0;
