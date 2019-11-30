@@ -34,7 +34,7 @@ void setSolverVectors(HeadNode* row, HeadNode* column) {
 //solver functions
 int findPossibleLocations(char *tabuleiro, int linhas, int colunas) {
 
-	int i, j, index = 0, numOfTrees = 0, numOfAskedTents = getBoardSum();
+	int i, j, index = 0, numOfTrees = 0, numOfAskedTents = getBoardSum(), retVal;
 
 	for (i = 0; i < linhas; ++i) {
 
@@ -81,13 +81,15 @@ int findPossibleLocations(char *tabuleiro, int linhas, int colunas) {
 
     if (numOfTrees == numOfAskedTents) {
         setBoardSeason(1);
+        retVal = 1;
     } else if (numOfTrees > numOfAskedTents) {
         setBoardSeason(2);
+        retVal = 2;
     } else {
         return 0;
     }
 
-    return 1;
+    return retVal;
 }
 
 
@@ -151,8 +153,119 @@ TreeNode *createTreeList(char *tabuleiro, int linhas, int colunas, TreeNode ***t
 
 
 
+/* checks if P position is left alone
+*  returns 0 when not alone, 1 when not alone
+*  TODO: create 3 more functions so it reduces number of comparisons (doesn't have to compare with tree removing it)
+*/
+void checkIfPAlone(char *tabuleiro, int index, int x, int y, int colunas, int linhas) {
+    if (x != 0) {
 
-void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y) {
+        if (tabuleiro[index-1] == 'A') {
+            return;
+        }
+    }
+
+    if (x != colunas-1) {
+
+        if (tabuleiro[index+1] == 'A') {
+            return;
+        }
+    }
+
+    if (y != 0) {
+
+        if (tabuleiro[index-colunas] == 'A') {
+            return;
+        }
+    }
+    if (y != linhas-1) {
+
+        if (tabuleiro[index+colunas] == 'A') {
+            return;
+
+        }
+    }
+    tabuleiro[index] = '.';
+    /* TODO: insert save change func */
+}
+
+
+
+void invalidateTreePPositions(char * tabuleiro, int linhas, int colunas, int index, int x, int y) {
+    if (x != 0) {
+
+        if (tabuleiro[index-1] == 'P') {
+        checkIfPAlone(tabuleiro, index-1, x-1, y, colunas, linhas);
+        }
+    }
+
+    if (x != colunas-1) {
+
+        if (tabuleiro[index+1] == 'P') {
+            checkIfPAlone(tabuleiro, index+1, x+1, y, colunas, linhas);
+        }
+    }
+
+    if (y != 0) {
+
+        if (tabuleiro[index-colunas] == 'P') {
+            checkIfPAlone(tabuleiro, index-colunas, x, y-1, colunas, linhas);
+        }
+    }
+    if (y != linhas-1) {
+
+        if (tabuleiro[index+colunas] == 'P') {
+            checkIfPAlone(tabuleiro, index+colunas, x, y+1, colunas, linhas);
+
+        }
+    }
+}
+
+
+
+void assginsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y) {
+    if (x != 0) {
+        if (tabuleiro[index-1] == 'A') {
+            tabuleiro[index-1] = 'K';
+            (treeInfo[y][x-1]->hasTentAssigned) = 1;
+            invalidateTreePPositions(tabuleiro, linhas, colunas, index-1, x-1, y);
+            return;
+        }
+    }
+
+    if (x != colunas-1) {
+        if (tabuleiro[index+1] == 'A') {
+            tabuleiro[index+1] = 'K';
+            (treeInfo[y][x+1]->hasTentAssigned) = 1;
+            invalidateTreePPositions(tabuleiro, linhas, colunas, index+1, x+1, y);
+            return;
+        }
+    }
+
+    if (y != 0) {
+        if (tabuleiro[index-colunas] == 'A') {
+            tabuleiro[index-colunas] = 'K';
+            (treeInfo[y-1][x]->hasTentAssigned) = 1;
+            invalidateTreePPositions(tabuleiro, linhas, colunas, index-colunas, x, y-1);
+            return;
+        }
+    }
+
+    if (y != linhas-1) {
+        if (tabuleiro[index+colunas] == 'A') {
+            tabuleiro[index+colunas] = 'K';
+            (treeInfo[y+1][x]->hasTentAssigned) = 1;
+            invalidateTreePPositions(tabuleiro, linhas, colunas, index+colunas, x, y+1);
+            return;
+        }
+    }
+}
+
+
+
+
+
+void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, int isTent) {
     --(row_vector[x].tentsNeeded);
     --(row_vector[x].availablePositions);
     --(column_vector[y].tentsNeeded);
@@ -162,6 +275,9 @@ void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, i
         if (tabuleiro[index-1] == 'A') {
             --(treeInfo[y][x-1]->num_playables);
             /* TODO: insert save changes function */
+        } else if (tabuleiro[index-1] == 'P' && isTent) {
+            tabuleiro[index-1] = '.';
+            /* TODO: insert save change func */
         }
     }
 
@@ -169,6 +285,9 @@ void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, i
         if (tabuleiro[index+1] == 'A') {
             --(treeInfo[y][x+1]->num_playables);
             /* TODO: insert save changes function */
+        } else if (tabuleiro[index+1] == 'P' && isTent) {
+            tabuleiro[index+1] = '.';
+            /* TODO: insert save change func */
         }
     }
 
@@ -176,13 +295,60 @@ void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, i
         if (tabuleiro[index-colunas] == 'A') {
             --(treeInfo[y-1][x]->num_playables);
             /* TODO: insert save changes function */
+        } else if (tabuleiro[index-colunas] == 'P' && isTent) {
+            tabuleiro[index-colunas] = '.';
+            /* TODO: insert save change func */
         }
+
+        if (isTent) {
+            if (x != 0) {
+                if (tabuleiro[index-colunas-1] == 'P') {
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas-1, x-1, y-1, 0);
+                    --(column_vector[x-1]).availablePositions;
+                    --(row_vector[y-1]).availablePositions;
+                    /* TODO: insert save change func */
+                }
+            }
+
+            if (x != colunas-1) {
+                if (tabuleiro[index-colunas+1] == 'P') {
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas+1, x+1, y-1, 0);
+                    --(column_vector[x+1]).availablePositions;
+                    --(row_vector[y-1]).availablePositions;
+                    /* TODO: insert save change func */
+                }
+            }
+        }
+
     }
 
     if (y != linhas-1) {
         if (tabuleiro[index+colunas] == 'A') {
             --(treeInfo[y+1][x]->num_playables);
             /* TODO: insert save changes function */
+        } else if (tabuleiro[index+colunas] == 'P' && isTent) {
+            tabuleiro[index+colunas] = '.';
+            /* TODO: insert save change func */
+        }
+
+        if (isTent) {
+            if (x != 0 && isTent) {
+                if (tabuleiro[index+colunas-1] == 'P') {
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas-1, x-1, y+1, 0);
+                    --(column_vector[x-1]).availablePositions;
+                    --(row_vector[y+1]).availablePositions;
+                    /* TODO: insert save change func */
+                }
+            }
+
+            if (x != colunas-1 && isTent) {
+                if (tabuleiro[index+colunas+1] == 'P') {
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas+1, x+1, y+1, 0);
+                    --(column_vector[x+1]).availablePositions;
+                    --(row_vector[y+1]).availablePositions;
+                    /* TODO: insert save change func */
+                }
+            }
         }
     }
 }
@@ -194,37 +360,14 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
     int i = 0, j = 0, index = 0, retVal = 0;
 
     for (index = 0, i = 0; i < linhas; ++i, index += colunas) {
-        if ((column_vector[i].tentsNeeded == column_vector[i].availablePositions) && column_vector[i].tentsNeeded > 0) {
-            retVal = 1;
-            column_vector[i].tentsNeeded = column_vector[i].availablePositions = 0;
-            for (j = 0; j < colunas; ++j) {
-                if (tabuleiro[index+j] == 'P') {
-                    tabuleiro[index+j] = 'T';
-                    --(row_vector[j].availablePositions);
-                    /*TODO: falta dar assign a uma arvore*/
-                }
-            }
-        } else if (column_vector[i].tentsNeeded > column_vector[i].availablePositions) {
-            return 404;
-        } else if (column_vector[i].availablePositions > 0 && column_vector[i].tentsNeeded == 0) {
-            for (j = 0; j < colunas; ++j) {
-                if (tabuleiro[index+j] == 'P') {
-                    tabuleiro[index+j] = '.';
-                    removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i);
-                    --(row_vector[j].availablePositions);
-                    /*TODO: save changes */
-                }
-            }
-        }
-    }
-
-    for (i = 0; i < colunas; ++i) {
         if ((row_vector[i].tentsNeeded == row_vector[i].availablePositions) && row_vector[i].tentsNeeded > 0) {
             retVal = 1;
             row_vector[i].tentsNeeded = row_vector[i].availablePositions = 0;
-            for (index = i, j = 0; j < linhas; ++j, index += colunas) {
-                if (tabuleiro[index] == 'P') {
-                    tabuleiro[index] = 'T';
+            for (j = 0; j < colunas; ++j) {
+                if (tabuleiro[index+j] == 'P') {
+                    tabuleiro[index+j] = 'T';
+                    assginsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
                     --(column_vector[j].availablePositions);
                     /*TODO: falta dar assign a uma arvore*/
                 }
@@ -232,11 +375,38 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
         } else if (row_vector[i].tentsNeeded > row_vector[i].availablePositions) {
             return 404;
         } else if (row_vector[i].availablePositions > 0 && row_vector[i].tentsNeeded == 0) {
+            for (j = 0; j < colunas; ++j) {
+                if (tabuleiro[index+j] == 'P') {
+                    tabuleiro[index+j] = '.';
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 0);
+                    --(column_vector[j].availablePositions);
+                    /*TODO: save changes */
+                }
+            }
+        }
+    }
+
+    for (i = 0; i < colunas; ++i) {
+        if ((column_vector[i].tentsNeeded == column_vector[i].availablePositions) && column_vector[i].tentsNeeded > 0) {
+            retVal = 1;
+            column_vector[i].tentsNeeded = column_vector[i].availablePositions = 0;
+            for (index = i, j = 0; j < linhas; ++j, index += colunas) {
+                if (tabuleiro[index] == 'P') {
+                    tabuleiro[index] = 'T';
+                    assginsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
+                    --(row_vector[j].availablePositions);
+                    /*TODO: falta dar assign a uma arvore*/
+                }
+            }
+        } else if (column_vector[i].tentsNeeded > column_vector[i].availablePositions) {
+            return 404;
+        } else if (column_vector[i].availablePositions > 0 && column_vector[i].tentsNeeded == 0) {
             for (index = i, j = 0; j < linhas; ++j, index += colunas) {
                 if (tabuleiro[index] == 'P') {
                     tabuleiro[index] = '.';
-                    removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j);
-                    --(column_vector[j].availablePositions);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 0);
+                    --(row_vector[j].availablePositions);
                     /*TODO: save changes */
                 }
             }
@@ -281,7 +451,7 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
                 tabuleiro[index] = 'K';
                 tabuleiro[index-1] = 'T';
                 /* TODO: insert save changes function */
-                removesP(treeInfo, tabuleiro, linhas, colunas, index-1, aux->x -1, aux->y);
+                removesP(treeInfo, tabuleiro, linhas, colunas, index-1, aux->x -1, aux->y, 1);
                 return 1;
             }
         }
@@ -292,7 +462,7 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
                 tabuleiro[index] = 'K';
                 tabuleiro[index+1] = 'T';
                 /* TODO: insert save changes function */
-                removesP(treeInfo, tabuleiro, linhas, colunas, index+1, aux->x +1, aux->y);
+                removesP(treeInfo, tabuleiro, linhas, colunas, index+1, aux->x +1, aux->y, 1);
                 return 1;
             }
         }
@@ -303,7 +473,7 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
                 tabuleiro[index] = 'K';
                 tabuleiro[index-colunas] = 'T';
                 /* TODO: insert save changes function */
-                removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas, aux->x, aux->y -1);
+                removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas, aux->x, aux->y -1, 1);
                 return 1;
             }
         }
@@ -314,7 +484,7 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
                 tabuleiro[index] = 'K';
                 tabuleiro[index-colunas] = 'T';
                 /* TODO: insert save changes function */
-                removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas, aux->x, aux->y +1);
+                removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas, aux->x, aux->y +1, 1);
                 return 1;
             }
         }
@@ -359,6 +529,7 @@ void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInf
     int j = 0, i = 0, index = 0;
 
     for (i = 0; i < linhas; ++i) {
+        printf("%d\n", i);
 
         for (j = 0; j < colunas; ++j, ++index) {
 
@@ -376,17 +547,17 @@ void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInf
 
 void solver(void) {
     char *layout = getBoardLayout();
-    int rows = getBoardRows(), columns = getBoardColumns();
+    int rows = getBoardRows(), columns = getBoardColumns(), season;
     TreeNode ***treesInfo = NULL, *treesList = NULL;
 
-    if(!findPossibleLocations(layout, rows, columns)) {
+    if(!(season = findPossibleLocations(layout, rows, columns))) {
         setBoardAnswer(-1);
         return;
     }
     treesInfo = createTreeInfo(rows, columns);
     treesList = createTreeList(layout, rows, columns, treesInfo);
 
-    makeSureGuesses(1, treesInfo, &treesList, layout, rows, columns);
+    makeSureGuesses(season, treesInfo, &treesList, layout, rows, columns);
 
     freeTreeInfo(layout, rows, columns, treesInfo);
 }
