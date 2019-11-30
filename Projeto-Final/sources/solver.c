@@ -498,6 +498,7 @@ int makeSureGuesses(int season, TreeNode*** treeInfo, TreeNode** list, char * ta
     while (modified) {
 
         if (modified == 404) {
+            setBoardAnswer(-1);
             return 0;
         }
         modified = 0;
@@ -520,6 +521,7 @@ int makeSureGuesses(int season, TreeNode*** treeInfo, TreeNode** list, char * ta
             continue;
         }*/
     }
+    setBoardAnswer(1);
     return 1;
 }
 
