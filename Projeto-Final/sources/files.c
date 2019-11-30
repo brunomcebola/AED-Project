@@ -337,37 +337,17 @@ int readBio(void) {
 *******************************************************************************/
 int readLayout(void) {
     char *tabuleiro = getBoardLayout(), *buffer = getBoardBuffer();
-    int trees = 0, i = 0, rows = getBoardRows(), columns = getBoardColumns(),
-        j = 0, num_asked_tents = getBoardSum();
-
-        int index = 0;
+    int i = 0, rows = getBoardRows(), columns = getBoardColumns(), index = 0;
+    
     tabuleiro[0] = '\0';
     buffer[0]= '\0';
 
     //reads layoutrow by row
     for (i = 0; i < rows; i++, index += columns) {
-
         fscanf(in_file, " %s", buffer);
-
-        for (j = 0; j < columns; j++) {
-            //counts number of trees placed in the layout
-            if (buffer[j] == 'A') {
-                trees++; /* TODO: remove this comparison from here without fucking up everything, it's done more efficiently later */
-            }
-
-        }
 
         //fills the array containing the layout
         strcpy(&tabuleiro[index], buffer);
-    }
-
-    //sets which season is being evaluated
-    if (trees == num_asked_tents) {
-        setBoardSeason(1); /* TODO: pass these functions to find all possible locations func */
-    } else if (trees > num_asked_tents) {
-        setBoardSeason(2);
-    } else {
-        return 0;
     }
 
     return 1;
@@ -426,11 +406,11 @@ void writeFile (void) {
     }
 
     //if the is a correct answer then the solved layout is printed
-    if(answer == 1){
+    //if(answer == 1){
         for(i = 0; i < rows; i++){
             fprintf(out_file, "%.*s\n", columns, layout+(i*columns));
         }
-    }
+    //}
 }
 
 /*******************************************************************************

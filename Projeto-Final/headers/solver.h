@@ -14,6 +14,8 @@ HeadNode *getSolverVectorColumn(void);
 
 void setSolverVectors(HeadNode* , HeadNode*);
 
+void solver(void);
+
 void freeSolver(void);
 
 #endif

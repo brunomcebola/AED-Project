@@ -153,11 +153,11 @@ int makeSureGuesses(int season, TreeNode*** treeInfo, TreeNode** list, char * ta
 /* TODO: eliminate all PlayableNode stuff it won't be used */
 
 
-TreeNode *** createTreeInfo(int colunas, int linhas) {
+TreeNode ***createTreeInfo(int colunas, int linhas) {
     TreeNode ***TreeInfo = NULL;
     TreeInfo = (TreeNode ***) malloc(linhas * sizeof(TreeNode **));
-    for (int i = 0; i < colunas; ++i) {
-        TreeInfo[i] = (TreeNode **) malloc(linhas * sizeof(TreeNode *));
+    for (int i = 0; i < linhas; ++i) {
+        TreeInfo[i] = (TreeNode **) malloc(colunas * sizeof(TreeNode *));
     }
     return TreeInfo;
 }
