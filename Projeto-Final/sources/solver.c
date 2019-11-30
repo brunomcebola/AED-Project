@@ -529,7 +529,6 @@ void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInf
     int j = 0, i = 0, index = 0;
 
     for (i = 0; i < linhas; ++i) {
-        printf("%d\n", i);
 
         for (j = 0; j < colunas; ++j, ++index) {
 
@@ -554,7 +553,7 @@ void solver(void) {
         setBoardAnswer(-1);
         return;
     }
-    treesInfo = createTreeInfo(rows, columns);
+    treesInfo = createTreeInfo(columns,rows);
     treesList = createTreeList(layout, rows, columns, treesInfo);
 
     makeSureGuesses(season, treesInfo, &treesList, layout, rows, columns);
