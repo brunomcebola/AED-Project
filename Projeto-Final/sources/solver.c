@@ -42,7 +42,7 @@ void setSolverVectors(HeadNode* row, HeadNode* column) {
 //solver functions
 int findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
 
-	int i, j, index = 0, numOfTrees = 0, valid = 1, numOfAskedTents = getBoardSum();
+	int i, j, index = 0, numOfTrees = 0, numOfAskedTents = getBoardSum();
 
 	for (i = 0; i < linhas; ++i) {
 
@@ -52,29 +52,25 @@ int findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *ho
                 ++numOfTrees;
 
                 if (j != 0) {
-                    valid = verticals[j-1].puzzleTents != 0 && horizontals[i].puzzleTents != 0;
-                    if (tabuleiro[index-1] == '.' && valid) {
+                    if (tabuleiro[index-1] == '.' && verticals[j-1].puzzleTents != 0 && horizontals[i].puzzleTents != 0) {
     					tabuleiro[index-1] = 'P';
     				}
                 }
 
                 if (j != colunas-1) {
-                    valid = verticals[j+1].puzzleTents != 0 && horizontals[i].puzzleTents != 0;
-                    if (tabuleiro[index+1] == '.' && valid) {
+                    if (tabuleiro[index+1] == '.' && verticals[j+1].puzzleTents != 0 && horizontals[i].puzzleTents != 0) {
     					tabuleiro[index+1] = 'P';
     				}
                 }
 
                 if (i != 0) {
-                    valid = verticals[j].puzzleTents != 0 && horizontals[i-1].puzzleTents != 0;
-                    if (tabuleiro[index-colunas] == '.' && valid) {
+                    if (tabuleiro[index-colunas] == '.' && verticals[j].puzzleTents != 0 && horizontals[i-1].puzzleTents != 0) {
     					tabuleiro[index-colunas] = 'P';
     				}
                 }
 
                 if (i != linhas-1) {
-                    valid = verticals[j].puzzleTents != 0 && horizontals[i+1].puzzleTents != 0;
-                    if (tabuleiro[index+colunas] == '.' && valid) {
+                    if (tabuleiro[index+colunas] == '.' && verticals[j].puzzleTents != 0 && horizontals[i+1].puzzleTents != 0) {
     					tabuleiro[index+colunas] = 'P';
 
     				}
