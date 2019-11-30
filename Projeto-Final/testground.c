@@ -421,6 +421,7 @@ void eliminateInvalidRowsANdColumns(char *tabuleiro, int linhas, int colunas, He
 
 
 /* Fids all P postions that are not 0 */
+/* TODO: include changes to horizontals and verticals */
 void findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
 
 	int i, j, index = 0, numOfTrees = 0;
