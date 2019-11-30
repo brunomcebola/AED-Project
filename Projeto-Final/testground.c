@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "headers/defs.h"
+#include "headers/solver.h"
 #include "headers/sort.h"
 
 typedef struct {
@@ -24,94 +24,9 @@ typedef struct {
 *                404 - not ok
 */
 
-int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas) {
-    TreeNode *aux;
-    int index;
-    MergeSort(list);
-    aux = *list;
-
-    if (aux == NULL) {
-        return 2;
-    }
-
-    if ((aux)->num_playables == 0) {
-        return 404;
-    }
-
-    while (aux->hasTentAssigned == 1) {
-        if (aux->next == NULL || aux->num_playables > 1) {
-            return 2;
-        }
-        aux = aux->next;
-    }
-
-    if ((aux)->num_playables == 1){
-
-        index = (aux->y)*colunas + aux->x;
 
 
-        if (aux->x != 0) {
-            if (tabuleiro[index-1] == 'P') {
-                /* TODO: insert take only available spot as tent function */
-                return 1;
-            }
-        }
 
-        if (aux->x != colunas-1) {
-            if (tabuleiro[index+1] == 'P') {
-                /* TODO: insert take only available spot as tent function */
-                return 1;
-            }
-        }
-
-        if (aux->y != 0) {
-            if (tabuleiro[index-colunas] == 'P') {
-                /* TODO: insert take only available spot as tent function */
-                return 1;
-            }
-        }
-
-        if (aux->y != linhas-1) {
-            if (tabuleiro[index+colunas] == 'P') {
-                /* TODO: insert take only available spot as tent function */
-                return 1;
-            }
-        }
-
-    }
-    return 404;
-}
-
-
-int checkNeededTents(char * tabuleiro, int linhas, int colunas, HeadNode** horizontals, HeadNode** verticals) {
-    int i = 0, j = 0, index = 0;
-    for (i = 0; i < linhas; i++, index += colunas) {
-        if (horizontals[i]->tentsNeeded == horizontals[i]->availablePositions) {
-            horizontals[i]->tentsNeeded = horizontals[i]->availablePositions = 0;
-            for (j = 0; j < colunas; j++) {
-                if (tabuleiro[index+j] == 'P') {
-                    /* TODO: implement function to put tent there and assign one tree */
-                }
-            }
-        } else if (horizontals[i]->tentsNeeded > horizontals[i]->availablePositions) {
-            return 0;
-        }
-    }
-
-    for (i = 0; i < colunas; i++) {
-        if (verticals[i]->tentsNeeded == verticals[i]->availablePositions) {
-            verticals[i]->tentsNeeded = verticals[i]->availablePositions = 0;
-            for (j = 0; j < colunas; ++j, index+= colunas) {
-                if (tabuleiro[i+index] == 'P') {
-                    /* TODO: implement function to put tent there and assign one tree */
-                }
-            }
-        } else if (verticals[i]->tentsNeeded > verticals[i]->availablePositions) {
-            return 0;
-        }
-    }
-    return 1;
-}
 
 
 
@@ -120,70 +35,18 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, HeadNode** horiz
 *
 */
 
-int makeSureGuesses(int season, TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, HeadNode **horizontals, HeadNode **verticals) {
-    int modified = 1;
-    while (modified) {
-        if (modified == 404) {
-            return 0;
-        }
-        modified = 0;
-
-        if (season == 1) {
-            if ((modified = checkForLonelyTrees(treeInfo, list, tabuleiro, linhas, colunas)) == 1) {
-                continue;
-            }
-        }
-
-        modified = 0;
-
-        if ((modified = checkNeededTents(tabuleiro, linhas, colunas, horizontals, verticals))) {
-            continue;
-        }
-
-        if ((modified = checkCosecutive())) {
-            continue;
-        }
-    }
-    return 1;
-}
-
-
-/* TODO: change changedNode to include coordinates and not pointers */
-
-/* TODO: eliminate all PlayableNode stuff it won't be used */
-
-
-TreeNode ***createTreeInfo(int colunas, int linhas) {
-    TreeNode ***TreeInfo = NULL;
-    TreeInfo = (TreeNode ***) malloc(linhas * sizeof(TreeNode **));
-    for (int i = 0; i < linhas; ++i) {
-        TreeInfo[i] = (TreeNode **) malloc(colunas * sizeof(TreeNode *));
-    }
-    return TreeInfo;
-}
 
 
 
-/* Frees treeInfo data structure and replaces all K (assigned trees) to A (trees) */
 
-void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInfo) {
-    int j = 0, i = 0, index = 0;
 
-    for (i = 0; i < linhas; ++i) {
 
-        for (j = 0; j < colunas; ++j, ++index) {
 
-            if (tabuleiro[index] == 'A') {
-                free(treesInfo[i][j]);
-            } else if (tabuleiro[index] == 'K') {
-                tabuleiro[index] = 'A';
-                free(treesInfo[i][j]);
-            }
-        }
-        free(treesInfo[i]);
-    }
-    free(treesInfo);
-}
+
+
+
+
+
 
 
 
@@ -388,54 +251,4 @@ int mark_P_as_T_for_random_A(char *tabuleiro, int linhas, int colunas, HeadNode 
     }
 
     return 0;
-}
-
-
-
-
-//cria o grapho tanto com as tendas como com as arvores
-TreeNode * createTreeList(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals, TreeNode ***treesInfo) {
-    int j = 0, i = 0, index = 0;
-    TreeNode *list = NULL;
-
-    for (i = 0; i < linhas; ++i) {
-
-        for (j = 0; j < colunas; ++j, ++index) {
-
-            if (tabuleiro[index] == 'A') {
-                treesInfo[i][j] = (TreeNode *) malloc(sizeof(TreeNode));
-                treesInfo[i][j]->x = j;
-                treesInfo[i][j]->y = i;
-                treesInfo[i][j]->hasTentAssigned = 0;
-                treesInfo[i][j]->num_playables = 0;
-                if (j != 0) {
-                    if (tabuleiro[index-1] == 'P') {
-    					++(treesInfo[i][j]->num_playables);
-    				}
-                }
-
-                if (j != colunas-1) {
-                    if (tabuleiro[index+1] == 'P') {
-    					++(treesInfo[i][j]->num_playables);
-    				}
-                }
-
-
-                if (i != 0) {
-                    if (tabuleiro[index-colunas] == 'P') {
-    					++(treesInfo[i][j]->num_playables);
-    				}
-                }
-                if (i != linhas-1) {
-                    if (tabuleiro[index+colunas] == 'P') {
-    					++(treesInfo[i][j]->num_playables);
-
-    				}
-                }
-                treesInfo[i][j]->next = list;
-                list = treesInfo[i][j];
-            }
-        }
-    }
-    return list;
 }

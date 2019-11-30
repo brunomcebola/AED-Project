@@ -1,6 +1,5 @@
-#include "../headers/defs.h"
 #include <stdlib.h>
-
+#include "../headers/solver.h"
 
 TreeNode* SortedMerge(TreeNode* a, TreeNode* b);
 void FrontBackSplit(TreeNode* source,

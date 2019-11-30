@@ -295,6 +295,7 @@ int readBio(void) {
             trash = fscanf(in_file, " %d", &tents);
             row_vector[i].puzzleTents = tents;
             row_vector[i].tentsNeeded = tents;
+            row_vector[i].availablePositions = 0;
             row_vector[i].first = NULL;
         }
 
@@ -304,6 +305,7 @@ int readBio(void) {
             trash = fscanf(in_file, " %d", &tents);
             column_vector[i].puzzleTents = tents;
             column_vector[i].tentsNeeded = tents;
+            column_vector[i].availablePositions = 0;
             column_vector[i].first = NULL;
         }
 
@@ -338,7 +340,7 @@ int readBio(void) {
 int readLayout(void) {
     char *tabuleiro = getBoardLayout(), *buffer = getBoardBuffer();
     int i = 0, rows = getBoardRows(), columns = getBoardColumns(), index = 0;
-    
+
     tabuleiro[0] = '\0';
     buffer[0]= '\0';
 
