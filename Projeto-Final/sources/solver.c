@@ -332,7 +332,7 @@ void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, i
         }
 
         if (isTent) {
-            if (x != 0 && isTent) {
+            if (x != 0 ) {
                 if (tabuleiro[index+colunas-1] == 'P') {
                     removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas-1, x-1, y+1, 0);
                     --(column_vector[x-1]).availablePositions;
@@ -341,7 +341,7 @@ void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, i
                 }
             }
 
-            if (x != colunas-1 && isTent) {
+            if (x != colunas-1) {
                 if (tabuleiro[index+colunas+1] == 'P') {
                     removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas+1, x+1, y+1, 0);
                     --(column_vector[x+1]).availablePositions;
