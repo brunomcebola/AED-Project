@@ -39,67 +39,42 @@ void setSolverVectors(HeadNode* row, HeadNode* column) {
 
 
 
+//solver functions
+int findPossibleLocations(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
 
-
-
-void eliminateInvalidRowsANdColumns(char *tabuleiro, int linhas, int colunas, HeadNode *horizontals, HeadNode *verticals) {
-    int i, j, index = 0;
-    for (i = 0; i < linhas; ++i) {
-        if (horizontals[i].puzzleTents == 0) {
-            index = i*colunas;
-            for (j = 0; j < colunas; ++j, ++index) {
-                if (tabuleiro[index] != 'A') {
-                    tabuleiro[index] = '.';
-                }
-            }
-        }
-    }
-    for (i = 0; i < colunas; ++i) {
-        if (verticals[i].puzzleTents == 0) {
-            index = i;
-            for (j = 0; j < linhas; ++j, index += colunas) {
-                if (tabuleiro[index] != 'A') {
-                    tabuleiro[index] = '.';
-                }
-            }
-        }
-    }
-}
-
-
-/* Fids all P postions that are not 0 */
-int findPossibleLocations(char *tabuleiro, int linhas, int colunas) {
-
-	int i, j, index = 0, numOfTrees = 0, numOfAskedTents = getBoardSum();
+	int i, j, index = 0, numOfTrees = 0, valid = 1, numOfAskedTents = getBoardSum();
 
 	for (i = 0; i < linhas; ++i) {
 
 		for (j = 0; j < colunas; ++j, ++index) {
-
 			if (tabuleiro[index] == 'A') {
 
                 ++numOfTrees;
 
                 if (j != 0) {
-                    if (tabuleiro[index-1] == '.') {
+                    valid = verticals[j-1].puzzleTents != 0 && horizontals[i].puzzleTents != 0;
+                    if (tabuleiro[index-1] == '.' && valid) {
     					tabuleiro[index-1] = 'P';
     				}
                 }
 
                 if (j != colunas-1) {
-                    if (tabuleiro[index+1] == '.') {
+                    valid = verticals[j+1].puzzleTents != 0 && horizontals[i].puzzleTents != 0;
+                    if (tabuleiro[index+1] == '.' && valid) {
     					tabuleiro[index+1] = 'P';
     				}
                 }
 
-
                 if (i != 0) {
-                    if (tabuleiro[index-colunas] == '.') {
+                    valid = verticals[j].puzzleTents != 0 && horizontals[i-1].puzzleTents != 0;
+                    if (tabuleiro[index-colunas] == '.' && valid) {
     					tabuleiro[index-colunas] = 'P';
     				}
                 }
+
                 if (i != linhas-1) {
-                    if (tabuleiro[index+colunas] == '.') {
+                    valid = verticals[j].puzzleTents != 0 && horizontals[i+1].puzzleTents != 0;
+                    if (tabuleiro[index+colunas] == '.' && valid) {
     					tabuleiro[index+colunas] = 'P';
 
     				}
@@ -125,12 +100,10 @@ void solver(void) {
     char *layout = getBoardLayout();
     int rows = getBoardRows(), columns = getBoardColumns();
 
-    if(!findPossibleLocations(layout, rows, columns)) {
+    if(!findPossibleLocations(layout, rows, columns, row_vector, column_vector)) {
         setBoardAnswer(-1);
         return;
     }
-    eliminateInvalidRowsANdColumns(layout, rows, columns, row_vector, column_vector);
-
 }
 
 
