@@ -772,33 +772,53 @@ int randomPlay(TreeNode ***, TreeNode **, char *, int, int, int, int, int, int, 
 
 
 void heuristicsForRandomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, int season) {
+    int *checkedRow, *checkedColumn, checkedAll = linhas + colunas+1;
     int linhasOuColunas = 0, i = 0, index = 0, numOfMoves = 0;
     float max = 0, temp = 0;
-    for (i = 0; i < colunas; i++) {
-        if (max < (temp = column_vector[i].tentsNeeded/column_vector[i].availablePositions)) {
-            max = temp;
-            numOfMoves = column_vector[i].tentsNeeded;
-            index = i;
-            linhasOuColunas = 0;
+    checkedRow = (int *) calloc(linhas, sizeof(int));
+    checkedColumn = (int *) calloc(colunas, sizeof(int));
+    while (--checkedAll) {
+        for (i = 0; i < colunas; i++) {
+            if (checkedColumn[i] == 1) {
+                continue;
+            } else if (column_vector[i].availablePositions > 0) {
+                if (max < (temp = column_vector[i].tentsNeeded/column_vector[i].availablePositions)) {
+                    max = temp;
+                    numOfMoves = column_vector[i].tentsNeeded;
+                    index = i;
+                    linhasOuColunas = 0;
+                }
+            }
+
+        }
+
+        for (i = 0; i < linhas; i++) {
+            if (checkedRow[i] == 1) {
+                continue;
+            } else if (row_vector[i].availablePositions > 0) {
+                if (max < (temp = row_vector[i].tentsNeeded/row_vector[i].availablePositions)) {
+                    max = temp;
+                    numOfMoves = row_vector[i].tentsNeeded;
+                    index = i;
+                    linhasOuColunas = 1;
+                }
+            }
+
+        }
+        if (linhasOuColunas) {
+            checkedColumn[index] = 1;
+            randomPlay(treeInfo, list, tabuleiro, linhas, colunas, index, 0, numOfMoves, linhasOuColunas, season);
+        } else {
+            checkedRow[index] = 1;
+            randomPlay(treeInfo, list, tabuleiro, linhas, colunas, 0, index, numOfMoves, linhasOuColunas, season);
+        }
+        if (checkIfPuzzleSolved(linhas, colunas)) {
+            break;
         }
     }
-
-    for (i = 0; i < linhas; i++) {
-        if (max < (temp = row_vector[i].tentsNeeded/row_vector[i].availablePositions)) {
-            max = temp;
-            numOfMoves = row_vector[i].tentsNeeded;
-            index = i;
-            linhasOuColunas = 1;
-        }
-    }
-    if (linhasOuColunas) {
-        randomPlay(treeInfo, list, tabuleiro, linhas, colunas, index, 0, numOfMoves, linhasOuColunas, season);
-    } else {
-        randomPlay(treeInfo, list, tabuleiro, linhas, colunas, 0, index, numOfMoves, linhasOuColunas, season);
-    }
-
+    free(checkedRow);
+    free(checkedColumn);
 }
-
 
 
 /*
@@ -830,36 +850,36 @@ int randomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linh
                 removesP(treeInfo, tabuleiro, linhas, colunas, index, x, i, 1, &changes);
             }
 
-            if (numOfMoves-1) {
+            if (--numOfMoves) {
                 if (linhasOuColunas) {
                     if (randomPlay(treeInfo, list, tabuleiro, linhas, colunas, i, y, numOfMoves, linhasOuColunas, season)) {
-                        freeChangeList(changes);
+                        freeChangeList(&changes);
                         return 1;
                     } else {
-                        deleteChanges(changes, tabuleiro, colunas);
+                        deleteChanges(&changes, tabuleiro, colunas);
                     }
                 } else {
                     if(randomPlay(treeInfo, list, tabuleiro, linhas, colunas, x, i, numOfMoves, linhasOuColunas, season)) {
-                        freeChangeList(changes);
+                        freeChangeList(&changes);
                         return 1;
                     } else {
-                        deleteChanges(changes, tabuleiro, colunas);
+                        deleteChanges(&changes, tabuleiro, colunas);
                     }
                 }
             } else {
                 if (makeSureMoves(season, treeInfo, list, tabuleiro, linhas, colunas, &changes)) {
-                    deleteChanges(changes, tabuleiro, colunas);
+                    deleteChanges(&changes, tabuleiro, colunas);
                 } else {
                     if(checkIfPuzzleSolved(linhas, colunas)) {
-                        freeChangeList(changes);
+                        freeChangeList(&changes);
                         return 1;
                     } else {
                         heuristicsForRandomPlay(treeInfo, list, tabuleiro, linhas, colunas, season);
                         if(checkIfPuzzleSolved(linhas, colunas)) {
-                            freeChangeList(changes);
+                            freeChangeList(&changes);
                             return 1;
                         } else {
-                            deleteChanges(changes, tabuleiro, colunas);
+                            deleteChanges(&changes, tabuleiro, colunas);
                         }
                     }
                 }
@@ -882,7 +902,7 @@ void solver(void) {
     char *layout = getBoardLayout();
     int rows = getBoardRows(), columns = getBoardColumns(), season;
     TreeNode ***treesInfo = NULL, *treesList = NULL;
-    changeStore *changeStorePtr;
+    changeStore *changeStorePtr = NULL;
 
     if(!(season = findPossibleLocations(layout, rows, columns))) {
         setBoardAnswer(-1);
@@ -893,10 +913,16 @@ void solver(void) {
 
     /* TODO: maybe have a second version of makeSureMoves without saving stuff features for inicial analysis*/
     makeSureMoves(season, treesInfo, &treesList, layout, rows, columns, &changeStorePtr);
+
     if(!checkIfPuzzleSolved(rows, columns)) {
         heuristicsForRandomPlay(treesInfo, &treesList, layout, rows, columns, season);
     }
-    freeChangeList(changeStorePtr);
+
+    if(!checkIfPuzzleSolved(rows, columns)) {
+        setBoardAnswer(-1);
+    }
+
+    freeChangeList(&changeStorePtr);
 
     freeTreeInfo(layout, rows, columns, treesInfo);
 }
