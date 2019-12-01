@@ -829,56 +829,41 @@ int randomPlay(TreeNode ***, TreeNode **, char *, int, int, int, int, int, int, 
 
 
 void heuristicsForRandomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, int season) {
-    int *checkedRow, *checkedColumn, checkedAll = linhas + colunas+1;
     int linhasOuColunas = 0, i = 0, index = 0, numOfMoves = 0;
     double max = 0, temp = 0;
-    checkedRow = (int *) calloc(linhas, sizeof(int));
-    checkedColumn = (int *) calloc(colunas, sizeof(int));
-    while (--checkedAll) {
-        max = -1, temp = 0, numOfMoves = 0, index = 0, linhasOuColunas = -1;
-        for (i = 0; i < colunas; i++) {
-            if (checkedColumn[i] == 1) {
-                continue;
-            } else if (column_vector[i].availablePositions > 0) {
-                if (max < (temp = column_vector[i].tentsNeeded/column_vector[i].availablePositions)) {
-                    max = temp;
-                    numOfMoves = column_vector[i].tentsNeeded;
-                    index = i;
-                    linhasOuColunas = 0;
 
-                }
+    max = -1, temp = 0, numOfMoves = 0, index = 0, linhasOuColunas = -1;
+
+    for (i = 0; i < colunas; i++) {
+        if (column_vector[i].availablePositions > 0) {
+            if (max < (temp = column_vector[i].tentsNeeded/column_vector[i].availablePositions)) {
+                max = temp;
+                numOfMoves = column_vector[i].tentsNeeded;
+                index = i;
+                linhasOuColunas = 0;
+
             }
-
         }
 
-        for (i = 0; i < linhas; i++) {
-            if (checkedRow[i] == 1) {
-                continue;
-            } else if (row_vector[i].availablePositions > 0) {
-                if (max < (temp = row_vector[i].tentsNeeded/row_vector[i].availablePositions)) {
-                    max = temp;
-                    numOfMoves = row_vector[i].tentsNeeded;
-                    index = i;
-                    linhasOuColunas = 1;
-                }
-            }
-
-        }
-        if (linhasOuColunas == 1) {
-            checkedColumn[index] = 1;
-            randomPlay(treeInfo, list, tabuleiro, linhas, colunas, 0, index, numOfMoves, linhasOuColunas, season);
-        } else if (linhasOuColunas == 0){
-            checkedRow[index] = 1;
-            randomPlay(treeInfo, list, tabuleiro, linhas, colunas, index, 0, numOfMoves, linhasOuColunas, season);
-        }
-        if (checkIfPuzzleSolved(linhas, colunas)) {
-            free(checkedRow);
-            free(checkedColumn);
-            return;
-        }
     }
-    free(checkedRow);
-    free(checkedColumn);
+
+    for (i = 0; i < linhas; i++) {
+        if (row_vector[i].availablePositions > 0) {
+            if (max < (temp = row_vector[i].tentsNeeded/row_vector[i].availablePositions)) {
+                max = temp;
+                numOfMoves = row_vector[i].tentsNeeded;
+                index = i;
+                linhasOuColunas = 1;
+            }
+        }
+
+    }
+    if (linhasOuColunas == 1) {
+        randomPlay(treeInfo, list, tabuleiro, linhas, colunas, 0, index, numOfMoves, linhasOuColunas, season);
+    } else if (linhasOuColunas == 0){
+        randomPlay(treeInfo, list, tabuleiro, linhas, colunas, index, 0, numOfMoves, linhasOuColunas, season);
+    }
+    checkIfPuzzleSolved(linhas, colunas);
 }
 
 
