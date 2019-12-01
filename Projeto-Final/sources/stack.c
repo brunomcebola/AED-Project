@@ -22,9 +22,9 @@ valueID:
 
 */
 
-void pushChange(changeStore *changeStorePtr, void *ptr, int x, int y, int changeNodeSelector, int previousValue, int valueID) {
+void pushChange(changeStore **changeStorePtr, void *ptr, int x, int y, int changeNodeSelector, int previousValue, int valueID) {
     changeStore *new = (changeStore *) malloc(sizeof(changeStore));
-    new -> prevChange = changeStorePtr;
+    new -> prevChange = *changeStorePtr;
     new -> changeNodeSelector = changeNodeSelector;
     switch(changeNodeSelector) {
         case 1:
@@ -40,7 +40,7 @@ void pushChange(changeStore *changeStorePtr, void *ptr, int x, int y, int change
     }
     new -> previousValue = previousValue;
     new -> valueID = valueID;
-    changeStorePtr = new;
+    *changeStorePtr = new;
 }
 
 void deleteChanges(changeStore *changeStorePtr, char *tabuleiro, int colunas) {
