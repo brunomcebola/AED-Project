@@ -297,7 +297,7 @@ int readBio(void) {
         //gets number of tents per row and initializes the structs in row array
         for(i = 0; i < rows; i++) {
             trash = fscanf(in_file, " %d", &tents);
-            if (tents > (columns/2)) {
+            if (tents > (columns/2) || tents < 0) {
                 setBoardAnswer(-1);
             }
             row_vector[i].puzzleTents = tents;
@@ -310,7 +310,7 @@ int readBio(void) {
         //columns array
         for(i = 0; i < columns; i++) {
             trash = fscanf(in_file, " %d", &tents);
-            if (tents > (rows/2)) {
+            if (tents > (rows/2) || tents < 0) {
                 setBoardAnswer(-1);
             }
             column_vector[i].puzzleTents = tents;
@@ -418,11 +418,11 @@ void writeFile (void) {
     }
 
     //if the is a correct answer then the solved layout is printed
-    //if(answer == 1){
+    if(answer == 1){
         for(i = 0; i < rows; i++){
             fprintf(out_file, "%.*s\n", columns, layout+(i*columns));
         }
-    //}
+    }
 }
 
 /*******************************************************************************
