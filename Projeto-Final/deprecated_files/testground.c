@@ -17,7 +17,7 @@ typedef struct {
 } board;
 
 
-/* TODO: general solver function */
+/* kkkk: general solver function */
 
 /*return values: 1 - ok and changes
 *                2 - ok but no changes
@@ -52,7 +52,7 @@ typedef struct {
 
 /* checks if P position is alone
 *  returns 0 when not alone, 1 when not alone
-*  TODO: create 3 more functions so it reduces number of comparisons (doesn't have to compare with tree removing it)
+*  kkkk: create 3 more functions so it reduces number of comparisons (doesn't have to compare with tree removing it)
 */
 /*int checkIfPAlone(char *tabuleiro, int indexAUX, int x, int y, int colunas, int linhas) {
     if (x != 0) {
@@ -95,7 +95,7 @@ typedef struct {
 
     treesInfo[y][x]->hasTentAssigned = 1;
     tabuleiro[index] = 'K';
-    /* TODO: save changes
+    /* kkkk: save changes
 
     if (x != 0) {
         if (tabuleiro[index-1] == 'P') {
@@ -103,7 +103,7 @@ typedef struct {
                 tabuleiro[index-1] = '.';
                 --(*horizontals[x-1]).availablePositions;
                 --(*verticals[y]).availablePositions;
-                /* TODO: save changes
+                /* kkkk: save changes
             }
         }
     }
@@ -114,7 +114,7 @@ typedef struct {
                 tabuleiro[index+1] = '.';
                 --(*horizontals[x+1]).availablePositions;
                 --(*verticals[y]).availablePositions;
-                /* TODO: save changes
+                /* kkkk: save changes
             }
         }
     }
@@ -126,7 +126,7 @@ typedef struct {
                 tabuleiro[index-colunas] = '.';
                 --(*horizontals[x]).availablePositions;
                 --(*verticals[y-1]).availablePositions;
-                /* TODO: save changes
+                /* kkkk: save changes
             }
         }
     }
@@ -136,7 +136,7 @@ typedef struct {
                 tabuleiro[index+colunas] = '.';
                 --(*horizontals[x]).availablePositions;
                 --(*verticals[y+1]).availablePositions;
-                /* TODO: save changes
+                /* kkkk: save changes
             }
 
         }
@@ -148,11 +148,11 @@ typedef struct {
 *                0 - not ok
 */
 
-/* TODO: modify function so it changes trees adjacent to P's numOfPlayables to -=1 */
+/* kkkk: modify function so it changes trees adjacent to P's numOfPlayables to -=1 */
 /*int mark_P_as_T_for_random_A(char *tabuleiro, int linhas, int colunas, HeadNode **horizontals, HeadNode **verticals, int x, int y, int index, TreeNode ***treesInfo) {
 
     tabuleiro[index] = 'T';
-    /* TODO: save change
+    /* kkkk: save change
 
 
 
@@ -162,20 +162,20 @@ typedef struct {
         if (x != 0) {
 
             if (tabuleiro[index-colunas-1] == 'P') {
-                removeFromValidPositions(); /* TODO: implement this function
+                removeFromValidPositions(); /* kkkk: implement this function
                 --(*horizontals[x-1]).availablePositions;
                 --(*verticals[y-1]).availablePositions;
-                /* TODO: insert save change func
+                /* kkkk: insert save change func
             }
         }
 
         if (x != colunas-1) {
 
             if (tabuleiro[index-colunas+1] == 'P') {
-                removeFromValidPositions(); /* TODO: implement this function
+                removeFromValidPositions(); /* kkkk: implement this function
                 --(*horizontals[x+1]).availablePositions;
                 --(*verticals[y-1]).availablePositions;
-                /* TODO: insert save change func
+                /* kkkk: insert save change func
             }
         }
     }
@@ -184,19 +184,19 @@ typedef struct {
 
         if (x != 0) {
             if (tabuleiro[index+colunas-1] == 'P') {
-                removeFromValidPositions(); /* TODO: implement this function
+                removeFromValidPositions(); /* kkkk: implement this function
                 --(*horizontals[x-1]).availablePositions;
                 --(*verticals[y+1]).availablePositions;
-                /* TODO: insert save change func
+                /* kkkk: insert save change func
             }
         }
 
         if (x != colunas-1) {
             if (tabuleiro[index+colunas+1] == 'P') {
-                removeFromValidPositions(); /* TODO: implement this function
+                removeFromValidPositions(); /* kkkk: implement this function
                 --(*horizontals[x+1]).availablePositions;
                 --(*verticals[y+1]).availablePositions;
-                /* TODO: insert save change func
+                /* kkkk: insert save change func
             }
         }
     }
@@ -209,8 +209,8 @@ typedef struct {
 
         if (tabuleiro[index-1] == 'A') {
             assignTreeToTent(treesInfo, x-1, y, tabuleiro, index-1, colunas, linhas, horizontals, verticals);
-            /* TODO: make code to keep cycle going
-            if (/* TODO complete if with solver return value ) {
+            /* kkkk: make code to keep cycle going
+            if (/* kkkk complete if with solver return value ) {
                 return 1;
             }
         }
@@ -220,8 +220,8 @@ typedef struct {
 
         if (tabuleiro[index+1] == 'A') {
             assignTreeToTent(treesInfo, x+1, y, tabuleiro, index+1, colunas, linhas, horizontals, verticals);
-            /* TODO: make code to keep cycle going
-            if (/* TODO complete if with solver return value ) {
+            /* kkkk: make code to keep cycle going
+            if (/* kkkk complete if with solver return value ) {
                 return 1;
             }
         }
@@ -231,8 +231,8 @@ typedef struct {
 
         if (tabuleiro[index-colunas] == 'A') {
             assignTreeToTent(treesInfo, x, y-1, tabuleiro, index-colunas, colunas, linhas, horizontals, verticals);
-            /* TODO: make code to keep cycle going
-            if (/* TODO complete if with solver return value ) {
+            /* kkkk: make code to keep cycle going
+            if (/* kkkk complete if with solver return value ) {
                 return 1;
             }
         }
@@ -242,8 +242,8 @@ typedef struct {
 
         if (tabuleiro[index+colunas] == 'A') {
             assignTreeToTent(treesInfo, x, y+1, tabuleiro, index+colunas, colunas, linhas, horizontals, verticals);
-            /* TODO: make code to keep cycle going
-            if (/* TODO complete if with solver return value ) {
+            /* kkkk: make code to keep cycle going
+            if (/* kkkk complete if with solver return value ) {
                 return 1;
             }
 

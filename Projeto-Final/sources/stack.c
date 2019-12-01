@@ -14,7 +14,7 @@ valueID:
         1 - valid
         2 - isTent
     TreeNode:
-        1 - hasTent
+        1 - hasTentAssigned
         2 - num_playables
     HeadNode:
         1 - tentsNeeded
@@ -22,7 +22,7 @@ valueID:
 
 */
 
-void pushChange(changeStore **changeStorePtr, void *ptr, int x, int y, int changeNodeSelector, int previousValue, int valueID) {
+void pushChange(changeStore **changeStorePtr, void *ptr, int x, int y, int changeNodeSelector, int previousValue, char previousChar, int valueID) {
     changeStore *new = (changeStore *) malloc(sizeof(changeStore));
     new -> prevChange = *changeStorePtr;
     new -> changeNodeSelector = changeNodeSelector;
@@ -30,15 +30,17 @@ void pushChange(changeStore **changeStorePtr, void *ptr, int x, int y, int chang
         case 1:
             new -> changedNode.coord.x = x;
             new -> changedNode.coord.y = y;
+            new -> previousChar = previousChar;
             break;
         case 2:
             new -> changedNode.T = (TreeNode*) ptr;
+            new -> previousValue = previousValue;
             break;
         case 3:
             new -> changedNode.H = (HeadNode*) ptr;
+            new -> previousValue = previousValue;
             break;
     }
-    new -> previousValue = previousValue;
     new -> valueID = valueID;
     *changeStorePtr = new;
 }
@@ -54,7 +56,7 @@ void deleteChanges(changeStore *changeStorePtr, char *tabuleiro, int colunas) {
             case 1:
                 switch (current -> valueID) {
                     case 1:
-                        tabuleiro[(current->changedNode.coord.y*colunas) +current->changedNode.coord.x]  = current -> previousChar;
+                        tabuleiro[(current->changedNode.coord.y*colunas) + current->changedNode.coord.x]  = current -> previousChar;
                         break;
                 }
                 break;

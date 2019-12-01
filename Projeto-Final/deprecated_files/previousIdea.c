@@ -60,7 +60,7 @@ int checkLonelyTree(TreeNode** list, HeadNode **verticals, HeadNode **horizontal
         }
 
         aux->hasTentAssigned = 1;
-        /* TODO: insert save change func */
+        /* kkkk: insert save change func */
 
         return 2;
     }
@@ -81,7 +81,7 @@ int removeFromValidPositions(HeadNode* horizontals, int x, int y) {
     }
     if (aux->valid != 0) {
         aux->valid = 0;
-        /* TODO: insert save change func */
+        /* kkkk: insert save change func */
         return 1;
     }
     return 0;
@@ -89,7 +89,7 @@ int removeFromValidPositions(HeadNode* horizontals, int x, int y) {
 
 
 /* marks a P position as a tent and invalidates any other 7 positions
-* TODO: modify it as needed
+* kkkk: modify it as needed
 */
 void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, HeadNode **horizontals, int colunas, int linhas) {
     int verticalChange = 1, horizontalChange = 1, index = (node->y*colunas) + node->x;
@@ -99,28 +99,28 @@ void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, He
         if (node->vertical_next->valid != 0) {
             node->vertical_next->valid = 0;
             ++verticalChange;
-            /* TODO: insert save change func */
+            /* kkkk: insert save change func */
         }
     }
     if (node->connectedBackwardVertical) {
         if (node->vertical_prev->valid != 0) {
             node->vertical_prev->valid = 0;
             ++verticalChange;
-            /* TODO: insert save change func */
+            /* kkkk: insert save change func */
         }
     }
     if (node->connectedForwardHorizontal) {
         if (node->horizontal_next->valid != 0) {
             node->horizontal_next->valid = 0;
             ++horizontalChange;
-            /* TODO: insert save change func */
+            /* kkkk: insert save change func */
         }
     }
     if (node->connectedBackwardHorizontal) {
         if (node->horizontal_prev->valid != 0) {
             node->horizontal_prev->valid = 0;
             ++horizontalChange;
-            /* TODO: insert save change func */
+            /* kkkk: insert save change func */
         }
     }
     if (y != 0) {
@@ -130,7 +130,7 @@ void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, He
                     --(*horizontals[x-1]).availablePositions;
                     --(*verticals[y-1]).availablePositions;
                 }
-                /* TODO: insert save change func */
+                /* kkkk: insert save change func */
             }
         }
         if (x != colunas-1) {
@@ -139,7 +139,7 @@ void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, He
                     --(*horizontals[x+1]).availablePositions;
                     --(*verticals[y-1]).availablePositions;
                 }
-                /* TODO: insert save change func */
+                /* kkkk: insert save change func */
             }
         }
     }
@@ -150,7 +150,7 @@ void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, He
                     --(*horizontals[x-1]).availablePositions;
                     --(*verticals[y+1]).availablePositions;
                 }
-                /* TODO: insert save change func */
+                /* kkkk: insert save change func */
             }
         }
         if (x != colunas-1) {
@@ -159,7 +159,7 @@ void makeSpotATent(char *tabuleiro, PlayableNode *node, HeadNode **verticals, He
                     --(*horizontals[x+1]).availablePositions;
                     --(*verticals[y+1]).availablePositions;
                 }
-                /* TODO: insert save change func */
+                /* kkkk: insert save change func */
             }
         }
     }
@@ -187,7 +187,7 @@ void freePossibleLocations(HeadNode *horizontal, int colunas) {
 }
 
 /* frees list of freeTreeList
-* TODO: modify it as needed */
+* kkkk: modify it as needed */
 void freeTreeList(TreeNode *list) {
     TreeNode *aux1 = NULL, *aux2 = NULL;
 
@@ -205,7 +205,7 @@ void freeTreeList(TreeNode *list) {
 /*
 *
 * direction: 1 for horizontal, 0 for vertical
-* TODO: modificar a funcao dependendo do que for preciso na funcao de baixo
+* kkkk: modificar a funcao dependendo do que for preciso na funcao de baixo
 */
 /*void addAtEnd(HeadNode *headVertical, HeadNode *headHorizontal, PlayableNode *toInsert, int colunas) {
 	PlayableNode *auxVertical = headVertical->first, *auxHorizontal = headHorizontal->first;

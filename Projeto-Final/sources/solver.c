@@ -3,9 +3,13 @@
 #include "../headers/game.h"
 #include "../headers/solver.h"
 #include "../headers/sort.h"
+#include "../headers/stack.h"
 #include "../headers/files.h" /* TODO: remove this include after debugging */
 
-//perguntar ao stor
+/* TODO: eliminate all PlayableNode stuff it won't be used */
+
+
+//TODO: perguntar ao stor
 
 struct _PlayableNode {
     int x, y;
@@ -15,7 +19,7 @@ struct _PlayableNode {
 };
 
 
-void removesP(TreeNode ***, char *, int, int, int, int, int, int);
+void removesP(TreeNode ***, char *, int, int, int, int, int, int, changeStore **);
 
 
 
@@ -98,9 +102,6 @@ int findPossibleLocations(char *tabuleiro, int linhas, int colunas) {
 }
 
 
-/* TODO: change changedNode to include coordinates and not pointers */
-
-/* TODO: eliminate all PlayableNode stuff it won't be used */
 TreeNode ***createTreeInfo(int colunas, int linhas) {
     TreeNode ***TreeInfo = NULL;
     TreeInfo = (TreeNode ***) malloc(linhas * sizeof(TreeNode **));
@@ -161,7 +162,7 @@ TreeNode *createTreeList(char *tabuleiro, int linhas, int colunas, TreeNode ***t
 *  returns 0 when not alone, 1 when not alone
 *  TODO: create 3 more functions so it reduces number of comparisons (doesn't have to compare with tree removing it)
 */
-void checkIfPAlone(TreeNode*** treeInfo, char *tabuleiro, int index, int x, int y, int colunas, int linhas) {
+void checkIfPAlone(TreeNode*** treeInfo, char *tabuleiro, int index, int x, int y, int colunas, int linhas, changeStore **changeStorePtr) {
     if (x != 0) {
 
         if (tabuleiro[index-1] == 'A') {
@@ -190,45 +191,53 @@ void checkIfPAlone(TreeNode*** treeInfo, char *tabuleiro, int index, int x, int 
         }
     }
     tabuleiro[index] = '.';
-    removesP(treeInfo, tabuleiro, linhas, colunas, index, x, y, 0);
-    /* TODO: insert save change func */
+    pushChange(changeStorePtr, NULL, x, y, 1, 0, 'P', 1);
+    removesP(treeInfo, tabuleiro, linhas, colunas, index, x, y, 0, changeStorePtr);
 }
 
 
-
-void invalidateTreePPositions(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y) {
+/*
+* returns: no return value
+*
+*
+*/
+void invalidateTreePPositions(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, changeStore **changeStorePtr) {
     if (x != 0) {
 
         if (tabuleiro[index-1] == 'P') {
-        checkIfPAlone(treeInfo, tabuleiro, index-1, x-1, y, colunas, linhas);
+        checkIfPAlone(treeInfo, tabuleiro, index-1, x-1, y, colunas, linhas, changeStorePtr);
         }
     }
 
     if (x != colunas-1) {
 
         if (tabuleiro[index+1] == 'P') {
-            checkIfPAlone(treeInfo, tabuleiro, index+1, x+1, y, colunas, linhas);
+            checkIfPAlone(treeInfo, tabuleiro, index+1, x+1, y, colunas, linhas, changeStorePtr);
         }
     }
 
     if (y != 0) {
 
         if (tabuleiro[index-colunas] == 'P') {
-            checkIfPAlone(treeInfo, tabuleiro, index-colunas, x, y-1, colunas, linhas);
+            checkIfPAlone(treeInfo, tabuleiro, index-colunas, x, y-1, colunas, linhas, changeStorePtr);
         }
     }
     if (y != linhas-1) {
 
         if (tabuleiro[index+colunas] == 'P') {
-            checkIfPAlone(treeInfo, tabuleiro, index+colunas, x, y+1, colunas, linhas);
+            checkIfPAlone(treeInfo, tabuleiro, index+colunas, x, y+1, colunas, linhas, changeStorePtr);
 
         }
     }
 }
 
 
-
-void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, int test) {
+/*
+* returns: no return value
+*
+*
+*/
+void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, int test, changeStore **changeStorePtr) {
     int numOfTrees = 0;
 
     if (x != 0) {
@@ -237,8 +246,10 @@ void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int 
                 ++numOfTrees;
             } else {
                 tabuleiro[index-1] = 'K';
+                pushChange(changeStorePtr, NULL, x-1, y, 1, 0, 'P', 1);
                 (treeInfo[y][x-1]->hasTentAssigned) = 1;
-                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index-1, x-1, y);
+                pushChange(changeStorePtr, treeInfo[y][x-1], x, y, 2, 0, '\0', 1);
+                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index-1, x-1, y, changeStorePtr);
             }
         }
     }
@@ -249,8 +260,10 @@ void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int 
                 ++numOfTrees;
             } else {
                 tabuleiro[index+1] = 'K';
+                pushChange(changeStorePtr, NULL, x+1, y, 1, 0, 'A', 1);
                 (treeInfo[y][x+1]->hasTentAssigned) = 1;
-                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index+1, x+1, y);
+                pushChange(changeStorePtr, treeInfo[y][x+1], x, y, 2, 0, '\0', 1);
+                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index+1, x+1, y, changeStorePtr);
             }
         }
     }
@@ -261,8 +274,10 @@ void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int 
                 ++numOfTrees;
             } else {
                 tabuleiro[index-colunas] = 'K';
+                pushChange(changeStorePtr, NULL, x, y-1, 1, 0, 'A', 1);
                 (treeInfo[y-1][x]->hasTentAssigned) = 1;
-                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index-colunas, x, y-1);
+                pushChange(changeStorePtr, treeInfo[y-1][x], x, y, 2, 0, '\0', 1);
+                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index-colunas, x, y-1, changeStorePtr);
             }
         }
     }
@@ -273,13 +288,15 @@ void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int 
                 ++numOfTrees;
             } else {
                 tabuleiro[index+colunas] = 'K';
+                pushChange(changeStorePtr, NULL, x, y+1, 1, 0, 'A', 1);
                 (treeInfo[y+1][x]->hasTentAssigned) = 1;
-                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index+colunas, x, y+1);
+                pushChange(changeStorePtr, treeInfo[y+1][x], x, y, 2, 0, '\0', 1);
+                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index+colunas, x, y+1, changeStorePtr);
             }
         }
     }
     if (numOfTrees == 1) {
-        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, x, y, 0);
+        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, x, y, 0, changeStorePtr);
     }
 }
 
@@ -287,62 +304,67 @@ void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int 
 
 
 
-void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, int isTent) {
+void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, int isTent, changeStore **changeStorePtr) {
+    int previousValue = 0;
 
     if (isTent) {
-        --(row_vector[y].tentsNeeded);
-        --(column_vector[x].tentsNeeded);
+        previousValue = (row_vector[y].tentsNeeded)--;
+        pushChange(changeStorePtr, &row_vector[y], x, y, 3, previousValue, '\0', 1);
+        previousValue = (column_vector[x].tentsNeeded)--;
+        pushChange(changeStorePtr, &column_vector[x], x, y, 3, previousValue, '\0', 1);
     }
 
-    --(row_vector[y].availablePositions);
-    --(column_vector[x].availablePositions);
+    previousValue = (row_vector[y].availablePositions)--;
+    pushChange(changeStorePtr, &row_vector[y], x, y, 3, previousValue, '\0', 1);
+    previousValue = (column_vector[x].availablePositions)--;
+    pushChange(changeStorePtr, &column_vector[x], x, y, 3, previousValue, '\0', 2);
 
     if (x != 0) {
         if (tabuleiro[index-1] == 'A') {
-            --(treeInfo[y][x-1]->num_playables);
-            /* TODO: insert save changes function */
+            previousValue = (treeInfo[y][x-1]->num_playables)--;
+            pushChange(changeStorePtr, treeInfo[y][x-1], x, y, 2, previousValue, '\0', 2);
         } else if (tabuleiro[index-1] == 'P' && isTent) {
             tabuleiro[index-1] = '.';
-            removesP(treeInfo, tabuleiro, linhas, colunas, index-1, x-1, y, 0);
-            /* TODO: insert save change func */
+            pushChange(changeStorePtr, NULL, x-1, y, 1, 0, 'P', 1);
+            removesP(treeInfo, tabuleiro, linhas, colunas, index-1, x-1, y, 0, changeStorePtr);
         }
     }
 
     if (x != colunas-1) {
         if (tabuleiro[index+1] == 'A') {
-            --(treeInfo[y][x+1]->num_playables);
-            /* TODO: insert save changes function */
+            previousValue = (treeInfo[y][x+1]->num_playables)--;
+            pushChange(changeStorePtr, treeInfo[y][x+1], x, y, 2, previousValue, '\0', 2);
         } else if (tabuleiro[index+1] == 'P' && isTent) {
             tabuleiro[index+1] = '.';
-            removesP(treeInfo, tabuleiro, linhas, colunas, index+1, x+1, y, 0);
-            /* TODO: insert save change func */
+            pushChange(changeStorePtr, NULL, x+1, y, 1, 0, 'P', 1);
+            removesP(treeInfo, tabuleiro, linhas, colunas, index+1, x+1, y, 0, changeStorePtr);
         }
     }
 
     if (y != 0) {
         if (tabuleiro[index-colunas] == 'A') {
-            --(treeInfo[y-1][x]->num_playables);
-            /* TODO: insert save changes function */
+            previousValue = (treeInfo[y-1][x]->num_playables)--;
+            pushChange(changeStorePtr, treeInfo[y-1][x], x, y, 2, previousValue, '\0', 2);
         } else if (tabuleiro[index-colunas] == 'P' && isTent) {
             tabuleiro[index-colunas] = '.';
-            removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas, x, y-1, 0);
-            /* TODO: insert save change func */
+            pushChange(changeStorePtr, NULL, x, y-1, 1, 0, 'P', 1);
+            removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas, x, y-1, 0, changeStorePtr);
         }
 
         if (isTent) {
             if (x != 0) {
                 if (tabuleiro[index-colunas-1] == 'P') {
                     tabuleiro[index-colunas-1] = '.';
-                    removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas-1, x-1, y-1, 0);
-                    /* TODO: insert save change func */
+                    pushChange(changeStorePtr, NULL, x-1, y-1, 1, 0, 'P', 1);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas-1, x-1, y-1, 0, changeStorePtr);
                 }
             }
 
             if (x != colunas-1) {
                 if (tabuleiro[index-colunas+1] == 'P') {
                     tabuleiro[index-colunas+1] = '.';
-                    removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas+1, x+1, y-1, 0);
-                    /* TODO: insert save change func */
+                    pushChange(changeStorePtr, NULL, x+1, y-1, 1, 0, 'P', 1);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas+1, x+1, y-1, 0, changeStorePtr);
                 }
             }
         }
@@ -351,28 +373,28 @@ void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, i
 
     if (y != linhas-1) {
         if (tabuleiro[index+colunas] == 'A') {
-            --(treeInfo[y+1][x]->num_playables);
-            /* TODO: insert save changes function */
+            previousValue = (treeInfo[y+1][x]->num_playables)--;
+            pushChange(changeStorePtr, treeInfo[y+1][x], x, y, 2, previousValue, '\0', 2);
         } else if (tabuleiro[index+colunas] == 'P' && isTent) {
             tabuleiro[index+colunas] = '.';
-            removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas, x, y+1, 0);
-            /* TODO: insert save change func */
+            pushChange(changeStorePtr, NULL, x, y+1, 1, 0, 'P', 1);
+            removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas, x, y+1, 0, changeStorePtr);
         }
 
         if (isTent) {
             if (x != 0 ) {
                 if (tabuleiro[index+colunas-1] == 'P') {
                     tabuleiro[index+colunas-1] = '.';
-                    removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas-1, x-1, y+1, 0);
-                    /* TODO: insert save change func */
+                    pushChange(changeStorePtr, NULL, x-1, y+1, 1, 0, 'P', 1);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas-1, x-1, y+1, 0, changeStorePtr);
                 }
             }
 
             if (x != colunas-1) {
                 if (tabuleiro[index+colunas+1] == 'P') {
                     tabuleiro[index+colunas+1] = '.';
-                    removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas+1, x+1, y+1, 0);
-                    /* TODO: insert save change func */
+                    pushChange(changeStorePtr, NULL, x+1, y+1, 1, 0, 'P', 1);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas+1, x+1, y+1, 0, changeStorePtr);
                 }
             }
         }
@@ -380,9 +402,13 @@ void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, i
 }
 
 
-
-
-int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***treeInfo) {
+/*
+* returns: 1 for change, 0 for no change
+*
+*
+*
+*/
+int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***treeInfo, changeStore **changeStorePtr) {
     int i = 0, j = 0, index = 0, retVal = 0;
 
     for (index = 0, i = 0; i < linhas; ++i, index += colunas) {
@@ -391,8 +417,9 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
             for (j = 0; j < colunas; ++j) {
                 if (tabuleiro[index+j] == 'P') {
                     tabuleiro[index+j] = 'T';
-                    removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
-                    assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
+                    pushChange(changeStorePtr, NULL, j, i, 1, 0, 'P', 1);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1, changeStorePtr);
+                    assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1, changeStorePtr);
                 }
             }
         } else if (row_vector[i].tentsNeeded > row_vector[i].availablePositions) {
@@ -402,8 +429,8 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
             for (j = 0; j < colunas; ++j) {
                 if (tabuleiro[index+j] == 'P') {
                     tabuleiro[index+j] = '.';
-                    removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 0);
-                    /*TODO: save changes */
+                    pushChange(changeStorePtr, NULL, j, i, 1, 0, 'P', 1);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 0, changeStorePtr);
                 }
             }
         }
@@ -415,8 +442,9 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
             for (index = i, j = 0; j < linhas; ++j, index += colunas) {
                 if (tabuleiro[index] == 'P') {
                     tabuleiro[index] = 'T';
-                    removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
-                    assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
+                    pushChange(changeStorePtr, NULL, i, j, 1, 0, 'P', 1);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1, changeStorePtr);
+                    assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1, changeStorePtr);
                 }
             }
         } else if (column_vector[i].tentsNeeded > column_vector[i].availablePositions) {
@@ -426,8 +454,8 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
             for (index = i, j = 0; j < linhas; ++j, index += colunas) {
                 if (tabuleiro[index] == 'P') {
                     tabuleiro[index] = '.';
-                    removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 0);
-                    /*TODO: save changes */
+                    pushChange(changeStorePtr, NULL, i, j, 1, 0, 'P', 1);
+                    removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 0, changeStorePtr);
                 }
             }
         }
@@ -436,10 +464,12 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
 }
 
 
-
-
-
-int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas) {
+/*
+* returns: 1 for changes, 0 for no changes, 404 for invalid map
+*
+*
+*/
+int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, changeStore **changeStorePtr) {
     TreeNode *aux;
     int index;
     MergeSort(list);
@@ -473,8 +503,8 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
                 aux->hasTentAssigned = 1;
                 tabuleiro[index] = 'K';
                 tabuleiro[index-1] = 'T';
-                /* TODO: insert save changes function */
-                removesP(treeInfo, tabuleiro, linhas, colunas, index-1, aux->x -1, aux->y, 1);
+                pushChange(changeStorePtr, NULL, aux->x -1, aux->y, 1, 0, 'P', 1);
+                removesP(treeInfo, tabuleiro, linhas, colunas, index-1, aux->x -1, aux->y, 1, changeStorePtr);
                 return 1;
             }
         }
@@ -484,8 +514,8 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
                 aux->hasTentAssigned = 1;
                 tabuleiro[index] = 'K';
                 tabuleiro[index+1] = 'T';
-                /* TODO: insert save changes function */
-                removesP(treeInfo, tabuleiro, linhas, colunas, index+1, aux->x +1, aux->y, 1);
+                pushChange(changeStorePtr, NULL, aux->x +1, aux->y, 1, 0, 'P', 1);
+                removesP(treeInfo, tabuleiro, linhas, colunas, index+1, aux->x +1, aux->y, 1, changeStorePtr);
                 return 1;
             }
         }
@@ -495,8 +525,8 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
                 aux->hasTentAssigned = 1;
                 tabuleiro[index] = 'K';
                 tabuleiro[index-colunas] = 'T';
-                /* TODO: insert save changes function */
-                removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas, aux->x, aux->y -1, 1);
+                pushChange(changeStorePtr, NULL, aux->x, aux->y -1, 1, 0, 'P', 1);
+                removesP(treeInfo, tabuleiro, linhas, colunas, index-colunas, aux->x, aux->y -1, 1, changeStorePtr);
                 return 1;
             }
         }
@@ -506,8 +536,8 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
                 aux->hasTentAssigned = 1;
                 tabuleiro[index] = 'K';
                 tabuleiro[index+colunas] = 'T';
-                /* TODO: insert save changes function */
-                removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas, aux->x, aux->y +1, 1);
+                pushChange(changeStorePtr, NULL, aux->x, aux->y +1, 1, 0, 'P', 1);
+                removesP(treeInfo, tabuleiro, linhas, colunas, index+colunas, aux->x, aux->y +1, 1, changeStorePtr);
                 return 1;
             }
         }
@@ -516,8 +546,12 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
     return 0;
 }
 
-
-int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***treeInfo) {
+/*
+*  returns: 0 for no changes, 1 for changes
+*
+*
+*/
+int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***treeInfo, changeStore **changeStorePtr) {
     int totalSimultaneousSpots = 0, numOfConsecutives = 0, i, j, index = 0, retVal = 0, flag1 = 0,temp = 0, flag2 = 0, temp2 = 0;
 
     for (i = 0; i < linhas; ++i, index += colunas) {
@@ -549,8 +583,9 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                     if (flag1 == 1) {
                         retVal = 1;
                         tabuleiro[index+j] = 'T';
-                        removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
-                        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
+                        pushChange(changeStorePtr, NULL, j, i, 1, 0, 'P', 1);
+                        removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1, changeStorePtr);
+                        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1, changeStorePtr);
                     } else if (flag1%2 == 1) {
                         retVal = 1;
                         flag2 = 1;
@@ -558,8 +593,9 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                             if (flag2) {
                                 flag2 = -1;
                                 tabuleiro[index+j] = 'T';
-                                removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
-                                assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
+                                pushChange(changeStorePtr, NULL, j, i, 1, 0, 'P', 1);
+                                removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1, changeStorePtr);
+                                assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1, changeStorePtr);
                             }
                             --j;
                             ++flag2;
@@ -602,8 +638,9 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                     if (flag1 == 1) {
                         retVal = 1;
                         tabuleiro[index] = 'T';
-                        removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
-                        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
+                        pushChange(changeStorePtr, NULL, i, j, 1, 0, 'P', 1);
+                        removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1, changeStorePtr);
+                        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1, changeStorePtr);
                     } else if (flag1%2 == 1) {
                         retVal = 1;
                         temp = flag2;
@@ -612,8 +649,9 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                             if (flag2) {
                                 flag2 = -1;
                                 tabuleiro[index] = 'T';
-                                removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
-                                assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
+                                pushChange(changeStorePtr, NULL, i, j, 1, 0, 'P', 1);
+                                removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1, changeStorePtr);
+                                assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1, changeStorePtr);
                             }
                             --j;
                             index -= colunas;
@@ -631,6 +669,11 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
 
 
 
+/*
+* returns: 1 is solved, 0 if not solved
+*
+*
+*/
 int checkIfPuzzleSolved(int linhas, int colunas) {
     for (int i = 0; i < linhas; i++) {
         if (row_vector[i].tentsNeeded != 0) {
@@ -648,56 +691,53 @@ int checkIfPuzzleSolved(int linhas, int colunas) {
 
 
 
-int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas) {
+/*
+* returns: 1 for error, 0 for no errors
+*
+*
+*/
+int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, changeStore **changeStorePtr) {
     int modified = 1;
 
     if (season == 1) {
         while (modified) {
 
             if (modified == 404) {
-                setBoardAnswer(-1);
-                return 0;
+                return 1;
             }
             modified = 0;
-            printf("AAAAA\n");
-            fflush(stdout);
-            if ((modified = checkForLonelyTrees(treeInfo, list, tabuleiro, linhas, colunas))) {
+
+            if ((modified = checkForLonelyTrees(treeInfo, list, tabuleiro, linhas, colunas, changeStorePtr))) {
                 continue;
             }
-            printf("BBBBBB\n");
-            fflush(stdout);
-            if ((modified = checkNeededTents(tabuleiro, linhas, colunas, treeInfo))) {
+
+            if ((modified = checkNeededTents(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
                 continue;
             }
-            printf("CCCCCC\n");
-            fflush(stdout);
-            if ((modified = checkConsecutive(tabuleiro, linhas, colunas, treeInfo))) {
+
+            if ((modified = checkConsecutive(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
                 continue;
             }
         }
     } else {
         while (modified) {
             if (modified == 404) {
-                setBoardAnswer(-1);
-                return 0;
+                return 1;
             }
             modified = 0;
-            printf("AAAAA\n");
-            fflush(stdout);
-            if ((modified = checkNeededTents(tabuleiro, linhas, colunas, treeInfo))) {
+
+            if ((modified = checkNeededTents(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
                 continue;
             }
-            printf("BBBBBB\n");
-            fflush(stdout);
-            if ((modified = checkConsecutive(tabuleiro, linhas, colunas, treeInfo))) {
+
+            if ((modified = checkConsecutive(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
                 continue;
             }
             modified = 0;
         }
     }
 
-    checkIfPuzzleSolved(linhas, colunas);
-    return 1;
+    return 0;
 }
 
 
@@ -721,10 +761,76 @@ void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInf
     free(treesInfo);
 }
 
+
+
+int randomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, int x, int y, int numOfMoves, int linhasOuColunas, int season) {
+    int i = 0, index = 0, edge;
+    changeStore *changes;
+
+    if (linhasOuColunas) {
+        edge = colunas;
+        i = x;
+    } else {
+        edge = linhas;
+        i = y;
+    }
+
+    for (index = y*colunas +x; i < edge; ++i) {
+        if (tabuleiro[index] == 'P') {
+            tabuleiro[index] = 'T';
+
+            if (linhasOuColunas) {
+                pushChange(&changes, NULL, i, y, 1, 0, 'P', 1);
+                removesP(treeInfo, tabuleiro, linhas, colunas, index, i, y, 1, &changes);
+            } else {
+                pushChange(&changes, NULL, x, i, 1, 0, 'P', 1);
+                removesP(treeInfo, tabuleiro, linhas, colunas, index, x, i, 1, &changes);
+            }
+
+            if (numOfMoves-1) {
+                if (linhasOuColunas) {
+                    if (randomPlay(treeInfo, list, tabuleiro, linhas, colunas, i, y, numOfMoves, linhasOuColunas, season)) {
+                        return 1;
+                    } else {
+                        deleteChanges(changes, tabuleiro, colunas);
+                    }
+                } else {
+                    if(randomPlay(treeInfo, list, tabuleiro, linhas, colunas, x, i, numOfMoves, linhasOuColunas, season)) {
+                        return 1;
+                    } else {
+                        deleteChanges(changes, tabuleiro, colunas);
+                    }
+                }
+            } else {
+                if (makeSureMoves(season, treeInfo, list, tabuleiro, linhas, colunas, &changes)) {
+                    deleteChanges(changes, tabuleiro, colunas);
+                } else {
+                    if(checkIfPuzzleSolved(linhas, colunas)) {
+                        return 1;
+                    } else {
+                        /* TODO: keep loop going */
+                    }
+                }
+            }
+
+        }
+
+        if (linhasOuColunas) {
+            ++index;
+        } else {
+            index += edge;
+        }
+    }
+    return 0;
+}
+
+
+
 void solver(void) {
     char *layout = getBoardLayout();
     int rows = getBoardRows(), columns = getBoardColumns(), season;
     TreeNode ***treesInfo = NULL, *treesList = NULL;
+    changeStore *changeStorePtr;
 
     if(!(season = findPossibleLocations(layout, rows, columns))) {
         setBoardAnswer(-1);
@@ -733,7 +839,8 @@ void solver(void) {
     treesInfo = createTreeInfo(columns,rows);
     treesList = createTreeList(layout, rows, columns, treesInfo);
 
-    makeSureMoves(season, treesInfo, &treesList, layout, rows, columns);
+    /* TODO: maybe have a second version of makeSureMoves without saving stuff features for inicial analysis*/
+    makeSureMoves(season, treesInfo, &treesList, layout, rows, columns, &changeStorePtr);
 
     freeTreeInfo(layout, rows, columns, treesInfo);
 }
