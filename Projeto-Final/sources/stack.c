@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "../headers/solver.h"
 #include "../headers/stack.h"
 
@@ -67,11 +68,7 @@ void deleteChanges(changeStore **changeStorePtr, char *tabuleiro, int colunas) {
         *changeStorePtr = (*changeStorePtr) -> prevChange;
         switch (current -> changeNodeSelector) {
             case 1:
-                switch (current -> valueID) {
-                    case 1:
-                        tabuleiro[(current->changedNode.coord.y*colunas) + current->changedNode.coord.x]  = current -> previousChar;
-                        break;
-                }
+                tabuleiro[(current->changedNode.coord.y*colunas) + current->changedNode.coord.x]  = current -> previousChar;
                 break;
             case 2:
                 treeAux = current -> changedNode.T;
