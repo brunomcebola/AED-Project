@@ -1,4 +1,7 @@
+#include <stdlib.h>
+#include "../headers/solver.h"
 #include "../headers/stack.h"
+
 
 /*
 changeNodeSelector:
@@ -19,27 +22,14 @@ valueID:
 
 */
 
-typedef union {
-    PlayableNode *P;
-    TreeNode *T;
-    HeadNode *H;
-} changedNode;
-
-typedef struct _changeStore {
-    struct _changeStore *prevChange;
-    changedNode changedNode;
-    int changeNodeSelector;
-    int previousValue;
-    int valueID;
-} changeStore;
-
-void pushChange(changeStore *changeStorePtr, void *ptr, int changeNodeSelector, int previousValue, int valueID) {
+void pushChange(changeStore *changeStorePtr, void *ptr, int x, int y, int changeNodeSelector, int previousValue, int valueID) {
     changeStore *new = (changeStore *) malloc(sizeof(changeStore));
     new -> prevChange = changeStorePtr;
     new -> changeNodeSelector = changeNodeSelector;
     switch(changeNodeSelector) {
         case 1:
-            new -> changedNode.P = (PlayableNode*) ptr;
+            new -> changedNode.coord.x = x;
+            new -> changedNode.coord.y = y;
             break;
         case 2:
             new -> changedNode.T = (TreeNode*) ptr;
@@ -53,8 +43,7 @@ void pushChange(changeStore *changeStorePtr, void *ptr, int changeNodeSelector, 
     changeStorePtr = new;
 }
 
-void deleteChanges(changeStore *changeStorePtr) {
-    PlayableNode *playAux = NULL;
+void deleteChanges(changeStore *changeStorePtr, char *tabuleiro, int colunas) {
     TreeNode *treeAux = NULL;
     HeadNode *headAux = NULL;
 
@@ -63,13 +52,9 @@ void deleteChanges(changeStore *changeStorePtr) {
         changeStorePtr = changeStorePtr -> prevChange;
         switch (current -> changeNodeSelector) {
             case 1:
-                playAux = current -> changedNode.P;
                 switch (current -> valueID) {
                     case 1:
-                        playAux -> valid = current -> previousValue;
-                        break;
-                    case 2:
-                        playAux -> isTent = current -> previousValue;
+                        tabuleiro[(current->changedNode.coord.y*colunas) +current->changedNode.coord.x]  = current -> previousChar;
                         break;
                 }
                 break;
@@ -77,7 +62,7 @@ void deleteChanges(changeStore *changeStorePtr) {
                 treeAux = current -> changedNode.T;
                 switch (current -> valueID) {
                     case 1:
-                        treeAux -> hasTent = current -> previousValue;
+                        treeAux -> hasTentAssigned = current -> previousValue;
                         break;
                     case 2:
                         treeAux -> num_playables = current -> previousValue;

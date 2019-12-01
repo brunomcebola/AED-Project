@@ -228,41 +228,58 @@ void invalidateTreePPositions(TreeNode*** treeInfo, char * tabuleiro, int linhas
 
 
 
-void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y) {
+void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, int test) {
+    int numOfTrees = 0;
+
     if (x != 0) {
         if (tabuleiro[index-1] == 'A') {
-            tabuleiro[index-1] = 'K';
-            (treeInfo[y][x-1]->hasTentAssigned) = 1;
-            invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index-1, x-1, y);
-            return;
+            if (test) {
+                ++numOfTrees;
+            } else {
+                tabuleiro[index-1] = 'K';
+                (treeInfo[y][x-1]->hasTentAssigned) = 1;
+                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index-1, x-1, y);
+            }
         }
     }
 
     if (x != colunas-1) {
         if (tabuleiro[index+1] == 'A') {
-            tabuleiro[index+1] = 'K';
-            (treeInfo[y][x+1]->hasTentAssigned) = 1;
-            invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index+1, x+1, y);
-            return;
+            if (test) {
+                ++numOfTrees;
+            } else {
+                tabuleiro[index+1] = 'K';
+                (treeInfo[y][x+1]->hasTentAssigned) = 1;
+                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index+1, x+1, y);
+            }
         }
     }
 
     if (y != 0) {
         if (tabuleiro[index-colunas] == 'A') {
-            tabuleiro[index-colunas] = 'K';
-            (treeInfo[y-1][x]->hasTentAssigned) = 1;
-            invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index-colunas, x, y-1);
-            return;
+            if (test) {
+                ++numOfTrees;
+            } else {
+                tabuleiro[index-colunas] = 'K';
+                (treeInfo[y-1][x]->hasTentAssigned) = 1;
+                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index-colunas, x, y-1);
+            }
         }
     }
 
     if (y != linhas-1) {
         if (tabuleiro[index+colunas] == 'A') {
-            tabuleiro[index+colunas] = 'K';
-            (treeInfo[y+1][x]->hasTentAssigned) = 1;
-            invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index+colunas, x, y+1);
-            return;
+            if (test) {
+                ++numOfTrees;
+            } else {
+                tabuleiro[index+colunas] = 'K';
+                (treeInfo[y+1][x]->hasTentAssigned) = 1;
+                invalidateTreePPositions(treeInfo, tabuleiro, linhas, colunas, index+colunas, x, y+1);
+            }
         }
+    }
+    if (numOfTrees == 1) {
+        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, x, y, 0);
     }
 }
 
@@ -375,7 +392,7 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                 if (tabuleiro[index+j] == 'P') {
                     tabuleiro[index+j] = 'T';
                     removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
-                    assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i);
+                    assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
                 }
             }
         } else if (row_vector[i].tentsNeeded > row_vector[i].availablePositions) {
@@ -399,7 +416,7 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                 if (tabuleiro[index] == 'P') {
                     tabuleiro[index] = 'T';
                     removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
-                    assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j);
+                    assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
                 }
             }
         } else if (column_vector[i].tentsNeeded > column_vector[i].availablePositions) {
@@ -513,8 +530,11 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                 ++numOfConsecutives;
             }
         }
+
+        totalSimultaneousSpots += ((numOfConsecutives+1)>>1);
+
         if ((totalSimultaneousSpots == row_vector[i].tentsNeeded) && row_vector[i].tentsNeeded != 0) {
-            retVal = 1;
+
             for (j = 0; j < colunas; ++j) {
                 if (tabuleiro[index+j] == 'P') {
                     temp = j;
@@ -527,17 +547,19 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                     --j;
 
                     if (flag1 == 1) {
+                        retVal = 1;
                         tabuleiro[index+j] = 'T';
                         removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
-                        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i);
+                        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
                     } else if (flag1%2 == 1) {
+                        retVal = 1;
                         flag2 = 1;
                         do {
                             if (flag2) {
                                 flag2 = -1;
                                 tabuleiro[index+j] = 'T';
                                 removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
-                                assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i);
+                                assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1);
                             }
                             --j;
                             ++flag2;
@@ -548,7 +570,6 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
             }
         }
     }
-
     for (i = 0; i < colunas; ++i) {
         totalSimultaneousSpots = 0, numOfConsecutives = 0;
         for (index = i, j = 0; j < linhas; ++j, index += colunas) {
@@ -560,8 +581,10 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
             }
         }
 
+        totalSimultaneousSpots += ((numOfConsecutives+1)>>1);
+
         if ((totalSimultaneousSpots == column_vector[i].tentsNeeded) && column_vector[i].tentsNeeded != 0) {
-            retVal = 1;
+
             for (index = i, j = 0; j < linhas; ++j, index += colunas) {
                 if (tabuleiro[index] == 'P') {
                     temp = j;
@@ -577,10 +600,12 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                     index -= colunas;
 
                     if (flag1 == 1) {
+                        retVal = 1;
                         tabuleiro[index] = 'T';
                         removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
-                        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j);
+                        assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
                     } else if (flag1%2 == 1) {
+                        retVal = 1;
                         temp = flag2;
                         flag2 = 1;
                         do {
@@ -588,7 +613,7 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                                 flag2 = -1;
                                 tabuleiro[index] = 'T';
                                 removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
-                                assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j);
+                                assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1);
                             }
                             --j;
                             index -= colunas;
@@ -601,7 +626,6 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
             }
         }
     }
-
     return retVal;
 }
 
@@ -627,8 +651,6 @@ int checkIfPuzzleSolved(int linhas, int colunas) {
 int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas) {
     int modified = 1;
 
-    printf("AAAAA\n");
-    fflush(stdout);
     if (season == 1) {
         while (modified) {
 
@@ -637,7 +659,6 @@ int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabu
                 return 0;
             }
             modified = 0;
-            writeFile();
             printf("AAAAA\n");
             fflush(stdout);
             if ((modified = checkForLonelyTrees(treeInfo, list, tabuleiro, linhas, colunas))) {
@@ -660,7 +681,7 @@ int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabu
                 setBoardAnswer(-1);
                 return 0;
             }
-            writeFile();
+            modified = 0;
             printf("AAAAA\n");
             fflush(stdout);
             if ((modified = checkNeededTents(tabuleiro, linhas, colunas, treeInfo))) {
@@ -671,6 +692,7 @@ int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabu
             if ((modified = checkConsecutive(tabuleiro, linhas, colunas, treeInfo))) {
                 continue;
             }
+            modified = 0;
         }
     }
 
