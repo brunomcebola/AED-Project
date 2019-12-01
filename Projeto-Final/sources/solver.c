@@ -6,6 +6,12 @@
 #include "../headers/stack.h"
 #include "../headers/files.h" /* TODO: remove this include after debugging */
 
+
+#ifndef _MAX_
+#define _MAX_
+#define MAX(a,b) (a > b ? a : b)
+#endif
+
 /* TODO: eliminate all PlayableNode stuff it won't be used */
 
 
@@ -762,10 +768,47 @@ void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInf
 }
 
 
+int randomPlay(TreeNode ***, TreeNode **, char *, int, int, int, int, int, int, int);
 
+
+void heuristicsForRandomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, int season) {
+    int linhasOuColunas = 0, i = 0, index = 0, numOfMoves = 0;
+    float max = 0, temp = 0;
+    for (i = 0; i < colunas; i++) {
+        if (max < (temp = column_vector[i].tentsNeeded/column_vector[i].availablePositions)) {
+            max = temp;
+            numOfMoves = column_vector[i].tentsNeeded;
+            index = i;
+            linhasOuColunas = 0;
+        }
+    }
+
+    for (i = 0; i < linhas; i++) {
+        if (max < (temp = row_vector[i].tentsNeeded/row_vector[i].availablePositions)) {
+            max = temp;
+            numOfMoves = row_vector[i].tentsNeeded;
+            index = i;
+            linhasOuColunas = 1;
+        }
+    }
+    if (linhasOuColunas) {
+        randomPlay(treeInfo, list, tabuleiro, linhas, colunas, index, 0, numOfMoves, linhasOuColunas, season);
+    } else {
+        randomPlay(treeInfo, list, tabuleiro, linhas, colunas, 0, index, numOfMoves, linhasOuColunas, season);
+    }
+
+}
+
+
+
+/*
+* returns: 1 if puzzle solved, returns 0 if puzzle not solved
+*
+*
+*/
 int randomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, int x, int y, int numOfMoves, int linhasOuColunas, int season) {
     int i = 0, index = 0, edge;
-    changeStore *changes;
+    changeStore *changes = NULL;
 
     if (linhasOuColunas) {
         edge = colunas;
@@ -790,12 +833,14 @@ int randomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linh
             if (numOfMoves-1) {
                 if (linhasOuColunas) {
                     if (randomPlay(treeInfo, list, tabuleiro, linhas, colunas, i, y, numOfMoves, linhasOuColunas, season)) {
+                        freeChangeList(changes);
                         return 1;
                     } else {
                         deleteChanges(changes, tabuleiro, colunas);
                     }
                 } else {
                     if(randomPlay(treeInfo, list, tabuleiro, linhas, colunas, x, i, numOfMoves, linhasOuColunas, season)) {
+                        freeChangeList(changes);
                         return 1;
                     } else {
                         deleteChanges(changes, tabuleiro, colunas);
@@ -806,9 +851,16 @@ int randomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linh
                     deleteChanges(changes, tabuleiro, colunas);
                 } else {
                     if(checkIfPuzzleSolved(linhas, colunas)) {
+                        freeChangeList(changes);
                         return 1;
                     } else {
-                        /* TODO: keep loop going */
+                        heuristicsForRandomPlay(treeInfo, list, tabuleiro, linhas, colunas, season);
+                        if(checkIfPuzzleSolved(linhas, colunas)) {
+                            freeChangeList(changes);
+                            return 1;
+                        } else {
+                            deleteChanges(changes, tabuleiro, colunas);
+                        }
                     }
                 }
             }
@@ -841,6 +893,10 @@ void solver(void) {
 
     /* TODO: maybe have a second version of makeSureMoves without saving stuff features for inicial analysis*/
     makeSureMoves(season, treesInfo, &treesList, layout, rows, columns, &changeStorePtr);
+    if(!checkIfPuzzleSolved(rows, columns)) {
+        heuristicsForRandomPlay(treesInfo, &treesList, layout, rows, columns, season);
+    }
+    freeChangeList(changeStorePtr);
 
     freeTreeInfo(layout, rows, columns, treesInfo);
 }

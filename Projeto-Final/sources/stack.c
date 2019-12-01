@@ -45,12 +45,24 @@ void pushChange(changeStore **changeStorePtr, void *ptr, int x, int y, int chang
     *changeStorePtr = new;
 }
 
+
+void freeChangeList(changeStore *changeStorePtr) {
+    changeStore *current;
+    while(changeStorePtr != NULL) {
+        current = changeStorePtr;
+        changeStorePtr = changeStorePtr -> prevChange;
+        free(current);
+    }
+}
+
+
 void deleteChanges(changeStore *changeStorePtr, char *tabuleiro, int colunas) {
     TreeNode *treeAux = NULL;
     HeadNode *headAux = NULL;
+    changeStore *current;
 
     while(changeStorePtr != NULL) {
-        changeStore *current = changeStorePtr;
+        current = changeStorePtr;
         changeStorePtr = changeStorePtr -> prevChange;
         switch (current -> changeNodeSelector) {
             case 1:

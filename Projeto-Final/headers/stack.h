@@ -22,4 +22,5 @@ typedef struct _changeStore {
 /* TODO: include struct prototypes so stack.c can edit them */
 
 void pushChange(changeStore **, void *, int, int, int, int, char, int);
+void freeChangeList(changeStore *);
 void deleteChanges(changeStore *, char *, int);

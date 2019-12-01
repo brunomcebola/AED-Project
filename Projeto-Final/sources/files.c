@@ -9,7 +9,11 @@
 #include "../headers/bundle.h"
 #include "../headers/solver.h"
 
+#ifndef _MAX_
+#define _MAX_
 #define MAX(a,b) (a > b ? a : b)
+#endif
+
 
 typedef struct _Board {
     int valid, sum;
