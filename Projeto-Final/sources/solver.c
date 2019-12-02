@@ -520,7 +520,7 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
     aux = *list;
 
     if (aux == NULL) {
-        return 0;
+        return 404;
     }
     while ((aux)->num_playables == 0) {
         numOfV = 0;
@@ -551,7 +551,7 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
             if (numOfV > 1) {
                 aux = aux->next;
                 if (aux == NULL) {
-                    break;
+                    return 0;
                 } else {
                     continue;
                 }
@@ -704,7 +704,7 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
             }
 
         } else {
-            break;
+            return 0;
         }
         aux = aux->next;
     }
@@ -861,20 +861,21 @@ int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabu
 
     if (season == 1) {
         while (modified) {
+            writeFile();
             if (modified == 404) {
                 return 1;
             }
 
             modified = 0;
-
+            printf("AAAAAAAA\n");
             if ((modified = checkForLonelyTrees(treeInfo, list, tabuleiro, linhas, colunas, changeStorePtr))) {
                 continue;
             }
-
+            printf("BBBBBBBBB\n");
             if ((modified = checkNeededTents(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
                 continue;
             }
-
+            printf("CCCCCCCCCC\n");
             if ((modified = checkConsecutive(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
                 continue;
             }
