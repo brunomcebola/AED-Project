@@ -444,7 +444,7 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                 modified = 0;
                 for (j = 0; j < colunas; ++j) {
                     if (tabuleiro[index+j] == 'V') {
-                        tabuleiro[index] = 'T';
+                        tabuleiro[index+j] = 'T';
                         assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1, changeStorePtr);
                         if (tabuleiro[index+j] != 'V') {
                             modified = 1;
@@ -513,7 +513,7 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
 */
 int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, changeStore **changeStorePtr) {
     TreeNode *aux;
-    int index;
+    int index, numOfV = 0;
     MergeSort(list);
     aux = *list;
 
@@ -522,8 +522,40 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
     }
 
     while ((aux)->num_playables == 0) {
+        numOfV = 0;
         if (aux->hasTentAssigned == 0) {
             index = (aux->y)*colunas + aux->x;
+
+            if (aux->x != 0) {
+                if (tabuleiro[index-1] == 'V') {
+                    ++numOfV;
+                }
+            }
+            if (aux->x != colunas-1) {
+                if (tabuleiro[index+1] == 'V') {
+                    ++numOfV;
+                }
+            }
+            if (aux->y != 0) {
+                if (tabuleiro[index-colunas] == 'V') {
+                    ++numOfV;
+                }
+            }
+            if (aux->y != linhas-1) {
+                if (tabuleiro[index+colunas] == 'V') {
+                    ++numOfV;
+                }
+            }
+
+            if (numOfV > 1) {
+                aux = aux->next;
+                if (aux == NULL) {
+                    break;
+                } else {
+                    continue;
+                }
+            }
+
             if (aux->x != 0) {
                 if (tabuleiro[index-1] == 'V') {
                     aux->hasTentAssigned = 1;
@@ -824,22 +856,21 @@ int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabu
 
     if (season == 1) {
         while (modified) {
+
             if (modified == 404) {
                 return 1;
             }
+
             modified = 0;
-            printf("AAAAAAAAA\n");
-            fflush(stdout);
+
             if ((modified = checkForLonelyTrees(treeInfo, list, tabuleiro, linhas, colunas, changeStorePtr))) {
                 continue;
             }
-            printf("BBBBBBBBB\n");
-            fflush(stdout);
+
             if ((modified = checkNeededTents(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
                 continue;
             }
-            printf("CCCCCCCCCCC\n");
-            fflush(stdout);
+
             if ((modified = checkConsecutive(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
                 continue;
             }
