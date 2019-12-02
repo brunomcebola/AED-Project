@@ -78,10 +78,10 @@ clean:
 # test different modes
 
 movea:
-	for F in $(shell ls ./*.tents0); do mv $${F} ans/A ; done
+	for F in $(shell ls ./*.tents); do mv $${F} ans/Boring ; done
 
 moveb:
-	for F in $(shell ls ./*.tents0); do mv $${F} ans/B ; done
+	for F in $(shell ls ./*.tents); do mv $${F} ans/Deserto ; done
 
 movec:
 	for F in $(shell ls ./*.tents0); do mv $${F} ans/C ; done
@@ -94,14 +94,14 @@ a:
 	@ mkdir -p ./ans/Boring
 	for F in ${FILES_A_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) movea
-	@ diff -r ans/A tents/A
+	@ diff -r ans/Boring Tests/Boring
 
 b:
 	@ rm -r -f ./ans/Deserto
 	@ mkdir -p ./ans/Deserto
 	for F in ${FILES_B_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) moveb
-	@ diff -r ans/B tents/B
+	@ diff -r ans/Deserto Tests/Deserto
 
 c:
 	@ rm -r -f ./ans/C

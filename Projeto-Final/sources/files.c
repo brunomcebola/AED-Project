@@ -418,11 +418,13 @@ void writeFile (void) {
     }
 
     //if the is a correct answer then the solved layout is printed
-    if(answer == 1){
+//    if(answer == 1){
+        /* TODO: uncomment this */
         for(i = 0; i < rows; i++){
             fprintf(out_file, "%.*s\n", columns, layout+(i*columns));
         }
-    }
+//    }
+    fprintf(out_file, "\n");
 }
 
 /*******************************************************************************
