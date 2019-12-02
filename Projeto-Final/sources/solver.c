@@ -520,7 +520,6 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
     if (aux == NULL) {
         return 0;
     }
-
     while ((aux)->num_playables == 0) {
         numOfV = 0;
         if (aux->hasTentAssigned == 0) {
@@ -616,7 +615,7 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
     }
 
     while (aux != NULL) {
-        if ((aux)->num_playables == 1) {
+        if ((aux)->num_playables == 1 && (aux)->hasTentAssigned == 0) {
 
             index = (aux->y)*colunas + aux->x;
 
@@ -856,7 +855,7 @@ int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabu
 
     if (season == 1) {
         while (modified) {
-
+            writeFile();
             if (modified == 404) {
                 return 1;
             }
@@ -864,14 +863,17 @@ int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabu
             modified = 0;
 
             if ((modified = checkForLonelyTrees(treeInfo, list, tabuleiro, linhas, colunas, changeStorePtr))) {
+                setBoardAnswer(2);
                 continue;
             }
 
             if ((modified = checkNeededTents(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
+                setBoardAnswer(3);
                 continue;
             }
 
             if ((modified = checkConsecutive(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
+                setBoardAnswer(4);
                 continue;
             }
         }
@@ -926,6 +928,7 @@ int randomPlay(TreeNode ***, TreeNode **, char *, int, int, int, int, int, int, 
 
 
 void heuristicsForRandomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, int season) {
+
     int linhasOuColunas = 0, i = 0, index = 0, numOfMoves = 0;
     double max = 0, temp = 0;
 
@@ -970,7 +973,7 @@ void heuristicsForRandomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabul
 *
 */
 int randomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, int x, int y, int numOfMoves, int linhasOuColunas, int season) {
-    int i = 0, index = 0, edge;
+    int i = 0, index = 0, edge = 0, modified = 1, j = 0, indexAux;
     changeStore *changes = NULL;
 
     if (linhasOuColunas) {
@@ -1011,6 +1014,34 @@ int randomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linh
                     }
                 }
             } else {
+                modified = 1;
+                if (linhasOuColunas) {
+                    while (modified) {
+                        modified = 0;
+                        for (indexAux = y*colunas, j = 0; j < colunas; ++j, ++indexAux) {
+                            if (tabuleiro[indexAux] == 'V') {
+                                tabuleiro[indexAux] = 'T';
+                                assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, indexAux, j, y, 1, &changes);
+                                if (tabuleiro[indexAux] != 'V') {
+                                    modified = 1;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    while (modified) {
+                        modified = 0;
+                        for (indexAux = x, j = 0; j < linhas; ++j, indexAux += colunas) {
+                            if (tabuleiro[indexAux] == 'V') {
+                                tabuleiro[indexAux] = 'T';
+                                assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, indexAux, x, j, 1, &changes);
+                                if (tabuleiro[indexAux] != 'V') {
+                                    modified = 1;
+                                }
+                            }
+                        }
+                    }
+                }
                 if (makeSureMoves(season, treeInfo, list, tabuleiro, linhas, colunas, &changes)) {
                     deleteChanges(&changes, tabuleiro, colunas);
                 } else {
