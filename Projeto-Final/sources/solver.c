@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "../headers/bundle.h"
 #include "../headers/game.h"
 #include "../headers/solver.h"
 #include "../headers/sort.h"
@@ -106,8 +107,13 @@ int findPossibleLocations(char *tabuleiro, int linhas, int colunas) {
 TreeNode ***createTreeInfo(int colunas, int linhas) {
     TreeNode ***TreeInfo = NULL;
     TreeInfo = (TreeNode ***) malloc(linhas * sizeof(TreeNode **));
+    checkNull(1, TreeInfo);
     for (int i = 0; i < linhas; ++i) {
         TreeInfo[i] = (TreeNode **) malloc(colunas * sizeof(TreeNode *));
+        checkNull(1, TreeInfo[i]);
+        for (int j = 0; j < colunas; j++) {
+            TreeInfo[i][j] = NULL;
+        }
     }
     return TreeInfo;
 }
@@ -122,6 +128,7 @@ TreeNode *createTreeList(char *tabuleiro, int linhas, int colunas, TreeNode ***t
 
             if (tabuleiro[index] == 'A') {
                 treesInfo[i][j] = (TreeNode *) malloc(sizeof(TreeNode));
+                checkNull(1, treesInfo[i][j]);
                 treesInfo[i][j]->x = j;
                 treesInfo[i][j]->y = i;
                 treesInfo[i][j]->hasTentAssigned = 0;
@@ -817,6 +824,8 @@ void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInf
                 free(treesInfo[i][j]);
             } else if (tabuleiro[index] == 'P') {
                 tabuleiro[index] = '.';
+            } else if (tabuleiro[index] == 'V') {
+                tabuleiro[index] = 'T';
             }
         }
         free(treesInfo[i]);
