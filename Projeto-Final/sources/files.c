@@ -58,7 +58,7 @@ void initFile(const char *file) {
     strncpy(file_name, basename((char *)file), size_out-5);
 
     //creates output file in writing mode
-    out_file = fopen(strcat(file_name,".tents"), "w");
+    out_file = fopen(strcat(file_name,".check"), "w"); /* TODO: change extension after debugging */
 
     //checks if both files (input and output) are opened correctly
     checkNull(2, in_file, out_file);
@@ -418,13 +418,13 @@ void writeFile (void) {
     }
 
     //if the is a correct answer then the solved layout is printed
-//    if(answer == 1){
-        /* TODO: uncomment this */
+    /*if(answer == 1){
+//        TODO: uncomment this
         for(i = 0; i < rows; i++){
             fprintf(out_file, "%.*s\n", columns, layout+(i*columns));
         }
-//    }
-    fprintf(out_file, "\n");
+    }
+    fprintf(out_file, "\n");*/
 }
 
 /*******************************************************************************
