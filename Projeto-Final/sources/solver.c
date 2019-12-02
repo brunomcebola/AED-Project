@@ -431,9 +431,10 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
 
     for (index = 0, i = 0; i < linhas; ++i, index += colunas) {
         if ((row_vector[i].tentsNeeded == row_vector[i].availablePositions) && row_vector[i].tentsNeeded > 0) {
-            retVal = 1;
+
             for (j = 0; j < colunas; ++j) {
                 if (tabuleiro[index+j] == 'P') {
+                    retVal = 1;
                     tabuleiro[index+j] = 'T';
                     pushChange(changeStorePtr, NULL, j, i, 1, 0, 'P', 1);
                     removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 1, changeStorePtr);
@@ -456,9 +457,10 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
         } else if (row_vector[i].tentsNeeded > row_vector[i].availablePositions) {
             return 404;
         } else if (row_vector[i].availablePositions > 0 && row_vector[i].tentsNeeded == 0) {
-            retVal = 1;
+
             for (j = 0; j < colunas; ++j) {
                 if (tabuleiro[index+j] == 'P') {
+                    retVal = 1;
                     tabuleiro[index+j] = '.';
                     pushChange(changeStorePtr, NULL, j, i, 1, 0, 'P', 1);
                     removesP(treeInfo, tabuleiro, linhas, colunas, index+j, j, i, 0, changeStorePtr);
@@ -469,9 +471,10 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
     modified = 1;
     for (i = 0; i < colunas; ++i) {
         if ((column_vector[i].tentsNeeded == column_vector[i].availablePositions) && column_vector[i].tentsNeeded > 0) {
-            retVal = 1;
+
             for (index = i, j = 0; j < linhas; ++j, index += colunas) {
                 if (tabuleiro[index] == 'P') {
+                    retVal = 1;
                     tabuleiro[index] = 'T';
                     pushChange(changeStorePtr, NULL, i, j, 1, 0, 'P', 1);
                     removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1, changeStorePtr);
@@ -494,9 +497,10 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
         } else if (column_vector[i].tentsNeeded > column_vector[i].availablePositions) {
             return 404;
         } else if (column_vector[i].availablePositions > 0 && column_vector[i].tentsNeeded == 0) {
-            retVal = 1;
+
             for (index = i, j = 0; j < linhas; ++j, index += colunas) {
                 if (tabuleiro[index] == 'P') {
+                    retVal = 1;
                     tabuleiro[index] = '.';
                     pushChange(changeStorePtr, NULL, i, j, 1, 0, 'P', 1);
                     removesP(treeInfo, tabuleiro, linhas, colunas, index, i, j, 0, changeStorePtr);
@@ -737,13 +741,22 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
 
             for (j = 0; j < colunas; ++j) {
                 if (tabuleiro[index+j] == 'P') {
+                    if (j != 0) {
+                        if (tabuleiro[index+j] == 'V') {
+                            continue;
+                        }
+                    }
                     flag1 = 0;
                     temp = j;
                     while (!(tabuleiro[index+j] != 'P')) {
                         ++flag1;
                         if ((++j) == colunas) break;
                     }
-
+                    if (j != colunas) {
+                        if (tabuleiro[index+j] == 'V') {
+                            continue;
+                        }
+                    }
                     --j;
 
                     if (flag1 == 1) {
@@ -861,21 +874,21 @@ int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabu
 
     if (season == 1) {
         while (modified) {
-            writeFile();
+            
             if (modified == 404) {
                 return 1;
             }
 
             modified = 0;
-            printf("AAAAAAAA\n");
+
             if ((modified = checkForLonelyTrees(treeInfo, list, tabuleiro, linhas, colunas, changeStorePtr))) {
                 continue;
             }
-            printf("BBBBBBBBB\n");
+
             if ((modified = checkNeededTents(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
                 continue;
             }
-            printf("CCCCCCCCCC\n");
+
             if ((modified = checkConsecutive(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
                 continue;
             }
@@ -931,8 +944,7 @@ int randomPlay(TreeNode ***, TreeNode **, char *, int, int, int, int, int, int, 
 
 
 void heuristicsForRandomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, int season) {
-    printf("AAAAAAAAAAAAAAAA\n");
-    fflush(stdout);
+
     int linhasOuColunas = 0, i = 0, index = 0, numOfMoves = 0;
     double max = 0, temp = 0;
 
