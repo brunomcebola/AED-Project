@@ -1,11 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../headers/bundle.h"
-#include "../headers/game.h"
-#include "../headers/solver.h"
-#include "../headers/sort.h"
-#include "../headers/stack.h"
-#include "../headers/files.h" /* TODO: remove this include after debugging */
+#include "bundle.h"
+#include "game.h"
+#include "solver.h"
+#include "sort.h"
+#include "stack.h"
 
 
 /* TODO: eliminate all PlayableNode stuff it won't be used */
@@ -21,7 +20,7 @@ struct _PlayableNode {
 };
 
 
-void removesP(TreeNode ***, char *, int, int, long unsigned int, int, int, int, changeStore **);
+void removesP(TreeNode ***, char *, int, int, int, int, int, int, changeStore **);
 
 
 
@@ -170,7 +169,7 @@ TreeNode *createTreeList(char *tabuleiro, int linhas, int colunas, TreeNode ***t
 *  returns 0 when not alone, 1 when not alone
 *  TODO: create 3 more functions so it reduces number of comparisons (doesn't have to compare with tree removing it)
 */
-void checkIfPAlone(TreeNode*** treeInfo, char *tabuleiro, long unsigned int index, int x, int y, int colunas, int linhas, changeStore **changeStorePtr) {
+void checkIfPAlone(TreeNode*** treeInfo, char *tabuleiro, int index, int x, int y, int colunas, int linhas, changeStore **changeStorePtr) {
     if (x != 0) {
 
         if (tabuleiro[index-1] == 'A') {
@@ -209,7 +208,7 @@ void checkIfPAlone(TreeNode*** treeInfo, char *tabuleiro, long unsigned int inde
 *
 *
 */
-void invalidateTreePPositions(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, long unsigned int index, int x, int y, changeStore **changeStorePtr) {
+void invalidateTreePPositions(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, changeStore **changeStorePtr) {
     if (x != 0) {
 
         if (tabuleiro[index-1] == 'P') {
@@ -245,7 +244,7 @@ void invalidateTreePPositions(TreeNode*** treeInfo, char * tabuleiro, int linhas
 *
 *
 */
-void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, long unsigned int index, int x, int y, int test, changeStore **changeStorePtr) {
+void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, int test, changeStore **changeStorePtr) {
     int numOfTrees = 0;
 
     if (x != 0) {
@@ -314,7 +313,7 @@ void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int 
 
 
 
-void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, long unsigned int index, int x, int y, int isTent, changeStore **changeStorePtr) {
+void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, int isTent, changeStore **changeStorePtr) {
     int previousValue = 0;
 
     if (isTent) {
@@ -519,7 +518,7 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
 */
 int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, changeStore **changeStorePtr) {
     TreeNode *aux;
-    long unsigned int index, numOfV = 0;
+    int index, numOfV = 0;
     MergeSort(list);
     aux = *list;
 
@@ -989,8 +988,7 @@ void heuristicsForRandomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabul
 *
 */
 int randomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, int x, int y, int numOfMoves, int linhasOuColunas, int season) {
-    int i = 0, index = 0, edge = 0, modified = 1, j = 0;
-    long unsigned int indexAux;
+    int i = 0, index = 0, edge = 0, modified = 1, j = 0, indexAux;
     changeStore *changes = NULL;
 
     if (linhasOuColunas) {
