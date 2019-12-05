@@ -58,7 +58,7 @@ void initFile(const char *file) {
     strncpy(file_name, basename((char *)file), size_out-5);
 
     //creates output file in writing mode
-    out_file = fopen(strcat(file_name,".check"), "w"); /* TODO: change extension after debugging */
+    out_file = fopen(strcat(file_name,".check"), "w");
 
     //checks if both files (input and output) are opened correctly
     checkNull(2, in_file, out_file);
@@ -230,19 +230,19 @@ int reachedEOF(void) {
 *                                                                              *
 *******************************************************************************/
 void finishLayout(int flag) {
-    int rows = -1, columns, i;
-
+    int rows = -1, columns, i, trash = 0;
+    ++trash;
     //skips layout description
     if(flag) {
         //gets board rows an columns
-        fscanf(in_file, " %d %d", &rows, &columns);
+        trash = fscanf(in_file, " %d %d", &rows, &columns);
 
         for(i = 0; i < rows; i++) {
-            fscanf(in_file, " %*d");
+            trash = fscanf(in_file, " %*d");
         }
 
         for(i = 0; i < columns; i++) {
-            fscanf(in_file, " %*d");
+            trash = fscanf(in_file, " %*d");
         }
         //sets essential information to print an answer to the output file
         setBoardBio(rows, columns, 0);
@@ -252,7 +252,7 @@ void finishLayout(int flag) {
     else {
         rows = getBoardRows();
         for(i = 0; i < rows; i++){
-            fscanf(in_file, " %*s");
+            trash = fscanf(in_file, " %*s");
         }
     }
 
@@ -280,7 +280,7 @@ int readBio(void) {
              *column_vector = getSolverVectorColumn();
 
     if(board_ptr == NULL) {
-        fscanf(in_file, " ");
+        trash = fscanf(in_file, " ");
         return 0;
     }
 
@@ -349,14 +349,14 @@ int readBio(void) {
 *******************************************************************************/
 int readLayout(void) {
     char *tabuleiro = getBoardLayout(), *buffer = getBoardBuffer();
-    int i = 0, rows = getBoardRows(), columns = getBoardColumns(), index = 0;
+    int i = 0, rows = getBoardRows(), columns = getBoardColumns(), index = 0, trash = 0;
 
     tabuleiro[0] = '\0';
     buffer[0]= '\0';
-
+    ++trash;
     //reads layoutrow by row
     for (i = 0; i < rows; i++, index += columns) {
-        fscanf(in_file, " %s", buffer);
+        trash = fscanf(in_file, " %s", buffer);
 
         //fills the array containing the layout
         strcpy(&tabuleiro[index], buffer);
@@ -418,12 +418,11 @@ void writeFile (void) {
     }
 
     //if the is a correct answer then the solved layout is printed
-//    if(answer == 1){
-//        TODO: uncomment this
-//        for(i = 0; i < rows; i++){
-//            fprintf(out_file, "%.*s\n", columns, layout+(i*columns));
-//        }
-//    }
+    if(answer == 1){
+        for(i = 0; i < rows; i++){
+            fprintf(out_file, "%.*s\n", columns, layout+(i*columns));
+        }
+    }
     fprintf(out_file, "\n");
 }
 

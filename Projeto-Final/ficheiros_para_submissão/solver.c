@@ -10,8 +10,6 @@
 /* TODO: eliminate all PlayableNode stuff it won't be used */
 
 
-//TODO: perguntar ao stor
-
 struct _PlayableNode {
     int x, y;
     int valid;
@@ -20,7 +18,7 @@ struct _PlayableNode {
 };
 
 
-void removesP(TreeNode ***, char *, int, int, int, int, int, int, changeStore **);
+void removesP(TreeNode ***, char *, int, int, long unsigned int, int, int, int, changeStore **);
 
 
 
@@ -44,7 +42,8 @@ void setSolverVectors(HeadNode* row, HeadNode* column) {
 //solver functions
 int findPossibleLocations(char *tabuleiro, int linhas, int colunas) {
 
-	int i, j, index = 0, numOfTrees = 0, numOfAskedTents = getBoardSum(), retVal;
+	int i, j, numOfTrees = 0, numOfAskedTents = getBoardSum(), retVal;
+    long unsigned int index = 0;
 
 	for (i = 0; i < linhas; ++i) {
 
@@ -118,8 +117,9 @@ TreeNode ***createTreeInfo(int colunas, int linhas) {
 }
 
 TreeNode *createTreeList(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInfo) {
-    int j = 0, i = 0, index = 0;
+    int j = 0, i = 0;
     TreeNode *list = NULL;
+    long unsigned int index = 0;
 
     for (i = 0; i < linhas; ++i) {
 
@@ -169,7 +169,7 @@ TreeNode *createTreeList(char *tabuleiro, int linhas, int colunas, TreeNode ***t
 *  returns 0 when not alone, 1 when not alone
 *  TODO: create 3 more functions so it reduces number of comparisons (doesn't have to compare with tree removing it)
 */
-void checkIfPAlone(TreeNode*** treeInfo, char *tabuleiro, int index, int x, int y, int colunas, int linhas, changeStore **changeStorePtr) {
+void checkIfPAlone(TreeNode*** treeInfo, char *tabuleiro, long unsigned int index, int x, int y, int colunas, int linhas, changeStore **changeStorePtr) {
     if (x != 0) {
 
         if (tabuleiro[index-1] == 'A') {
@@ -208,7 +208,7 @@ void checkIfPAlone(TreeNode*** treeInfo, char *tabuleiro, int index, int x, int 
 *
 *
 */
-void invalidateTreePPositions(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, changeStore **changeStorePtr) {
+void invalidateTreePPositions(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, long unsigned int index, int x, int y, changeStore **changeStorePtr) {
     if (x != 0) {
 
         if (tabuleiro[index-1] == 'P') {
@@ -244,7 +244,7 @@ void invalidateTreePPositions(TreeNode*** treeInfo, char * tabuleiro, int linhas
 *
 *
 */
-void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, int test, changeStore **changeStorePtr) {
+void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, long unsigned int index, int x, int y, int test, changeStore **changeStorePtr) {
     int numOfTrees = 0;
 
     if (x != 0) {
@@ -313,7 +313,7 @@ void assignsTentToATree(TreeNode*** treeInfo, char * tabuleiro, int linhas, int 
 
 
 
-void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, int index, int x, int y, int isTent, changeStore **changeStorePtr) {
+void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, long unsigned int index, int x, int y, int isTent, changeStore **changeStorePtr) {
     int previousValue = 0;
 
     if (isTent) {
@@ -426,7 +426,8 @@ void removesP(TreeNode*** treeInfo, char * tabuleiro, int linhas, int colunas, i
 *
 */
 int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***treeInfo, changeStore **changeStorePtr) {
-    int i = 0, j = 0, index = 0, retVal = 0, modified = 1;
+    int i = 0, j = 0, retVal = 0, modified = 1;
+    long unsigned int index = 0;
 
     for (index = 0, i = 0; i < linhas; ++i, index += colunas) {
         if ((row_vector[i].tentsNeeded == row_vector[i].availablePositions) && row_vector[i].tentsNeeded > 0) {
@@ -487,7 +488,7 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                         tabuleiro[index] = 'T';
                         assignsTentToATree(treeInfo, tabuleiro, linhas, colunas, index, i, j, 1, changeStorePtr);
                         if (tabuleiro[index] != 'V') {
-                            pushChange(changeStorePtr, NULL, j, i, 1, 0, 'V', 1);
+                            pushChange(changeStorePtr, NULL, i, j, 1, 0, 'V', 1);
                             modified = 1;
                         }
                     }
@@ -518,13 +519,15 @@ int checkNeededTents(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
 */
 int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, changeStore **changeStorePtr) {
     TreeNode *aux;
-    int index, numOfV = 0;
+    int numOfV = 0;
+    long unsigned int index = 0;
     MergeSort(list);
     aux = *list;
 
     if (aux == NULL) {
         return 404;
     }
+
     while ((aux)->num_playables == 0) {
         numOfV = 0;
         if (aux->hasTentAssigned == 0) {
@@ -721,7 +724,8 @@ int checkForLonelyTrees(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro,
 *
 */
 int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***treeInfo, changeStore **changeStorePtr) {
-    int totalSimultaneousSpots = 0, numOfConsecutives = 0, i, j, index = 0, retVal = 0, flag1 = 0, flag2 = 0, temp = 0;
+    int totalSimultaneousSpots = 0, numOfConsecutives = 0, i, j, retVal = 0, flag1 = 0, flag2 = 0;
+    long unsigned int  index = 0;
 
     for (i = 0; i < linhas; ++i, index += colunas) {
         totalSimultaneousSpots = 0, numOfConsecutives = 0;
@@ -741,12 +745,11 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
             for (j = 0; j < colunas; ++j) {
                 if (tabuleiro[index+j] == 'P') {
                     if (j != 0) {
-                        if (tabuleiro[index+j] == 'V') {
+                        if (tabuleiro[index+j-1] == 'V') {
                             continue;
                         }
                     }
                     flag1 = 0;
-                    temp = j;
                     while (!(tabuleiro[index+j] != 'P')) {
                         ++flag1;
                         if ((++j) == colunas) break;
@@ -778,7 +781,6 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
                             --j;
                             ++flag2;
                         } while(--flag1);
-                        j = temp;
                     }
                 }
             }
@@ -801,14 +803,25 @@ int checkConsecutive(char * tabuleiro, int linhas, int colunas, TreeNode ***tree
             for (index = i, j = 0; j < linhas; ++j, index += colunas) {
                 if (tabuleiro[index] == 'P') {
                     flag1 = 0;
+                    if (j != 0) {
+                        if (tabuleiro[index-colunas] == 'V') {
+                            continue;
+                        }
+                    }
+
                     while (!(tabuleiro[index] != 'P')) {
                         ++flag1;
                         index += colunas;
                         if ( (++j) == linhas) break;
                     }
-
+                    if (j != linhas) {
+                        if (tabuleiro[index] == 'V') {
+                            continue;
+                        }
+                    }
                     --j;
                     index -= colunas;
+
 
                     if (flag1 == 1) {
                         retVal = 1;
@@ -885,10 +898,12 @@ int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabu
             }
 
             if ((modified = checkNeededTents(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
+
                 continue;
             }
 
             if ((modified = checkConsecutive(tabuleiro, linhas, colunas, treeInfo, changeStorePtr))) {
+
                 continue;
             }
         }
@@ -916,7 +931,8 @@ int makeSureMoves(int season, TreeNode*** treeInfo, TreeNode** list, char * tabu
 
 
 void freeTreeInfo(char *tabuleiro, int linhas, int colunas, TreeNode ***treesInfo) {
-    int j = 0, i = 0, index = 0;
+    int j = 0, i = 0;
+    long unsigned int index = 0;
 
     for (i = 0; i < linhas; ++i) {
 
@@ -988,7 +1004,8 @@ void heuristicsForRandomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabul
 *
 */
 int randomPlay(TreeNode*** treeInfo, TreeNode** list, char * tabuleiro, int linhas, int colunas, int x, int y, int numOfMoves, int linhasOuColunas, int season) {
-    int i = 0, index = 0, edge = 0, modified = 1, j = 0, indexAux;
+    int i = 0, edge = 0, modified = 1, j = 0;
+    long unsigned int indexAux = 0, index = 0;
     changeStore *changes = NULL;
 
     if (linhasOuColunas) {

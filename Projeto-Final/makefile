@@ -84,54 +84,54 @@ clean:
 # test different modes
 
 movea:
-	for F in $(shell ls ./*.check); do mv $${F} ans/Boring ; done
+	for F in $(shell ls ./*.camp0); do mv $${F} ans/Boring ; done
 
 moveb:
-	for F in $(shell ls ./*.check); do mv $${F} ans/Deserto ; done
+	for F in $(shell ls ./*.camp0); do mv $${F} ans/Deserto ; done
 
 movec:
-	for F in $(shell ls ./*.check); do mv $${F} ans/Amazonia ; done
+	for F in $(shell ls ./*.camp0); do mv $${F} ans/Amazonia ; done
 
 movemix:
-	for F in $(shell ls ./*.check); do mv $${F} ans/Enunciado ; done
+	for F in $(shell ls ./*.camp0); do mv $${F} ans/Enunciado ; done
 
 moved:
-	for F in $(shell ls ./*.check); do mv $${F} ans/Surpresa ; done
+	for F in $(shell ls ./*.camp0); do mv $${F} ans/Surpresa ; done
 
 a:
 	@ rm -r -f ./ans/Boring
 	@ mkdir -p ./ans/Boring
 	for F in ${FILES_A_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) movea
-	@ diff -qiBbw -r ans/Boring Check/Boring
+	#@ diff -qiBbw -r ans/Boring Check/Boring
 
 b:
 	@ rm -r -f ./ans/Deserto
 	@ mkdir -p ./ans/Deserto
 	for F in ${FILES_B_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) moveb
-	@ diff -qiBbw -r ans/Deserto Check/Deserto
+	#@ diff -qiBbw -r ans/Deserto Check/Deserto
 
 c:
 	@ rm -r -f ./ans/Amazonia
 	@ mkdir -p ./ans/Amazonia
 	for F in ${FILES_C_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) movec
-	@ diff -qiBbw -r ans/Amazonia Check/Amazonia
+	#@ diff -qiBbw -r ans/Amazonia Check/Amazonia
 
 m:
 	@ rm -r -f ./ans/Enunciado
 	@ mkdir -p ./ans/Enunciado
 	for F in ${FILES_MIX_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) movemix
-	@ diff -qiBbw -r ans/Enunciado Check/Enunciado
+	#@ diff -qiBbw -r ans/Enunciado Check/Enunciado
 
 d:
 	@ rm -r -f ./ans/Surpresa
 	@ mkdir -p ./ans/Surpresa
 	for F in ${FILES_D_IN}; do ./$(PROJECT_NAME) $${F} ; done
 	$(MAKE) moved
-	@ diff -qiBbw -r ans/Surpresa Check/Surpresa
+	#@ diff -qiBbw -r ans/Surpresa Check/Surpresa
 
 t:
 	$(MAKE) a

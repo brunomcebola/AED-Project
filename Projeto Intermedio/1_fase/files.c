@@ -54,11 +54,8 @@ int readMode() {
     x = 0, y = 0, mode = '\0';
 
     //get test mode
-<<<<<<< HEAD
-    while(mode < 'A' || mode > 'Z'){
-=======
+
     while(!isalpha(mode)){
->>>>>>> fe28e4b50a913fedf6845a1065736460fbf8cb5e
         if(fscanf(in_file, "%c", &mode) != 1 ) {
             return 0;
         }
