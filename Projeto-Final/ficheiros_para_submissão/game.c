@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * 2019-2020 AED - grupo 65
+ * Last modified: 2019-12-09
+ *
+ * NAME
+ *      game.c
+ *
+ * DESCRIPTION
+ *      Implementation of the functions used to manage the current layout being solved
+ *
+ * COMMENTS
+ *      none
+ *
+ ******************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
