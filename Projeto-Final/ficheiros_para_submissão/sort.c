@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * 2019-2020 AED - grupo 65
+ * Last modified: 2019-12-09
+ *
+ * NAME
+ *      sort.c
+ *
+ * DESCRIPTION
+ *      Implementation of the functions used to sort the specific linked 
+ *      list used during the program execution
+ *
+ * COMMENTS
+ *      none
+ *
+ ******************************************************************************/
+
 #include <stdlib.h>
 #include "solver.h"
 
