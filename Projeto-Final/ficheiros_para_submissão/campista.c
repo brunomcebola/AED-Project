@@ -11,22 +11,22 @@ int main(int argc, char const *argv[]) {
         exit(0);
     }
 
-    initFile(argv[1]);
+    initFile(argv[1]); //opens files
     initBoard();
 
-    maxSize();
-    begining();
+    maxSize(); //checks size of biggest valid board
+    begining(); //places file pointer to the beggining of the file
 
-    while(!reachedEOF()) {
-        if(readFile()) {
-            if(getBoardAnswer() != -1) {
-                solver();
+    while(!reachedEOF()) { //while there are puzzles to solve
+        if(readFile()) { //reads map
+            if(getBoardAnswer() != -1) { //if it didn't fail inicial checks
+                solver(); //tries and solves it
             }
-            writeFile();
+            writeFile(); //writes answer on output file
         }
         setBoardAnswer(0);
     }
-    terminateFile();
+    terminateFile(); //closes both files
 
     return 0;
 }

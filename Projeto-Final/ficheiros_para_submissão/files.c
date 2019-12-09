@@ -133,6 +133,12 @@ void maxSize() {
             //gets the maximum layout size, the maximum row size and the
             //maximum column size in the input file
             mux = rows * columns;
+            if (sum_tents_row > (((rows%2 ? rows+1 : rows) * (columns%2 ? columns+1 : columns))>>2) ) {
+                //if number of tents is superior to maximum of tents a map can contain (1/4 of the map maximum may be tents)
+                //the map is invalid; for odd number of columns or rows, the maximum number of tents is the same as the
+                //next even number for column/rows
+                valid = 0;
+            }
 
             max = MAX(max, mux);
             max_row = MAX(max_row, rows);
