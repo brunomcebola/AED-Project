@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * 2019-2020 AED - grupo 65
+ * Last modified: 2019-12-09
+ *
+ * NAME
+ *      bundle.c
+ *
+ * DESCRIPTION
+ *      Implements a function to check the memory allocation 
+ *
+ * COMMENTS
+ *      none
+ *
+ ******************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
