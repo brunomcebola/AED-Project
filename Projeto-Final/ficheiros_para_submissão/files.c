@@ -85,7 +85,7 @@ void initFile(const char *file) {
 *                                                                              *
 *                                                                              *
 *******************************************************************************/
-void maxSize() {
+void maxSize(void) {
     int max = 0, rows = 0, columns = 0, mux = 0, tents = 0,
     aux = 0, max_row = 0, max_column = 0, i = 0, sum_tents_row = 0,
     valid = 1, sum_tents_column = 0;
@@ -199,7 +199,7 @@ void maxSize() {
 * Description: Rewinds the input file to begining                              *
 *                                                                              *
 *******************************************************************************/
-void begining(){
+void begining(void){
     fseek(in_file, 0, SEEK_SET) ;
 }
 

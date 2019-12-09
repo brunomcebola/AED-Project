@@ -4,6 +4,22 @@
 
 #include "bundle.h"
 
+
+/*******************************************************************************
+* Function name: freeSolver()
+*
+* Arguments: num - number of pointers
+*            ... - any number of pointers
+*
+* Return: none
+*
+* Side-effects: Forces the program to terminate (with exit(0)) if there is an
+*               error with the memory managment (opening/creating files or
+*               allocating memory)
+*
+* Description: checks if pointers are set to NULL (memory error)
+*
+*******************************************************************************/
 void checkNull(int num, ...) {
     va_list valist;
     int i;
