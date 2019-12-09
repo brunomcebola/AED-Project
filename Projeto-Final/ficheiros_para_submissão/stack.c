@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * 2019-2020 AED - grupo 65
+ * Last modified: 2019-12-09
+ *
+ * NAME
+ *      stack.c
+ *
+ * DESCRIPTION
+ *      Implementation of the explicit stack used to save the changes 
+ *      throughout the code execution
+ *
+ * COMMENTS
+ *      none
+ *
+ ******************************************************************************/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "solver.h"
@@ -23,6 +39,26 @@ valueID:
 
 */
 
+/*******************************************************************************
+* Function name: pushChange()
+*
+* Arguments: **changeStorePtr - stack head pointer
+*            *ptr - changed strcut (with new value) pointer
+*            x - line where the change was made
+*            y - column where the change was made
+*            changeNodeSelector - indicates the type of strcu that has been changed
+*            previousValue - previous integer value to the change
+*            previousChar - previous char value to the change
+*
+* Return: none
+*
+* Side-effects: none
+*
+* Description: adds a new modification to the stack where the modifications are
+*              being store and puts the pointer to the stack pointing to this
+*              last added item
+*
+*******************************************************************************/
 void pushChange(changeStore **changeStorePtr, void *ptr, int x, int y, int changeNodeSelector, int previousValue, char previousChar, int valueID) {
     changeStore *new = (changeStore *) malloc(sizeof(changeStore));
     new -> prevChange = *changeStorePtr;
@@ -46,7 +82,18 @@ void pushChange(changeStore **changeStorePtr, void *ptr, int x, int y, int chang
     *changeStorePtr = new;
 }
 
-
+/*******************************************************************************
+* Function name: freeChangeList()
+*
+* Arguments: **changeStorePtr - stack head pointer
+*
+* Return: none
+*
+* Side-effects: none
+*
+* Description: Frees the memory allocated during the stack creation and management
+*
+*******************************************************************************/
 void freeChangeList(changeStore **changeStorePtr) {
     changeStore *current;
     while(*changeStorePtr != NULL) {
@@ -57,7 +104,20 @@ void freeChangeList(changeStore **changeStorePtr) {
     *changeStorePtr = NULL;
 }
 
-
+/*******************************************************************************
+* Function name: deleteChanges()
+*
+* Arguments: **changeStorePtr - stack head pointer
+*            *tabuleiro - game layout vector
+*            colunas - number of columns in the layout
+*
+* Return: none
+*
+* Side-effects: none
+*
+* Description: Revertes the modifications made during the program execution
+*
+*******************************************************************************/
 void deleteChanges(changeStore **changeStorePtr, char *tabuleiro, int colunas) {
     TreeNode *treeAux = NULL;
     HeadNode *headAux = NULL;
