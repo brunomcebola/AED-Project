@@ -10,7 +10,8 @@
  *      used during the program execution according to a specif order
  *
  * COMMENTS
- *      none
+ *      This functions were obtain from the website 
+ *         https://www.geeksforgeeks.org/merge-sort-for-linked-list/
  *
  ******************************************************************************/
 
@@ -44,8 +45,6 @@ void MergeSort(TreeNode** headRef)
     *headRef = SortedMerge(a, b);
 }
 
-/* See https:// www.geeksforgeeks.org/?p=3622 for details of this
-function */
 TreeNode* SortedMerge(TreeNode* a, TreeNode* b)
 {
     TreeNode* result = NULL;
