@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * 2019-2020 AED - grupo 65
+ * Last modified: 2019-12-09
+ *
+ * NAME
+ *      campista.c
+ *
+ * DESCRIPTION
+ *      Implementation of the main function of the program
+ *
+ * COMMENTS
+ *      none
+ *
+ ******************************************************************************/
+
 #include <stdlib.h>
 #include <stdio.h>
 
