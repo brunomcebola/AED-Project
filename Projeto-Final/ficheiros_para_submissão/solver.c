@@ -174,7 +174,7 @@ TreeNode ***createTreeInfo(void) {
 * Side-effects: if the puzzle is of type "high season" and a tree has no playable
 *               "squares" around it, it marks the puzzle as impossible
 *
-* Description: allocates structures with information about a tree's suroundings
+* Description: allocates structures with information about a tree's surroundings
 *              and status, also connects them through pointers to eachother
 *              creating a list
 *
@@ -345,7 +345,7 @@ void checkIfPAlone(long unsigned int index, int x, int y, changeStore **changeSt
 *
 * Side-effects: none
 *
-* Description: checks surroundings of a tree for a previously playble square
+* Description: checks the surroundings of a tree for a previously playble square
 *              that has been rendered unplayble
 *
 *******************************************************************************/
@@ -395,8 +395,8 @@ void invalidateTreePPositions(long unsigned int index, int x, int y, changeStore
 *
 * Side-effects: updates status/information and saves changes on current "change stack"
 *
-* Description: tries to assign a tent to a tree, succeeds if only one tree is
-*              available
+* Description: tries to assign a tent to a tree and it succeeds if only one tree is
+*              available to do such association
 *
 *******************************************************************************/
 void assignsTentToATree(long unsigned int index, int x, int y, int test, changeStore **changeStorePtr) {
@@ -481,9 +481,9 @@ void assignsTentToATree(long unsigned int index, int x, int y, int test, changeS
 *
 * Side-effects: updates status/information and saves changes on current "change stack"
 *
-* Description: updates information of the square's row and column and surrounding
-*              trees, also marks diagonnally adjacent squares as unplayble if
-*              "isTent" is set to "true"(1)
+* Description: updates information about the square's row and column and surrounding
+*              trees, also marks diagonally adjacent squares as unplayble if
+*              "isTent" is set to "true" (1)
 *
 *******************************************************************************/
 void removesP(long unsigned int index, int x, int y, int isTent, changeStore **changeStorePtr) {
@@ -604,8 +604,8 @@ void removesP(long unsigned int index, int x, int y, int isTent, changeStore **c
 *
 * Side-effects: updates status/information and saves changes on current "change stack"
 *
-* Description: checks if remaining needed tents for every row or column is equal
-*              to remaining playable square, updates those squares to tents
+* Description: checks if the remaining needed tents for every row/column is equal
+*              to remaining playable square; updates those squares to tents
 *
 *******************************************************************************/
 int checkNeededTents(changeStore **changeStorePtr) {
@@ -708,8 +708,8 @@ int checkNeededTents(changeStore **changeStorePtr) {
 *
 * Side-effects: updates status/information and saves changes on current "change stack"
 *
-* Description: checks if any any tree has only one playable square or unassigned tent
-*              next to it, updates that square into an assigned tent
+* Description: checks if any tree has only one playable square or unassigned tent
+*              next to it; updates that square into an assigned tent
 *
 *******************************************************************************/
 int checkForLonelyTrees(changeStore **changeStorePtr) {
@@ -925,7 +925,7 @@ int checkForLonelyTrees(changeStore **changeStorePtr) {
 * Side-effects: updates status/information and saves changes on current "change stack"
 *
 * Description: checks if maximum of playable squares that can be updated to tents
-*              is equal to the the needed tents for that given row or column,
+*              is equal to the the needed tents for that given row or column;
 *              updates squares to tents if they are grouped in sets of
 *              odd adjacent playble squares
 *
@@ -1270,8 +1270,8 @@ void heuristicsForRandomPlay(void) {
 *               it reaches an impossible state for the board to undo all changes up to
 *               the moves made before calling the current instance of the function
 *
-* Description: updates a playable square into a tent, and tries to solve puzzle,
-*              if it is impossible, undoes that move and tries putting a tent on
+* Description: updates a playable square into a tent, and tries to solve puzzle;
+*              if it is impossible, undoes that move and tries to put a tent on
 *              the next playable square or until it reaches the edge
 *
 *******************************************************************************/
