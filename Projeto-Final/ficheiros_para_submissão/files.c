@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * 2019-2020 AED - grupo 65
+ * Last modified: 2019-12-09
+ *
+ * NAME
+ *      solver.c
+ *
+ * DESCRIPTION
+ *      Implementation of the functions used to manage input file reading and
+ *      output file writing
+ *
+ * COMMENTS
+ *      none
+ *
+ ******************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
