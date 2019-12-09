@@ -66,7 +66,6 @@ void setSolverVectors(HeadNode* row, HeadNode* column) {
 *
 * Side-effects: if number of trees is lower than asked tents marks puzzle as impossible
 *
-*
 * Description: finds locations where it is possible to place tents,
 *              marks them with 'P' on the map;
 *              also counts the number of trees and assigns season to current puzzle
