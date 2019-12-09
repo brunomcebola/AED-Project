@@ -61,13 +61,13 @@ void setSolverVectors(HeadNode* row, HeadNode* column) {
 * Arguments: none
 *
 * Return: 0 - number of trees is lower than asked tents
-*         1 - the puzzle is of type "low season"
-*         2 - the puzzle is of type "high season"
+*         1 - the puzzle is of type "high season"
+*         2 - the puzzle is of type "low season"
 *
 * Side-effects: if number of trees is lower than asked tents marks puzzle as impossible
 *
 * Description: finds locations where it is possible to place tents,
-*              marks them with 'P' on the map;
+*              marks them with 'P' on the board;
 *              also counts the number of trees and assigns season to current puzzle
 *
 *******************************************************************************/
@@ -172,7 +172,7 @@ TreeNode ***createTreeInfo(void) {
 * Return: pointer to inicial head of the list os TreeNode structures
 *
 * Side-effects: if the puzzle is of type "high season" and a tree has no playable
-*               "squares" around it, it marks the puzzle as impossible
+*               squares around it, it marks the puzzle as impossible
 *
 * Description: allocates structures with information about a tree's surroundings
 *              and status, also connects them through pointers to eachother
@@ -293,7 +293,7 @@ TreeNode *createTreeList(void) {
 *
 * Return: none
 *
-* Side-effects: changes on current "change stack"
+* Side-effects: saves changes on current "change stack"
 *
 * Description: checks if a previously possible playable square is left alone
 *              after associating a tree with a tent (rendering that square unplayble)
@@ -395,7 +395,7 @@ void invalidateTreePPositions(long unsigned int index, int x, int y, changeStore
 *
 * Side-effects: updates status/information and saves changes on current "change stack"
 *
-* Description: tries to assign a tent to a tree and it succeeds if only one tree is
+* Description: tries to assign a tent to a tree; it succeeds if only one tree is
 *              available to do such association
 *
 *******************************************************************************/

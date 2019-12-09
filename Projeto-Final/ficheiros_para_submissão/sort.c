@@ -7,24 +7,20 @@
  *
  * DESCRIPTION
  *      Implementation of the functions used to sort the linked list
- *      used during the program execution according to a specif order
  *
  * COMMENTS
- *      This functions were obtain from the website 
+ *      These functions were obtained, and then adapted, from the website
  *         https://www.geeksforgeeks.org/merge-sort-for-linked-list/
  *
  ******************************************************************************/
-
 #include <stdlib.h>
 #include "solver.h"
 
 TreeNode* SortedMerge(TreeNode* a, TreeNode* b);
-void FrontBackSplit(TreeNode* source,
-                    TreeNode** frontRef, TreeNode** backRef);
+void FrontBackSplit(TreeNode* source, TreeNode** frontRef, TreeNode** backRef);
 
 /* sorts the linked list by changing next pointers (not data) */
-void MergeSort(TreeNode** headRef)
-{
+void MergeSort(TreeNode** headRef) {
     TreeNode* head = *headRef;
     TreeNode* a;
     TreeNode* b;
@@ -45,8 +41,7 @@ void MergeSort(TreeNode** headRef)
     *headRef = SortedMerge(a, b);
 }
 
-TreeNode* SortedMerge(TreeNode* a, TreeNode* b)
-{
+TreeNode* SortedMerge(TreeNode* a, TreeNode* b) {
     TreeNode* result = NULL;
 
     /* Base cases */
@@ -67,14 +62,11 @@ TreeNode* SortedMerge(TreeNode* a, TreeNode* b)
     return (result);
 }
 
-/* UTILITY FUNCTIONS */
 /* Split the nodes of the given list into front and back halves,
     and return the two lists using the reference parameters.
     If the length is odd, the extra node should go in the front list.
     Uses the fast/slow pointer strategy. */
-void FrontBackSplit(TreeNode* source,
-                    TreeNode** frontRef, TreeNode** backRef)
-{
+void FrontBackSplit(TreeNode* source, TreeNode** frontRef, TreeNode** backRef) {
     TreeNode* fast;
     TreeNode* slow;
     slow = source;

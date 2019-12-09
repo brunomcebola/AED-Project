@@ -6,7 +6,7 @@
  *      stack.c
  *
  * DESCRIPTION
- *      Implementation of the explicit stack used to save the changes 
+ *      Implementation of the explicit stack used to save the changes
  *      throughout the code execution
  *
  * COMMENTS
@@ -22,14 +22,11 @@
 
 /*
 changeNodeSelector:
-    1 - PlayableNode
+    1 - Board update
     2 - TreeNode
     3 - HeadNode
 
 valueID:
-    PlayableNode:
-        1 - valid
-        2 - isTent
     TreeNode:
         1 - hasTentAssigned
         2 - num_playables
@@ -43,10 +40,10 @@ valueID:
 * Function name: pushChange()
 *
 * Arguments: **changeStorePtr - stack head pointer
-*            *ptr - changed strcut (with new value) pointer
+*            *ptr - changed struct (with new value) pointer
 *            x - line where the change was made
 *            y - column where the change was made
-*            changeNodeSelector - indicates the type of strcu that has been changed
+*            changeNodeSelector - indicates the type of struct that has been changed
 *            previousValue - previous integer value to the change
 *            previousChar - previous char value to the change
 *
@@ -54,9 +51,8 @@ valueID:
 *
 * Side-effects: none
 *
-* Description: adds a new modification to the stack where the modifications are
-*              being store and puts the pointer to the stack pointing to this
-*              last added item
+* Description: adds a new modification to the stack, moves the pointer to the stack
+*              pointing to new head
 *
 *******************************************************************************/
 void pushChange(changeStore **changeStorePtr, void *ptr, int x, int y, int changeNodeSelector, int previousValue, char previousChar, int valueID) {
