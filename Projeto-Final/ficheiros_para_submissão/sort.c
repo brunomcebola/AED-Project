@@ -6,8 +6,8 @@
  *      sort.c
  *
  * DESCRIPTION
- *      Implementation of the functions used to sort the specific linked 
- *      list used during the program execution
+ *      Implementation of the functions used to sort the linked list
+ *      used during the program execution according to a specif order
  *
  * COMMENTS
  *      none
