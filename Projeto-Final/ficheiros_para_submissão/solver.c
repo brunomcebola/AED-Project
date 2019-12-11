@@ -1419,7 +1419,7 @@ int randomPlay(int x, int y, int numOfMoves, int linhasOuColunas) {
 
 
 /*******************************************************************************
-* Function name: soler()
+* Function name: solver()
 *
 * Arguments: none
 *
