@@ -356,7 +356,7 @@ int readBio(void) {
 }
 
 /*******************************************************************************
-* Function name: readLyout()                                                   *
+* Function name: readLayout()                                                   *
 *                                                                              *
 * Arguments: none                                                              *
 *                                                                              *
