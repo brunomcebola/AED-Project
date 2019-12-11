@@ -14,6 +14,7 @@
  ******************************************************************************/
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
 #include "bundle.h"
 #include "game.h"
 #include "solver.h"
@@ -45,11 +46,11 @@ HeadNode *row_vector = NULL, *column_vector = NULL; //save information about a g
 *
 * Arguments: none
 *
-* Return: vector with information about the rows 
+* Return: vector with information about the rows
 *
 * Side-effects: none
 *
-* Description: return the global vector with information about the rows 
+* Description: return the global vector with information about the rows
 *              (used for external functions)
 *
 *******************************************************************************/
@@ -62,11 +63,11 @@ HeadNode *getSolverVectorRow(void) {
 *
 * Arguments: none
 *
-* Return: vector with information about the columns 
+* Return: vector with information about the columns
 *
 * Side-effects: none
 *
-* Description: return the global vector with information about the columns 
+* Description: return the global vector with information about the columns
 *              (used for external functions)
 *
 *******************************************************************************/
@@ -80,7 +81,7 @@ HeadNode *getSolverVectorColumn(void) {
 * Arguments: row - vector with information about the rows
 *	     column - vector with information about the columns
 *
-* Return: none 
+* Return: none
 *
 * Side-effects: none
 *
@@ -1161,7 +1162,6 @@ int makeSureMoves(changeStore **changeStorePtr) {
             }
 
             if ((modified = checkNeededTents(changeStorePtr))) {
-
                 continue;
             }
 
@@ -1194,47 +1194,25 @@ int makeSureMoves(changeStore **changeStorePtr) {
 
 
 /*******************************************************************************
-* Function name: freeTreeInfo()
+* Function name: fact()
 *
-* Arguments: none
+* Arguments: n - integer
 *
-* Return: none
+* Return: n factorial
 *
-* Side-effects: changes any invalid symbol to it's intended state
+* Side-effects: none
 *
-* Description: frees treeNode type of structures
+* Description: calculates n!
 *
 *******************************************************************************/
-void freeTreeInfo(void) {
-    int j = 0, i = 0;
-    long unsigned int index = 0;
+int fact(int n) {
+    int i = 0 ,f = 1;
 
-    for (i = 0; i < puzzleInfo.linhas; ++i) {
+    for(i = 1;i <= n; ++i) {
 
-        for (j = 0; j < puzzleInfo.colunas; ++j, ++index) {
-
-            switch ((puzzleInfo.tabuleiro)[index]) {
-                case 'K':
-                    (puzzleInfo.tabuleiro)[index] = 'A';
-                    free((puzzleInfo.treeInfo)[i][j]);
-                    break;
-                case 'A':
-                    free((puzzleInfo.treeInfo)[i][j]);
-                    break;
-                case 'P':
-                    (puzzleInfo.tabuleiro)[index] = '.';
-                    break;
-                case 'V':
-                    (puzzleInfo.tabuleiro)[index] = 'T';
-                    break;
-                case 'D':
-                    (puzzleInfo.tabuleiro)[index] = 'A';
-                    break;
-            }
-        }
-        free((puzzleInfo.treeInfo)[i]);
+        f = f*i;
     }
-    free((puzzleInfo.treeInfo));
+    return f;
 }
 
 
@@ -1255,14 +1233,14 @@ void freeTreeInfo(void) {
 void heuristicsForRandomPlay(void) {
 
     int linhasOuColunas = 0, i = 0, index = 0, numOfMoves = 0;
-    double max = 0, temp = 0;
+    int bestNCR = 0, tempNCR = 0;
 
-    max = -1, temp = 0, numOfMoves = 0, index = 0, linhasOuColunas = -1;
+    bestNCR = INT_MAX, tempNCR = 0, numOfMoves = 0, index = 0, linhasOuColunas = -1;
 
     for (i = 0; i < puzzleInfo.colunas; i++) {
         if (column_vector[i].availablePositions > 0) {
-            if (max < (temp = (double)column_vector[i].tentsNeeded/(double)column_vector[i].availablePositions)) {
-                max = temp;
+            if (bestNCR > (tempNCR = fact(column_vector[i].availablePositions)/(fact(column_vector[i].tentsNeeded)*fact(column_vector[i].availablePositions-column_vector[i].tentsNeeded)))) {
+                bestNCR = tempNCR;
                 numOfMoves = column_vector[i].tentsNeeded;
                 index = i;
                 linhasOuColunas = 0;
@@ -1274,8 +1252,8 @@ void heuristicsForRandomPlay(void) {
 
     for (i = 0; i < puzzleInfo.linhas; i++) {
         if (row_vector[i].availablePositions > 0) {
-            if (max < (temp = (double)row_vector[i].tentsNeeded/(double)row_vector[i].availablePositions)) {
-                max = temp;
+            if (bestNCR > (tempNCR = fact(row_vector[i].availablePositions)/(fact(row_vector[i].tentsNeeded)*fact(row_vector[i].availablePositions-row_vector[i].tentsNeeded)))) {
+                bestNCR = tempNCR;
                 numOfMoves = row_vector[i].tentsNeeded;
                 index = i;
                 linhasOuColunas = 1;
@@ -1417,6 +1395,50 @@ int randomPlay(int x, int y, int numOfMoves, int linhasOuColunas) {
 }
 
 
+/*******************************************************************************
+* Function name: freeTreeInfo()
+*
+* Arguments: none
+*
+* Return: none
+*
+* Side-effects: changes any invalid symbol to it's intended state
+*
+* Description: frees treeNode type of structures
+*
+*******************************************************************************/
+void freeTreeInfo(void) {
+    int j = 0, i = 0;
+   long unsigned int index = 0;
+
+   for (i = 0; i < puzzleInfo.linhas; ++i) {
+
+       for (j = 0; j < puzzleInfo.colunas; ++j, ++index) {
+
+           switch ((puzzleInfo.tabuleiro)[index]) {
+               case 'K':
+                   (puzzleInfo.tabuleiro)[index] = 'A';
+                   free((puzzleInfo.treeInfo)[i][j]);
+                   break;
+               case 'A':
+                   free((puzzleInfo.treeInfo)[i][j]);
+                   break;
+               case 'P':
+                   (puzzleInfo.tabuleiro)[index] = '.';
+                   break;
+               case 'V':
+                   (puzzleInfo.tabuleiro)[index] = 'T';
+                   break;
+               case 'D':
+                   (puzzleInfo.tabuleiro)[index] = 'A';
+                   break;
+           }
+       }
+       free((puzzleInfo.treeInfo)[i]);
+   }
+   free((puzzleInfo.treeInfo));
+}
+
 
 /*******************************************************************************
 * Function name: solver()
@@ -1460,8 +1482,6 @@ void solver(void) {
 
     freeTreeInfo();
 }
-
-
 
 
 /*******************************************************************************

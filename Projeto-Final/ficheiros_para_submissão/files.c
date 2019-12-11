@@ -126,12 +126,18 @@ void maxSize(void) {
         //gets sum of tents relatively to the rows
         for(i = 0; i < rows; i++) {
             aux = fscanf(in_file, " %d", &tents);
+            if (tents > (columns/2) || tents < 0) {
+                valid = 0;
+            }
             sum_tents_row += tents;
         }
 
         //gets sum of tents relatively to the columns
         for(i = 0; i < columns; i++) {
             aux = fscanf(in_file, " %d", &tents);
+            if (tents > (rows/2) || tents < 0) {
+                valid = 0;
+            }
             sum_tents_column += tents;
         }
 
@@ -142,23 +148,23 @@ void maxSize(void) {
 
         //tents relatively to the rows must be equal to the tents relatively
         //to the columns. Otherwise the layout is not admissible
-        if(sum_tents_row != sum_tents_column) {
+        if((sum_tents_row != sum_tents_column) || valid == 0) {
             valid = 0;
         }
         else {
-            //gets the maximum layout size, the maximum row size and the
-            //maximum column size in the input file
-            mux = rows * columns;
             if (sum_tents_row > (((rows%2 ? rows+1 : rows) * (columns%2 ? columns+1 : columns))>>2) ) {
                 //if number of tents is superior to maximum of tents a map can contain (1/4 of the map maximum may be tents)
                 //the map is invalid; for odd number of columns or rows, the maximum number of tents is the same as the
                 //next even number for column/rows
                 valid = 0;
+            } else {
+                //gets the maximum layout size, the maximum row size and the
+                //maximum column size in the input file
+                mux = rows * columns;
+                max = MAX(max, mux);
+                max_row = MAX(max_row, rows);
+                max_column = MAX(max_column, columns);
             }
-
-            max = MAX(max, mux);
-            max_row = MAX(max_row, rows);
-            max_column = MAX(max_column, columns);
         }
 
         //saves info relative to each layout in a linked list
@@ -319,9 +325,6 @@ int readBio(void) {
         //gets number of tents per row and initializes the structs in row array
         for(i = 0; i < rows; i++) {
             trash = fscanf(in_file, " %d", &tents);
-            if (tents > (columns/2) || tents < 0) {
-                setBoardAnswer(-1);
-            }
             row_vector[i].puzzleTents = tents;
             row_vector[i].tentsNeeded = tents;
             row_vector[i].availablePositions = 0;
@@ -332,9 +335,6 @@ int readBio(void) {
         //columns array
         for(i = 0; i < columns; i++) {
             trash = fscanf(in_file, " %d", &tents);
-            if (tents > (rows/2) || tents < 0) {
-                setBoardAnswer(-1);
-            }
             column_vector[i].puzzleTents = tents;
             column_vector[i].tentsNeeded = tents;
             column_vector[i].availablePositions = 0;

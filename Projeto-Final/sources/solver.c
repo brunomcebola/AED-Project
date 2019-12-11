@@ -7,6 +7,7 @@
 #include "../headers/stack.h"
 #include "../headers/files.h" /* TODO: remove this include after debugging */
 
+#include <limits.h>
 
 
 struct Puzzle {
@@ -26,16 +27,55 @@ void removesP(long unsigned int, int, int, int, changeStore **);
 
 
 
-HeadNode *row_vector = NULL, *column_vector = NULL;
+HeadNode *row_vector = NULL, *column_vector = NULL; //save information about a given row or column
 
+/*******************************************************************************
+* Function name: getSolverVectorRow()
+*
+* Arguments: none
+*
+* Return: vector with information about the rows
+*
+* Side-effects: none
+*
+* Description: return the global vector with information about the rows
+*              (used for external functions)
+*
+*******************************************************************************/
 HeadNode *getSolverVectorRow(void) {
     return row_vector;
 }
 
+/*******************************************************************************
+* Function name: getSolverVectorColumn()
+*
+* Arguments: none
+*
+* Return: vector with information about the columns
+*
+* Side-effects: none
+*
+* Description: return the global vector with information about the columns
+*              (used for external functions)
+*
+*******************************************************************************/
 HeadNode *getSolverVectorColumn(void) {
     return column_vector;
 }
 
+/*******************************************************************************
+* Function name: setSolverVectors()
+*
+* Arguments: row - vector with information about the rows
+*	     column - vector with information about the columns
+*
+* Return: none
+*
+* Side-effects: none
+*
+* Description: sets information about rows and columns
+*
+*******************************************************************************/
 void setSolverVectors(HeadNode* row, HeadNode* column) {
     row_vector = row;
     column_vector = column;
@@ -43,8 +83,23 @@ void setSolverVectors(HeadNode* row, HeadNode* column) {
 
 
 
-//solver functions
-int findPossibleLocations() {
+/*******************************************************************************
+* Function name: findPossibleLocations()
+*
+* Arguments: none
+*
+* Return: 0 - number of trees is lower than asked tents
+*         1 - the puzzle is of type "high season"
+*         2 - the puzzle is of type "low season"
+*
+* Side-effects: if number of trees is lower than asked tents marks puzzle as impossible
+*
+* Description: finds locations where it is possible to place tents,
+*              marks them with 'P' on the board;
+*              also counts the number of trees and assigns season to current puzzle
+*
+*******************************************************************************/
+int findPossibleLocations(void) {
 
 	int i, j, numOfTrees = 0, numOfAskedTents = getBoardSum(), retVal;
     long unsigned int index = 0;
@@ -106,7 +161,23 @@ int findPossibleLocations() {
 }
 
 
-TreeNode ***createTreeInfo() {
+
+/*******************************************************************************
+* Function name: createTreeInfo()
+*
+* Arguments: none
+*
+* Return: pointer to bi-dimensional array of pointers of type TreeNode
+*
+* Side-effects: Forces the program to terminate (with exit(0)) if there is an
+*               error with the memory managment (opening/creating files or
+*               allocating memory)
+*
+* Description: allocates memory for bi-demensional array of pointers,
+*              it keep information about trees easilly accessible
+*
+*******************************************************************************/
+TreeNode ***createTreeInfo(void) {
     TreeNode ***TreeInfo = NULL;
     TreeInfo = (TreeNode ***) malloc(puzzleInfo.linhas * sizeof(TreeNode **));
     checkNull(1, TreeInfo);
@@ -120,13 +191,26 @@ TreeNode ***createTreeInfo() {
     return TreeInfo;
 }
 
-TreeNode *createTreeList() {
+
+/*******************************************************************************
+* Function name: createTreeList()
+*
+* Arguments: none
+*
+* Return: pointer to inicial head of the list os TreeNode structures
+*
+* Side-effects: if the puzzle is of type "high season" and a tree has no playable
+*               squares around it, it marks the puzzle as impossible
+*
+* Description: allocates structures with information about a tree's surroundings
+*              and status, also connects them through pointers to eachother
+*              creating a list
+*
+*******************************************************************************/
+TreeNode *createTreeList(void) {
     int j = 0, i = 0, numPlayables = 0;
     TreeNode *list = NULL;
     long unsigned int index = 0;
-
-
-
 
 
     if (puzzleInfo.season == 2) {
@@ -217,7 +301,6 @@ TreeNode *createTreeList() {
 
                     if ((puzzleInfo.treeInfo)[i][j]->num_playables == 0) {
                         setBoardAnswer(-1);
-                        return NULL;
                     }
                 }
             }
@@ -228,10 +311,22 @@ TreeNode *createTreeList() {
 }
 
 
-/* checks if P position is left alone
-*  returns 0 when not alone, 1 when not alone
-*  TODO: create 3 more functions so it reduces number of comparisons (doesn't have to compare with tree removing it)
-*/
+/*******************************************************************************
+* Function name: checkIfPAlone()
+*
+* Arguments: index - position of square inside "puzzleInfo.tabuleiro" array
+*            x - coordinate of the square
+*            y - coordinate of the square
+*            changeStorePtr - pointer to stack of changes
+*
+* Return: none
+*
+* Side-effects: saves changes on current "change stack"
+*
+* Description: checks if a previously possible playable square is left alone
+*              after associating a tree with a tent (rendering that square unplayble)
+*
+*******************************************************************************/
 void checkIfPAlone(long unsigned int index, int x, int y, changeStore **changeStorePtr) {
     if (x != 0) {
 
@@ -266,11 +361,22 @@ void checkIfPAlone(long unsigned int index, int x, int y, changeStore **changeSt
 }
 
 
-/*
-* returns: no return value
+/*******************************************************************************
+* Function name: invalidateTreePPositions()
 *
+* Arguments: index - position of square inside "puzzleInfo.tabuleiro" array
+*            x - coordinate of the square
+*            y - coordinate of the square
+*            changeStorePtr - pointer to stack of changes
 *
-*/
+* Return: none
+*
+* Side-effects: none
+*
+* Description: checks the surroundings of a tree for a previously playble square
+*              that has been rendered unplayble
+*
+*******************************************************************************/
 void invalidateTreePPositions(long unsigned int index, int x, int y, changeStore **changeStorePtr) {
     if (x != 0) {
 
@@ -302,11 +408,25 @@ void invalidateTreePPositions(long unsigned int index, int x, int y, changeStore
 }
 
 
-/*
-* returns: no return value
+/*******************************************************************************
+* Function name: assignsTentToATree()
 *
+* Arguments: index - position of square inside "puzzleInfo.tabuleiro" array
+*            x - coordinate of the square
+*            y - coordinate of the square
+*            test - determines if function is just checking the surroundings
+*                   of a tent square for trees or is assigning it to the only tree
+*                   available
+*            changeStorePtr - pointer to stack of changes
 *
-*/
+* Return: none
+*
+* Side-effects: updates status/information and saves changes on current "change stack"
+*
+* Description: tries to assign a tent to a tree; it succeeds if only one tree is
+*              available to do such association
+*
+*******************************************************************************/
 void assignsTentToATree(long unsigned int index, int x, int y, int test, changeStore **changeStorePtr) {
     int numOfTrees = 0;
 
@@ -375,7 +495,25 @@ void assignsTentToATree(long unsigned int index, int x, int y, int test, changeS
 
 
 
-
+/*******************************************************************************
+* Function name: removesP()
+*
+* Arguments: index - position of square inside "puzzleInfo.tabuleiro" array
+*            x - coordinate of the square
+*            y - coordinate of the square
+*            isTent - determines if updating a playable square into a tent
+*                     or an unplayble square
+*            changeStorePtr - pointer to stack of changes
+*
+* Return: none
+*
+* Side-effects: updates status/information and saves changes on current "change stack"
+*
+* Description: updates information about the square's row and column and surrounding
+*              trees, also marks diagonally adjacent squares as unplayble if
+*              "isTent" is set to "true" (1)
+*
+*******************************************************************************/
 void removesP(long unsigned int index, int x, int y, int isTent, changeStore **changeStorePtr) {
     int previousValue = 0;
 
@@ -482,12 +620,22 @@ void removesP(long unsigned int index, int x, int y, int isTent, changeStore **c
 }
 
 
-/*
-* returns: 1 for change, 0 for no change
+
+/*******************************************************************************
+* Function name: checkNeededTents()
 *
+* Arguments: changeStorePtr - pointer to stack of changes
 *
+* Return: 1 - changes have been made
+*         0 - exited withou making any move
+*         404 - the map has reached an impossible state
 *
-*/
+* Side-effects: updates status/information and saves changes on current "change stack"
+*
+* Description: checks if the remaining needed tents for every row/column is equal
+*              to remaining playable square; updates those squares to tents
+*
+*******************************************************************************/
 int checkNeededTents(changeStore **changeStorePtr) {
     int i = 0, j = 0, retVal = 0, modified = 1;
     long unsigned int index = 0;
@@ -575,11 +723,23 @@ int checkNeededTents(changeStore **changeStorePtr) {
 }
 
 
-/*
-* returns: 1 for changes, 0 for no changes, 404 for invalid map
+
+/*******************************************************************************
+* Function name: checkForLonelyTrees()
 *
+* Arguments: changeStorePtr - pointer to stack of changes
 *
-*/
+* Return: 1 - changes have been made
+*         0 - exited withou making any move
+*         404 - if a tree has no tent assigned and hasn't any adjacent playable
+*               positions or unassigned tents
+*
+* Side-effects: updates status/information and saves changes on current "change stack"
+*
+* Description: checks if any tree has only one playable square or unassigned tent
+*              next to it; updates that square into an assigned tent
+*
+*******************************************************************************/
 int checkForLonelyTrees(changeStore **changeStorePtr) {
     TreeNode *aux;
     int numOfV = 0;
@@ -588,7 +748,7 @@ int checkForLonelyTrees(changeStore **changeStorePtr) {
     aux = puzzleInfo.treeList;
 
     if (aux == NULL) {
-        return 404;
+        return 404; //if there are no trees, there's an error
     }
 
     while ((aux)->num_playables == 0) {
@@ -634,7 +794,7 @@ int checkForLonelyTrees(changeStore **changeStorePtr) {
                     pushChange(changeStorePtr, NULL, aux->x, aux->y, 1, 0, 'A', 1);
                     (puzzleInfo.tabuleiro)[index-1] = 'T';
                     pushChange(changeStorePtr, NULL, aux->x -1, aux->y, 1, 0, 'V', 1);
-                    /* NO SAVES BECAUSE CHANGE HAS ALREADY BEEN SAVED */
+                    //doesn't use "removesP()" because those changes have already been made
                     return 1;
                 }
             }
@@ -647,7 +807,7 @@ int checkForLonelyTrees(changeStore **changeStorePtr) {
                     pushChange(changeStorePtr, NULL, aux->x, aux->y, 1, 0, 'A', 1);
                     (puzzleInfo.tabuleiro)[index+1] = 'T';
                     pushChange(changeStorePtr, NULL, aux->x +1, aux->y, 1, 0, 'V', 1);
-                    /* NO SAVES BECAUSE CHANGE HAS ALREADY BEEN SAVED */
+                    //doesn't use "removesP()" because those changes have already been made
                     return 1;
                 }
             }
@@ -660,7 +820,7 @@ int checkForLonelyTrees(changeStore **changeStorePtr) {
                     pushChange(changeStorePtr, NULL, aux->x, aux->y, 1, 0, 'A', 1);
                     (puzzleInfo.tabuleiro)[index-puzzleInfo.colunas] = 'T';
                     pushChange(changeStorePtr, NULL, aux->x , aux->y -1, 1, 0, 'V', 1);
-                    /* NO SAVES BECAUSE CHANGE HAS ALREADY BEEN SAVED */
+                    //doesn't use "removesP()" because those changes have already been made
                     return 1;
                 }
             }
@@ -673,7 +833,7 @@ int checkForLonelyTrees(changeStore **changeStorePtr) {
                     pushChange(changeStorePtr, NULL, aux->x, aux->y, 1, 0, 'A', 1);
                     (puzzleInfo.tabuleiro)[index+puzzleInfo.colunas] = 'T';
                     pushChange(changeStorePtr, NULL, aux->x , aux->y +1, 1, 0, 'V', 1);
-                    /* NO SAVES BECAUSE CHANGE HAS ALREADY BEEN SAVED */
+                    //doesn't use "removesP()" because those changes have already been made
                     return 1;
                 }
             }
@@ -781,11 +941,23 @@ int checkForLonelyTrees(changeStore **changeStorePtr) {
     return 0;
 }
 
-/*
-*  returns: 0 for no changes, 1 for changes
+
+/*******************************************************************************
+* Function name: checkConsecutive()
 *
+* Arguments: changeStorePtr - pointer to stack of changes
 *
-*/
+* Return:  1 - changes have been made
+*          0 - exited withou making any move
+*
+* Side-effects: updates status/information and saves changes on current "change stack"
+*
+* Description: checks if maximum of playable squares that can be updated to tents
+*              is equal to the the needed tents for that given row or column;
+*              updates squares to tents if they are grouped in sets of
+*              odd adjacent playble squares
+*
+*******************************************************************************/
 int checkConsecutive(changeStore **changeStorePtr) {
     int totalSimultaneousSpots = 0, numOfConsecutives = 0, i, j, retVal = 0, flag1 = 0, flag2 = 0;
     long unsigned int  index = 0;
@@ -917,12 +1089,20 @@ int checkConsecutive(changeStore **changeStorePtr) {
 
 
 
-/*
-* returns: 1 is solved, 0 if not solved
+/*******************************************************************************
+* Function name: checkIfPuzzleSolved()
 *
+* Arguments: none
 *
-*/
-int checkIfPuzzleSolved() {
+* Return: 1 - current puzzle is solved
+*         0 - current puzzle is not yet solved
+*
+* Side-effects: sets board answer to 1 if puzzle is solved
+*
+* Description: checks if current game state has reached a solution to the puzzle
+*
+*******************************************************************************/
+int checkIfPuzzleSolved(void) {
     for (int i = 0; i < puzzleInfo.linhas; i++) {
         if (row_vector[i].tentsNeeded != 0) {
             return 0;
@@ -938,13 +1118,22 @@ int checkIfPuzzleSolved() {
 }
 
 
-
-/*
-* returns: 1 for error, 0 for no errors
+/*******************************************************************************
+* Function name: makeSureMoves()
 *
+* Arguments: changeStorePtr - pointer to stack of changes
 *
-*/
-int makeSureMoves (changeStore **changeStorePtr) {
+* Return: 1 - the game has reached an impossible state
+*         0 - no errors so far
+*
+* Side-effects: none
+*
+* Description: calls, while squares are being updated, the 3 (or 2 in "low season"
+*              type of puzzles) functions that update squares that are, without any
+*              doubt, a tent
+*
+*******************************************************************************/
+int makeSureMoves(changeStore **changeStorePtr) {
     int modified = 1;
 
     if (puzzleInfo.season == 1) {
@@ -961,7 +1150,6 @@ int makeSureMoves (changeStore **changeStorePtr) {
             }
 
             if ((modified = checkNeededTents(changeStorePtr))) {
-
                 continue;
             }
 
@@ -993,50 +1181,54 @@ int makeSureMoves (changeStore **changeStorePtr) {
 
 
 
-void freeTreeInfo() {
-    int j = 0, i = 0;
-    long unsigned int index = 0;
+/*******************************************************************************
+* Function name: fact()
+*
+* Arguments: n - integer
+*
+* Return: n factorial
+*
+* Side-effects: none
+*
+* Description: calculates n!
+*
+*******************************************************************************/
+int fact(int n) {
+    int i = 0 ,f = 1;
 
-    for (i = 0; i < puzzleInfo.linhas; ++i) {
+    for(i = 1;i <= n; ++i) {
 
-        for (j = 0; j < puzzleInfo.colunas; ++j, ++index) {
-
-            switch ((puzzleInfo.tabuleiro)[index]) {
-                case 'K':
-                    (puzzleInfo.tabuleiro)[index] = 'A';
-                    free((puzzleInfo.treeInfo)[i][j]);
-                    break;
-                case 'A':
-                    free((puzzleInfo.treeInfo)[i][j]);
-                    break;
-                case 'P':
-                    (puzzleInfo.tabuleiro)[index] = '.';
-                    break;
-                case 'V':
-                    (puzzleInfo.tabuleiro)[index] = 'T';
-                    break;
-                case 'D':
-                    (puzzleInfo.tabuleiro)[index] = 'A';
-                    break;
-            }
-        }
-        free((puzzleInfo.treeInfo)[i]);
+        f = f*i;
     }
-    free((puzzleInfo.treeInfo));
+    return f;
 }
 
 
-void heuristicsForRandomPlay() {
+
+/*******************************************************************************
+* Function name: heuristicsForRandomPlay()
+*
+* Arguments: none
+*
+* Return: none
+*
+* Side-effects: checks if puzzle is solved
+*
+* Description: finds column or row that has the lowest number of random combinations
+*              and uses it to start making "pseudo-random" moves
+*
+*******************************************************************************/
+void heuristicsForRandomPlay(void) {
 
     int linhasOuColunas = 0, i = 0, index = 0, numOfMoves = 0;
-    double max = 0, temp = 0;
+    int bestNCR = 0, tempNCR = 0;
 
-    max = -1, temp = 0, numOfMoves = 0, index = 0, linhasOuColunas = -1;
+    bestNCR = INT_MAX, tempNCR = 0, numOfMoves = 0, index = 0, linhasOuColunas = -1;
 
     for (i = 0; i < puzzleInfo.colunas; i++) {
         if (column_vector[i].availablePositions > 0) {
-            if (max < (temp = (double)column_vector[i].tentsNeeded/(double)column_vector[i].availablePositions)) {
-                max = temp;
+            if (bestNCR > (tempNCR = fact(column_vector[i].availablePositions)/(fact(column_vector[i].tentsNeeded)*fact(column_vector[i].availablePositions-column_vector[i].tentsNeeded)))) {
+                bestNCR = tempNCR;
                 numOfMoves = column_vector[i].tentsNeeded;
                 index = i;
                 linhasOuColunas = 0;
@@ -1048,8 +1240,8 @@ void heuristicsForRandomPlay() {
 
     for (i = 0; i < puzzleInfo.linhas; i++) {
         if (row_vector[i].availablePositions > 0) {
-            if (max < (temp = (double)row_vector[i].tentsNeeded/(double)row_vector[i].availablePositions)) {
-                max = temp;
+            if (bestNCR > (tempNCR = fact(row_vector[i].availablePositions)/(fact(row_vector[i].tentsNeeded)*fact(row_vector[i].availablePositions-row_vector[i].tentsNeeded)))) {
+                bestNCR = tempNCR;
                 numOfMoves = row_vector[i].tentsNeeded;
                 index = i;
                 linhasOuColunas = 1;
@@ -1066,11 +1258,28 @@ void heuristicsForRandomPlay() {
 }
 
 
-/*
-* returns: 1 if puzzle solved, returns 0 if puzzle not solved
+
+/*******************************************************************************
+* Function name: randomPlay()
 *
+* Arguments: x - coordinate of the square
+*            y - coordinate of the square
+*            numOfMoves - number of trees that have to be placed(aka number of times
+*                         the function is going to call itself)
+*            linhasOuColunas - determines if random play is made on a row or a column
 *
-*/
+* Return: 1 - the puzzle has been solved
+*         0 - the puzzle has not been solved
+*
+* Side-effects: creates a new changes stak, saves changes on it, and uses it everytime
+*               it reaches an impossible state for the board to undo all changes up to
+*               the moves made before calling the current instance of the function
+*
+* Description: updates a playable square into a tent, and tries to solve puzzle;
+*              if it is impossible, undoes that move and tries to put a tent on
+*              the next playable square or until it reaches the edge
+*
+*******************************************************************************/
 int randomPlay(int x, int y, int numOfMoves, int linhasOuColunas) {
     int i = 0, edge = 0, modified = 1, j = 0;
     long unsigned int indexAux = 0, index = 0;
@@ -1174,7 +1383,64 @@ int randomPlay(int x, int y, int numOfMoves, int linhasOuColunas) {
 }
 
 
+/*******************************************************************************
+* Function name: freeTreeInfo()
+*
+* Arguments: none
+*
+* Return: none
+*
+* Side-effects: changes any invalid symbol to it's intended state
+*
+* Description: frees treeNode type of structures
+*
+*******************************************************************************/
+void freeTreeInfo(void) {
+    int j = 0, i = 0;
+   long unsigned int index = 0;
 
+   for (i = 0; i < puzzleInfo.linhas; ++i) {
+
+       for (j = 0; j < puzzleInfo.colunas; ++j, ++index) {
+
+           switch ((puzzleInfo.tabuleiro)[index]) {
+               case 'K':
+                   (puzzleInfo.tabuleiro)[index] = 'A';
+                   free((puzzleInfo.treeInfo)[i][j]);
+                   break;
+               case 'A':
+                   free((puzzleInfo.treeInfo)[i][j]);
+                   break;
+               case 'P':
+                   (puzzleInfo.tabuleiro)[index] = '.';
+                   break;
+               case 'V':
+                   (puzzleInfo.tabuleiro)[index] = 'T';
+                   break;
+               case 'D':
+                   (puzzleInfo.tabuleiro)[index] = 'A';
+                   break;
+           }
+       }
+       free((puzzleInfo.treeInfo)[i]);
+   }
+   free((puzzleInfo.treeInfo));
+}
+
+
+/*******************************************************************************
+* Function name: solver()
+*
+* Arguments: none
+*
+* Return: none
+*
+* Side-effects: none
+*
+* Description: finds one solution to the puzzle or determines if it is a
+*              puzzle with impossible inicial constraints
+*
+*******************************************************************************/
 void solver(void) {
     (puzzleInfo.tabuleiro) = getBoardLayout();
     puzzleInfo.linhas = getBoardRows(), puzzleInfo.colunas = getBoardColumns();
@@ -1206,9 +1472,18 @@ void solver(void) {
 }
 
 
-
-
-
+/*******************************************************************************
+* Function name: freeSolver()
+*
+* Arguments: none
+*
+* Return: none
+*
+* Side-effects: none
+*
+* Description: frees arrays containing information about each row and column
+*
+*******************************************************************************/
 void freeSolver(void) {
     free(row_vector);
     free(column_vector);
