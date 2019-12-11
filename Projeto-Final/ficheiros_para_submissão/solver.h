@@ -17,13 +17,12 @@ typedef struct _TreeNode {
     struct _TreeNode *next;
 } TreeNode;
 
+
 HeadNode *getSolverVectorRow(void);
 HeadNode *getSolverVectorColumn(void);
 
 void setSolverVectors(HeadNode* , HeadNode*);
-
 void solver(void);
-
 void freeSolver(void);
 
 #endif
