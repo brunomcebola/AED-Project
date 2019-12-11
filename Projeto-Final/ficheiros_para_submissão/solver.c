@@ -204,7 +204,7 @@ TreeNode ***createTreeInfo(void) {
 
 
 /*******************************************************************************
-* Function name: createTreeInfo()
+* Function name: createTreeList()
 *
 * Arguments: none
 *
