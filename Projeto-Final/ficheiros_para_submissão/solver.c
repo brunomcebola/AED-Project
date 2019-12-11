@@ -40,14 +40,53 @@ void removesP(long unsigned int, int, int, int, changeStore **);
 
 HeadNode *row_vector = NULL, *column_vector = NULL; //save information about a given row or column
 
+/*******************************************************************************
+* Function name: getSolverVectorRow()
+*
+* Arguments: none
+*
+* Return: vector with information about the rows 
+*
+* Side-effects: none
+*
+* Description: return the global vector with information about the rows 
+*              (used for external functions)
+*
+*******************************************************************************/
 HeadNode *getSolverVectorRow(void) {
     return row_vector;
 }
 
+/*******************************************************************************
+* Function name: getSolverVectorColumn()
+*
+* Arguments: none
+*
+* Return: vector with information about the columns 
+*
+* Side-effects: none
+*
+* Description: return the global vector with information about the columns 
+*              (used for external functions)
+*
+*******************************************************************************/
 HeadNode *getSolverVectorColumn(void) {
     return column_vector;
 }
 
+/*******************************************************************************
+* Function name: setSolverVectors()
+*
+* Arguments: row - vector with information about the rows
+*	     column - vector with information about the columns
+*
+* Return: none 
+*
+* Side-effects: none
+*
+* Description: sets information about rows and columns
+*
+*******************************************************************************/
 void setSolverVectors(HeadNode* row, HeadNode* column) {
     row_vector = row;
     column_vector = column;
